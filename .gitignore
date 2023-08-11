@@ -1,0 +1,49 @@
+# Unreal Engine specific
+Saved/
+Intermediate/
+DerivedDataCache/
+*.sln
+*.suo
+*.opensdf
+*.sdf
+
+# Visual Studio specific
+.vs/
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+
+# Compiled binary files
+*.exe
+*.dll
+*.pdb
+*.lib
+*.bak
+
+# Build files
+Binaries/
+Build/
+
+# Log files
+Logs/
+*.log
+
+# Mac specific
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+
+# Compiled object files
+*.obj
+*.o
+*.a
+
+# Other temporary files
+*.swp
+*~
+
+*.xcodeproj
+*.xcworkspace
