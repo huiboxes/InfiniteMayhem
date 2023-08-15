@@ -4,6 +4,7 @@
 #include "SWATCharacter.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 ASWATCharacter::ASWATCharacter() {
@@ -27,12 +28,31 @@ void ASWATCharacter::BeginPlay() {
 }
 
 void ASWATCharacter::MoveForward(float Value) {
-
-	AddMovementInput(GetActorForwardVector() * Value);
+	FVector Dir = FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::X); // 构建旋转矩阵
+	AddMovementInput(Dir * Value);
 }
 
 void ASWATCharacter::MoveRight(float Value) {
-	AddMovementInput(GetActorRightVector() * Value);
+
+	FVector Dir = FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::Y); // 构建旋转矩阵
+	AddMovementInput(Dir * Value);
+
+}
+
+void ASWATCharacter::LookUp(float Value) {
+	AddControllerPitchInput(Value);
+}
+
+void ASWATCharacter::Turn(float Value) {
+	AddControllerYawInput(Value);
+}
+
+void ASWATCharacter::Accelerate() {
+	GetCharacterMovement()->MaxWalkSpeed = 800;
+}
+
+void ASWATCharacter::UnAccelerate() {
+	GetCharacterMovement()->MaxWalkSpeed = 400;
 }
 
 // Called every frame
@@ -46,5 +66,10 @@ void ASWATCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	PlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &ASWATCharacter::MoveForward);
 	PlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &ASWATCharacter::MoveRight);
+	PlayerInputComponent->BindAxis(TEXT("Turn"), this, &ASWATCharacter::Turn);
+	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &ASWATCharacter::LookUp);
+	PlayerInputComponent->BindAction(TEXT("DoAccelerate"), IE_Pressed, this, &ASWATCharacter::Accelerate);
+	PlayerInputComponent->BindAction(TEXT("DoAccelerate"), IE_Released, this, &ASWATCharacter::UnAccelerate);
+
 }
 

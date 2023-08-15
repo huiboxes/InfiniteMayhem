@@ -20,8 +20,11 @@ protected:
 	virtual void BeginPlay() override;
 
 	void MoveForward(float Value);
-
 	void MoveRight(float Value);
+	void LookUp(float Value);
+	void Turn(float Value);
+	void Accelerate();
+	void UnAccelerate();
 
 public:	
 	// Called every frame
