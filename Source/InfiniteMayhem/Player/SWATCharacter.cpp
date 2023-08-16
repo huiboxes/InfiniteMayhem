@@ -70,6 +70,7 @@ void ASWATCharacter::CrouchButtonReleased() {
 
 }
 
+
 // Called every frame
 void ASWATCharacter::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
@@ -87,6 +88,7 @@ void ASWATCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction(TEXT("Accelerate"), IE_Released, this, &ASWATCharacter::UnAccelerate);
 	PlayerInputComponent->BindAction(TEXT("Crouch"), IE_Pressed, this, &ASWATCharacter::CrouchButtonPressed);
 	PlayerInputComponent->BindAction(TEXT("Crouch"), IE_Released, this, &ASWATCharacter::CrouchButtonReleased);
+	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &ASWATCharacter::Jump);
 
 }
 
@@ -94,6 +96,10 @@ bool ASWATCharacter::IsAcceleration() {
 	FVector MoveDir = GetVelocity();
 	MoveDir.Normalize();
 	return FVector::DotProduct(GetActorForwardVector(), MoveDir) > 0.9 && bIsAcceleration;
+}
+
+bool ASWATCharacter::IsInAir() {
+	return GetCharacterMovement()->IsFalling();
 }
 
 USpringArmComponent* ASWATCharacter::GetCameraBoom() {

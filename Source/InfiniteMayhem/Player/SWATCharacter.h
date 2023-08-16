@@ -48,6 +48,8 @@ public:
 	
 	bool IsCrouched() { return bIsCrouched; };
 
+	bool IsInAir();
+
 	ESWATState GetCurrentState() { return CurrentState; };
 
 	class USpringArmComponent* GetCameraBoom();

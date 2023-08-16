@@ -10,6 +10,8 @@ void UIMFPSAnimInstance::NativeUpdateAnimation(float DeltaTime) {
 
 	Speed = Player->GetVelocity().Size2D();
 	bIsCrouched = Player->IsCrouched();
+	bIsInAir = Player->IsInAir();
+
 
 	FVector MoveDir = Player->GetVelocity();
 	MoveDir.Normalize();
