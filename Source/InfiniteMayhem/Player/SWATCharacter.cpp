@@ -5,9 +5,11 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "../Components/FPSCharacterMovementComponent.h"
 
 // Sets default values
-ASWATCharacter::ASWATCharacter() {
+ASWATCharacter::ASWATCharacter(const FObjectInitializer& Initializer): Super(Initializer.SetDefaultSubobjectClass<UFPSCharacterMovementComponent>(ACharacter::CharacterMovementComponentName)) {
+
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -48,11 +50,24 @@ void ASWATCharacter::Turn(float Value) {
 }
 
 void ASWATCharacter::Accelerate() {
-	GetCharacterMovement()->MaxWalkSpeed = 800;
+	bIsAcceleration = true;
 }
 
 void ASWATCharacter::UnAccelerate() {
-	GetCharacterMovement()->MaxWalkSpeed = 400;
+	bIsAcceleration = false;
+}
+
+void ASWATCharacter::CrouchButtonPressed() {
+	bIsCrouched = true;
+	Crouch();
+
+}
+
+
+void ASWATCharacter::CrouchButtonReleased() {
+	bIsCrouched = false;
+	UnCrouch();
+
 }
 
 // Called every frame
@@ -68,8 +83,16 @@ void ASWATCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &ASWATCharacter::MoveRight);
 	PlayerInputComponent->BindAxis(TEXT("Turn"), this, &ASWATCharacter::Turn);
 	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &ASWATCharacter::LookUp);
-	PlayerInputComponent->BindAction(TEXT("DoAccelerate"), IE_Pressed, this, &ASWATCharacter::Accelerate);
-	PlayerInputComponent->BindAction(TEXT("DoAccelerate"), IE_Released, this, &ASWATCharacter::UnAccelerate);
+	PlayerInputComponent->BindAction(TEXT("Accelerate"), IE_Pressed, this, &ASWATCharacter::Accelerate);
+	PlayerInputComponent->BindAction(TEXT("Accelerate"), IE_Released, this, &ASWATCharacter::UnAccelerate);
+	PlayerInputComponent->BindAction(TEXT("Crouch"), IE_Pressed, this, &ASWATCharacter::CrouchButtonPressed);
+	PlayerInputComponent->BindAction(TEXT("Crouch"), IE_Released, this, &ASWATCharacter::CrouchButtonReleased);
 
+}
+
+bool ASWATCharacter::IsAcceleration() {
+	FVector MoveDir = GetVelocity();
+	MoveDir.Normalize();
+	return FVector::DotProduct(GetActorForwardVector(), MoveDir) > 0.9 && bIsAcceleration;
 }
 

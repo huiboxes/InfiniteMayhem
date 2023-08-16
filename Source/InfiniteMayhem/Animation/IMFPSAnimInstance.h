@@ -22,9 +22,23 @@ public:
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	float Speed;
+	
+	
+	UPROPERTY(BlueprintReadOnly)
+	bool bIsCrouched;
+	
+	UPROPERTY(BlueprintReadOnly)
+	float Direction;
+
+	UPROPERTY(BlueprintReadOnly)
+	float AO_Yaw;
+
+	UPROPERTY(BlueprintReadOnly)
+	float AO_Pitch;
 
 	UPROPERTY()
 	class ASWATCharacter* Player;
 
+	
 	
 };

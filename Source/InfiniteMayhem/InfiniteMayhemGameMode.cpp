@@ -5,6 +5,6 @@
 #include "Player/SWATCharacter.h"
 
 AInfiniteMayhemGameMode::AInfiniteMayhemGameMode() {
-	static ConstructorHelpers::FClassFinder<ASWATCharacter> SWATClass(TEXT("Blueprint'/Game/InfiniteMayhem/Blueprints/Player/BP_SWAT.BP_SWAT_C'"));
+	static ConstructorHelpers::FClassFinder<ASWATCharacter> SWATClass(TEXT("Blueprint'/Game/InfiniteMayhem/Blueprints/Player/BP_SWAT.BP_Swat_C'"));
 	DefaultPawnClass = SWATClass.Class;
 }
