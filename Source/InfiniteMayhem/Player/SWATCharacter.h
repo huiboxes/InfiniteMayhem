@@ -50,6 +50,8 @@ public:
 
 	ESWATState GetCurrentState() { return CurrentState; };
 
+	class USpringArmComponent* GetCameraBoom();
+
 protected:
 
 	UPROPERTY(VisibleAnywhere)

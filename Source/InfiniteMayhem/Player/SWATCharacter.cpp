@@ -96,3 +96,7 @@ bool ASWATCharacter::IsAcceleration() {
 	return FVector::DotProduct(GetActorForwardVector(), MoveDir) > 0.9 && bIsAcceleration;
 }
 
+USpringArmComponent* ASWATCharacter::GetCameraBoom() {
+	return CameraBoom;
+}
+

@@ -3,6 +3,8 @@
 
 #include "FPSCharacterMovementComponent.h"
 #include "../Player/SWATCharacter.h"
+#include "Components/CapsuleComponent.h"
+
 
 float UFPSCharacterMovementComponent::GetMaxSpeed() const {
 	return GetPlayerCurrentSpeed();
@@ -10,6 +12,7 @@ float UFPSCharacterMovementComponent::GetMaxSpeed() const {
 
 float UFPSCharacterMovementComponent::GetPlayerCurrentSpeed() const {
 	ASWATCharacter* Player = Cast<ASWATCharacter>(GetOwner());
+
 	if (!Player) return Super::GetMaxSpeed();
 
 	float MaxSpeed = 0;
@@ -36,6 +39,11 @@ float UFPSCharacterMovementComponent::GetPlayerCurrentSpeed() const {
 	}
 
 	MaxSpeed = IsAcceleration ? RunSpeed : WalkSpeed;
+	if (IsAcceleration && IsCrouched) {
+		Player->GetCapsuleComponent()->SetCapsuleHalfHeight(70);
+	} else if(!IsAcceleration && IsCrouched) {
+		Player->GetCapsuleComponent()->SetCapsuleHalfHeight(50);
+	}
 
 	return MaxSpeed;
 }
