@@ -5,6 +5,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "../Weapon/WeaponActor.h"
 #include "../Components/FPSCharacterMovementComponent.h"
 
 // Sets default values
@@ -50,6 +51,7 @@ void ASWATCharacter::Turn(float Value) {
 }
 
 void ASWATCharacter::Accelerate() {
+	if (IsHoldWeapon()) return;
 	bIsAcceleration = true;
 }
 
@@ -59,6 +61,7 @@ void ASWATCharacter::UnAccelerate() {
 
 
 void ASWATCharacter::CrouchButtonPressed() {
+	if (!IsHoldWeapon()) return ;
 	bIsCrouched = true;
 	Crouch();
 }
@@ -71,12 +74,12 @@ void ASWATCharacter::CrouchButtonReleased() {
 }
 
 void ASWATCharacter::IronsightButtonPressed() {
-	bisIronsight = true;
-
+	if (!IsHoldWeapon()) return;
+	bIsIronsight = true;
 }
 
 void ASWATCharacter::IronsightButtonReleased() {
-	bisIronsight = false;
+	bIsIronsight = false;
 
 }
 
@@ -107,7 +110,11 @@ void ASWATCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 bool ASWATCharacter::IsAcceleration() {
 	FVector MoveDir = GetVelocity();
 	MoveDir.Normalize();
-	return FVector::DotProduct(GetActorForwardVector(), MoveDir) > 0.9 && !bisIronsight && bIsAcceleration;
+	return FVector::DotProduct(GetActorForwardVector(), MoveDir) > 0.9 && !bIsIronsight && bIsAcceleration;
+}
+
+bool ASWATCharacter::IsHoldWeapon() {
+	return CurrentWeapon && CurrentWeapon->IsEquipped();
 }
 
 bool ASWATCharacter::IsInAir() {
@@ -115,7 +122,7 @@ bool ASWATCharacter::IsInAir() {
 }
 
 bool ASWATCharacter::IsIronsight() {
-	return bisIronsight;
+	return bIsIronsight;
 }
 
 USpringArmComponent* ASWATCharacter::GetCameraBoom() {

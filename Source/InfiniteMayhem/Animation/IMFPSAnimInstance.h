@@ -34,6 +34,9 @@ protected:
 	bool bIsIronsight;
 	
 	UPROPERTY(BlueprintReadOnly)
+	bool bHoldWeapon;
+	
+	UPROPERTY(BlueprintReadOnly)
 	float Direction;
 
 	UPROPERTY(BlueprintReadOnly)

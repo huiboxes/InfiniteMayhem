@@ -13,7 +13,7 @@ void UIMFPSAnimInstance::NativeUpdateAnimation(float DeltaTime) {
 	bIsCrouched = Player->IsCrouched();
 	bIsInAir = Player->IsInAir();
 	bIsIronsight = Player->IsIronsight();
-
+	bHoldWeapon = Player->IsHoldWeapon();
 
 	FVector MoveDir = Player->GetVelocity();
 	MoveDir.Normalize();

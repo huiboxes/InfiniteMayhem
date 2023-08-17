@@ -8,8 +8,8 @@
 
 UENUM(BlueprintType)
 enum class ESWATState :uint8 {
-	ESS_NORMAL,
-	ESS_RILFE,
+	ESS_Normal UMETA(DisplayName = "Normal"),
+	ESS_Rilfe UMETA(DisplayName = "Rilfe"),
 
 	ESS_MAX
 };
@@ -46,7 +46,7 @@ public:
 
 	bool IsAcceleration();
 
-	bool IsHoldWeapon() { return bIsHoldWeapon; };
+	bool IsHoldWeapon();
 	
 	bool IsCrouched() { return bIsCrouched; };
 
@@ -66,14 +66,15 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	class UCameraComponent* MainCamera;
 
+	UPROPERTY(VisibleAnywhere)
+	class AWeaponActor* CurrentWeapon;
+
 	bool bIsAcceleration = false;
 	
-	bool bIsHoldWeapon = false;
-
 	bool bIsCrouched = false;
 
-	bool bisIronsight = false;
+	bool bIsIronsight = false;
 
-	ESWATState CurrentState = ESWATState::ESS_RILFE;
+	ESWATState CurrentState = ESWATState::ESS_Normal;
 
 };

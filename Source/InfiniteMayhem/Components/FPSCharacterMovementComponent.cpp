@@ -25,12 +25,12 @@ float UFPSCharacterMovementComponent::GetPlayerCurrentSpeed() const {
 	bool bIsIronsight = Player->IsIronsight();
 
 	switch (State) {
-	case ESWATState::ESS_NORMAL:
+	case ESWATState::ESS_Normal:
 		RunSpeed = bIsCrouched ? CrouchMaxRunSpeed : NormalMaxRunSpeed;
 		WalkSpeed = bIsCrouched ? CrouchMaxWalkSpeed : NormalMaxWalkSpeed;
 		break;
 
-	case ESWATState::ESS_RILFE:
+	case ESWATState::ESS_Rilfe:
 		RunSpeed = bIsCrouched ? CrouchMaxRunSpeed : RilfeMaxRunSpeed;
 		WalkSpeed = bIsCrouched ? CrouchMaxWalkSpeed : RilfeMaxWalkSpeed;
 		break;

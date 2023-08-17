@@ -19,6 +19,10 @@ protected:
 
 	virtual void UpdateCamera(float DeltaTime) override;
 
+	void SmoothingCrouch(class ASWATCharacter* Player, float DeltaTime);
+
+	void Aiming(class ASWATCharacter* Player, float DeltaTime);
+
 protected:
 
 	float CurrentCameraPosOffsetZ = 0;
