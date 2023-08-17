@@ -9,8 +9,10 @@ void UIMFPSAnimInstance::NativeUpdateAnimation(float DeltaTime) {
 	if (!Player) return;
 
 	Speed = Player->GetVelocity().Size2D();
+
 	bIsCrouched = Player->IsCrouched();
 	bIsInAir = Player->IsInAir();
+	bIsIronsight = Player->IsIronsight();
 
 
 	FVector MoveDir = Player->GetVelocity();

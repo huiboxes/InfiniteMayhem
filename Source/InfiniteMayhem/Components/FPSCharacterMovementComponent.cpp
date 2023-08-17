@@ -20,28 +20,32 @@ float UFPSCharacterMovementComponent::GetPlayerCurrentSpeed() const {
 	float WalkSpeed = 0;
 
 	ESWATState State = Player->GetCurrentState();
-	bool IsCrouched = Player->IsCrouched();
-	bool IsAcceleration = Player->IsAcceleration();
+	bool bIsCrouched = Player->IsCrouched();
+	bool bIsAcceleration = Player->IsAcceleration();
+	bool bIsIronsight = Player->IsIronsight();
 
 	switch (State) {
 	case ESWATState::ESS_NORMAL:
-		RunSpeed = IsCrouched ? CrouchMaxRunSpeed : NormalMaxRunSpeed;
-		WalkSpeed = IsCrouched ? CrouchMaxWalkSpeed : NormalMaxWalkSpeed;
+		RunSpeed = bIsCrouched ? CrouchMaxRunSpeed : NormalMaxRunSpeed;
+		WalkSpeed = bIsCrouched ? CrouchMaxWalkSpeed : NormalMaxWalkSpeed;
 		break;
 
 	case ESWATState::ESS_RILFE:
-		RunSpeed = IsCrouched ? CrouchMaxRunSpeed : RilfeMaxRunSpeed;
-		WalkSpeed = IsCrouched ? CrouchMaxWalkSpeed : RilfeMaxWalkSpeed;
+		RunSpeed = bIsCrouched ? CrouchMaxRunSpeed : RilfeMaxRunSpeed;
+		WalkSpeed = bIsCrouched ? CrouchMaxWalkSpeed : RilfeMaxWalkSpeed;
 		break;
 
 	default:
 		break;
 	}
 
-	MaxSpeed = IsAcceleration ? RunSpeed : WalkSpeed;
-	if (IsAcceleration && IsCrouched) {
+	RunSpeed = bIsIronsight ? RunSpeed * 0.7 : RunSpeed;
+	WalkSpeed = bIsIronsight ? WalkSpeed * 0.7 : WalkSpeed;
+
+	MaxSpeed = bIsAcceleration ? RunSpeed : WalkSpeed;
+	if (bIsAcceleration && bIsCrouched) {
 		Player->GetCapsuleComponent()->SetCapsuleHalfHeight(70);
-	} else if(!IsAcceleration && IsCrouched) {
+	} else if(!bIsAcceleration && bIsCrouched) {
 		Player->GetCapsuleComponent()->SetCapsuleHalfHeight(50);
 	}
 

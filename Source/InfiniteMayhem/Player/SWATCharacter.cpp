@@ -57,16 +57,26 @@ void ASWATCharacter::UnAccelerate() {
 	bIsAcceleration = false;
 }
 
+
 void ASWATCharacter::CrouchButtonPressed() {
 	bIsCrouched = true;
 	Crouch();
-
 }
 
 
 void ASWATCharacter::CrouchButtonReleased() {
 	bIsCrouched = false;
 	UnCrouch();
+
+}
+
+void ASWATCharacter::IronsightButtonPressed() {
+	bisIronsight = true;
+
+}
+
+void ASWATCharacter::IronsightButtonReleased() {
+	bisIronsight = false;
 
 }
 
@@ -89,17 +99,23 @@ void ASWATCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction(TEXT("Crouch"), IE_Pressed, this, &ASWATCharacter::CrouchButtonPressed);
 	PlayerInputComponent->BindAction(TEXT("Crouch"), IE_Released, this, &ASWATCharacter::CrouchButtonReleased);
 	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &ASWATCharacter::Jump);
+	PlayerInputComponent->BindAction(TEXT("Ironsight"), IE_Pressed, this, &ASWATCharacter::IronsightButtonPressed);
+	PlayerInputComponent->BindAction(TEXT("Ironsight"), IE_Released, this, &ASWATCharacter::IronsightButtonReleased);
 
 }
 
 bool ASWATCharacter::IsAcceleration() {
 	FVector MoveDir = GetVelocity();
 	MoveDir.Normalize();
-	return FVector::DotProduct(GetActorForwardVector(), MoveDir) > 0.9 && bIsAcceleration;
+	return FVector::DotProduct(GetActorForwardVector(), MoveDir) > 0.9 && !bisIronsight && bIsAcceleration;
 }
 
 bool ASWATCharacter::IsInAir() {
 	return GetCharacterMovement()->IsFalling();
+}
+
+bool ASWATCharacter::IsIronsight() {
+	return bisIronsight;
 }
 
 USpringArmComponent* ASWATCharacter::GetCameraBoom() {

@@ -34,6 +34,8 @@ protected:
 	void UnAccelerate();
 	void CrouchButtonPressed();
 	void CrouchButtonReleased();
+	void IronsightButtonPressed();
+	void IronsightButtonReleased();
 
 public:
 	// Called every frame
@@ -49,6 +51,8 @@ public:
 	bool IsCrouched() { return bIsCrouched; };
 
 	bool IsInAir();
+
+	bool IsIronsight();
 
 	ESWATState GetCurrentState() { return CurrentState; };
 
@@ -67,6 +71,8 @@ protected:
 	bool bIsHoldWeapon = false;
 
 	bool bIsCrouched = false;
+
+	bool bisIronsight = false;
 
 	ESWATState CurrentState = ESWATState::ESS_RILFE;
 
