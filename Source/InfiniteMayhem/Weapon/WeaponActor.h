@@ -58,5 +58,5 @@ private:
 public:
 
 	bool IsEquipped() { return CurrentState == EWeaponState::EWS_EQUIPPED; };
-
+	void ShowPickupWidget(bool bShowWidget);
 };

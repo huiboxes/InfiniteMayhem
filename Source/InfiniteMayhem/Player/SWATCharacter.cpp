@@ -31,14 +31,19 @@ void ASWATCharacter::BeginPlay() {
 }
 
 void ASWATCharacter::MoveForward(float Value) {
-	FVector Dir = FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::X); // 构建旋转矩阵
-	AddMovementInput(Dir * Value);
+	if (Controller != nullptr && Value != 0.f) {
+		const FRotator YawRotation(0.f, Controller->GetControlRotation().Yaw, 0.f);
+		const FVector Direction(FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X));
+		AddMovementInput(Direction, Value);
+	}
 }
 
 void ASWATCharacter::MoveRight(float Value) {
-
-	FVector Dir = FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::Y); // 构建旋转矩阵
-	AddMovementInput(Dir * Value);
+	if (Controller != nullptr && Value != 0.f) {
+		const FRotator YawRotation(0.f, Controller->GetControlRotation().Yaw, 0.f);
+		const FVector Direction(FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y));
+		AddMovementInput(Direction, Value);
+	}
 
 }
 
@@ -129,3 +134,14 @@ USpringArmComponent* ASWATCharacter::GetCameraBoom() {
 	return CameraBoom;
 }
 
+void ASWATCharacter::SetOverlappingWeapon(AWeaponActor* Weapon) {
+	if (OverlappingWeapon) { // 检查上一次的是否还存在
+		OverlappingWeapon->ShowPickupWidget(false);
+	}
+	
+	OverlappingWeapon = Weapon;
+	if (OverlappingWeapon) {
+		OverlappingWeapon->ShowPickupWidget(true);
+	}
+
+}

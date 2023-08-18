@@ -58,6 +58,8 @@ public:
 
 	class USpringArmComponent* GetCameraBoom();
 
+	void SetOverlappingWeapon(class AWeaponActor* Weapon);
+
 protected:
 
 	UPROPERTY(VisibleAnywhere)
@@ -68,6 +70,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	class AWeaponActor* CurrentWeapon;
+	
+	UPROPERTY(VisibleAnywhere)
+	class AWeaponActor* OverlappingWeapon;
 
 	bool bIsAcceleration = false;
 	

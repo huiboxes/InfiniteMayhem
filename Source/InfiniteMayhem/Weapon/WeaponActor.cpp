@@ -6,7 +6,6 @@
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
 
-// Sets default values
 AWeaponActor::AWeaponActor()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -19,6 +18,7 @@ AWeaponActor::AWeaponActor()
 	SphereCollision->SetupAttachment(RootComponent);
 	SphereCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 	SphereCollision->OnComponentBeginOverlap.AddDynamic(this, &AWeaponActor::OnSphereBeginOverlap);
+	SphereCollision->OnComponentEndOverlap.AddDynamic(this, &AWeaponActor::OnSphereEndOverlap);
 	
 	PickupWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("PickupWidget"));
 	PickupWidget->SetupAttachment(RootComponent);
@@ -26,14 +26,12 @@ AWeaponActor::AWeaponActor()
 
 }
 
-// Called when the game starts or when spawned
 void AWeaponActor::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
-// Called every frame
 void AWeaponActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -59,12 +57,23 @@ void AWeaponActor::ChangeWeaponState(EWeaponState State) {
 }
 
 void AWeaponActor::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OterComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
-
-	ACharacter* Player = Cast<ACharacter>(OtherActor);
-	if (PickupWidget && Player) {
-		PickupWidget->SetVisibility(true);
+	ASWATCharacter* Player = Cast<ASWATCharacter>(OtherActor);
+	if (Player) {
+		Player->SetOverlappingWeapon(this);
 	}
+}
 
+void AWeaponActor::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
+	ASWATCharacter* Player = Cast<ASWATCharacter>(OtherActor);
+	if (Player) {
+		Player->SetOverlappingWeapon(nullptr);
+	}
+}
+
+void AWeaponActor::ShowPickupWidget(bool bShowWidget) {
+	if (PickupWidget) {
+		PickupWidget->SetVisibility(bShowWidget);
+	}
 }
 
 
