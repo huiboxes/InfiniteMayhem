@@ -22,7 +22,7 @@ float UFPSCharacterMovementComponent::GetPlayerCurrentSpeed() const {
 	ESWATState State = Player->GetCurrentState();
 	bool bIsCrouched = Player->IsCrouched();
 	bool bIsAcceleration = Player->IsAcceleration();
-	bool bIsIronsight = Player->IsIronsight();
+	bool bAiming = Player->IsAiming();
 
 	switch (State) {
 	case ESWATState::ESS_Normal:
@@ -39,8 +39,8 @@ float UFPSCharacterMovementComponent::GetPlayerCurrentSpeed() const {
 		break;
 	}
 
-	RunSpeed = bIsIronsight ? RunSpeed * 0.7 : RunSpeed;
-	WalkSpeed = bIsIronsight ? WalkSpeed * 0.7 : WalkSpeed;
+	RunSpeed = bAiming ? RunSpeed * 0.7 : RunSpeed;
+	WalkSpeed = bAiming ? WalkSpeed * 0.7 : WalkSpeed;
 
 	MaxSpeed = bIsAcceleration ? RunSpeed : WalkSpeed;
 	if (bIsAcceleration && bIsCrouched) {

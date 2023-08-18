@@ -91,12 +91,11 @@ void ASWATCharacter::CrouchButtonReleased() {
 
 void ASWATCharacter::IronsightButtonPressed() {
 	if (!IsHoldWeapon()) return;
-	bIsIronsight = true;
+	bAiming = true;
 }
 
 void ASWATCharacter::IronsightButtonReleased() {
-	bIsIronsight = false;
-
+	bAiming = false;
 }
 
 void ASWATCharacter::PickupButtonPressed() {
@@ -133,19 +132,19 @@ void ASWATCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 bool ASWATCharacter::IsAcceleration() {
 	FVector MoveDir = GetVelocity();
 	MoveDir.Normalize();
-	return FVector::DotProduct(GetActorForwardVector(), MoveDir) > 0.9 && !bIsIronsight && bIsAcceleration;
+	return FVector::DotProduct(GetActorForwardVector(), MoveDir) > 0.9 && !bAiming && bIsAcceleration;
 }
 
 bool ASWATCharacter::IsHoldWeapon() {
-	return CurrentWeapon && CurrentWeapon->IsEquipped();
+	return CombatComp && CombatComp->EquippedWeapon;
 }
 
 bool ASWATCharacter::IsInAir() {
 	return GetCharacterMovement()->IsFalling();
 }
 
-bool ASWATCharacter::IsIronsight() {
-	return bIsIronsight;
+bool ASWATCharacter::IsAiming() {
+	return bAiming;
 }
 
 USpringArmComponent* ASWATCharacter::GetCameraBoom() {

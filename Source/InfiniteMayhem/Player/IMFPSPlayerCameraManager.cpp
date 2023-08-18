@@ -38,11 +38,10 @@ void AIMFPSPlayerCameraManager::SmoothingCrouch(ASWATCharacter* Player, float De
 }
 
 void AIMFPSPlayerCameraManager::Aiming(ASWATCharacter* Player, float DeltaTime) {
-	if (!Player->IsHoldWeapon()) return;
 	float CurrentFOV = 0;
 
-	bool bIsIronsight = Player->IsIronsight();
-	if (bIsIronsight) {
+	bool bAiming = Player->IsAiming();
+	if (bAiming) {
 		CurrentFOV = 60;
 	} else {
 		CurrentFOV = 90;

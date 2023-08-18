@@ -31,7 +31,7 @@ protected:
 	bool bIsInAir;
 	
 	UPROPERTY(BlueprintReadOnly)
-	bool bIsIronsight;
+	bool bAiming;
 	
 	UPROPERTY(BlueprintReadOnly)
 	bool bHoldWeapon;

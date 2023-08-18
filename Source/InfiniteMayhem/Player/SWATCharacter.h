@@ -51,7 +51,7 @@ public:
 
 	bool IsInAir();
 
-	bool IsIronsight();
+	bool IsAiming();
 
 	ESWATState GetCurrentState() { return CurrentState; };
 
@@ -69,9 +69,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	class UCameraComponent* MainCamera;
-
-	UPROPERTY(VisibleAnywhere)
-	class AWeaponActor* CurrentWeapon;
 	
 	UPROPERTY(VisibleAnywhere)
 	class AWeaponActor* OverlappingWeapon;
@@ -83,7 +80,7 @@ protected:
 	
 	bool bIsCrouched = false;
 
-	bool bIsIronsight = false;
+	bool bAiming = false;
 
 	ESWATState CurrentState = ESWATState::ESS_Normal;
 

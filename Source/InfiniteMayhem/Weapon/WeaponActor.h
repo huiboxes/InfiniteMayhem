@@ -9,6 +9,7 @@
 UENUM(BlueprintType)
 enum class EWeaponState : uint8 {
 	EWS_INITIAL UMETA(DisplayName = "Initial State"),
+	EWS_STANDBY UMETA(DisplayName = "Stand-by"),
 	EWS_EQUIPPED UMETA(DisplayName = "Equipped"),
 	EWS_DROP UMETA(DisplayName = "Drop"), //
 
