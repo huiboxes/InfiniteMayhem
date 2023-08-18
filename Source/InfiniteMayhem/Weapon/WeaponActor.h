@@ -22,15 +22,13 @@ class INFINITEMAYHEM_API AWeaponActor : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	AWeaponActor();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+
 public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 
@@ -44,9 +42,17 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	EWeaponState CurrentState = EWeaponState::EWS_DROP;
 
-protected:
-
 	void ChangeWeaponState(EWeaponState State);
+
+	UFUNCTION(BlueprintCallable)
+	virtual void OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OterComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION(BlueprintCallable)
+	virtual void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+private:
+	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
+	class UWidgetComponent* PickupWidget;
 
 	
 public:

@@ -18,6 +18,7 @@ class INFINITEMAYHEM_API AIMFPSHUD : public AHUD
 protected:
 
 	virtual void DrawHUD() override;
+
 	void DrawCrosshair();
 	
 };
