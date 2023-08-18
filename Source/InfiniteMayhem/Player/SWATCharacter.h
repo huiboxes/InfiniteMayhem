@@ -36,12 +36,11 @@ protected:
 	void CrouchButtonReleased();
 	void IronsightButtonPressed();
 	void IronsightButtonReleased();
+	void PickupButtonPressed();
 
 public:
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	bool IsAcceleration();
@@ -55,6 +54,9 @@ public:
 	bool IsIronsight();
 
 	ESWATState GetCurrentState() { return CurrentState; };
+
+	void ChangeState(ESWATState State);
+
 
 	class USpringArmComponent* GetCameraBoom();
 
@@ -73,6 +75,9 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere)
 	class AWeaponActor* OverlappingWeapon;
+
+	UPROPERTY(VisibleAnywhere)
+	class UCombatComponent* CombatComp;
 
 	bool bIsAcceleration = false;
 	

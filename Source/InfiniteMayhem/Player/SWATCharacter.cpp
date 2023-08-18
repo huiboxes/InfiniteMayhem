@@ -7,11 +7,10 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "../Weapon/WeaponActor.h"
 #include "../Components/FPSCharacterMovementComponent.h"
+#include "../Components/CombatComponent.h"
 
-// Sets default values
 ASWATCharacter::ASWATCharacter(const FObjectInitializer& Initializer): Super(Initializer.SetDefaultSubobjectClass<UFPSCharacterMovementComponent>(ACharacter::CharacterMovementComponentName)) {
 
-	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -20,7 +19,7 @@ ASWATCharacter::ASWATCharacter(const FObjectInitializer& Initializer): Super(Ini
 	MainCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("MainCamera"));
 	MainCamera->SetupAttachment(CameraBoom);
 
-
+	CombatComp = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComp"));
 }
 
 // Called when the game starts or when spawned
@@ -53,6 +52,18 @@ void ASWATCharacter::LookUp(float Value) {
 
 void ASWATCharacter::Turn(float Value) {
 	AddControllerYawInput(Value);
+}
+
+void ASWATCharacter::ChangeState(ESWATState State) {
+	switch (State) {
+	case ESWATState::ESS_Normal:
+		break;
+	case ESWATState::ESS_Rilfe:
+		break;
+	default:
+		break;
+	}
+	CurrentState = State;
 }
 
 void ASWATCharacter::Accelerate() {
@@ -88,6 +99,12 @@ void ASWATCharacter::IronsightButtonReleased() {
 
 }
 
+void ASWATCharacter::PickupButtonPressed() {
+	if (CombatComp) {
+		CombatComp->EquipWeapon(OverlappingWeapon);
+	}
+}
+
 
 // Called every frame
 void ASWATCharacter::Tick(float DeltaTime) {
@@ -109,6 +126,7 @@ void ASWATCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &ASWATCharacter::Jump);
 	PlayerInputComponent->BindAction(TEXT("Ironsight"), IE_Pressed, this, &ASWATCharacter::IronsightButtonPressed);
 	PlayerInputComponent->BindAction(TEXT("Ironsight"), IE_Released, this, &ASWATCharacter::IronsightButtonReleased);
+	PlayerInputComponent->BindAction(TEXT("Pickup"), IE_Pressed, this, &ASWATCharacter::PickupButtonPressed);
 
 }
 
@@ -145,3 +163,4 @@ void ASWATCharacter::SetOverlappingWeapon(AWeaponActor* Weapon) {
 	}
 
 }
+

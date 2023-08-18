@@ -42,8 +42,6 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	EWeaponState CurrentState = EWeaponState::EWS_DROP;
 
-	void ChangeWeaponState(EWeaponState State);
-
 	UFUNCTION(BlueprintCallable)
 	virtual void OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OterComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
@@ -56,7 +54,7 @@ private:
 
 	
 public:
-
+	void ChangeWeaponState(EWeaponState State);
 	bool IsEquipped() { return CurrentState == EWeaponState::EWS_EQUIPPED; };
 	void ShowPickupWidget(bool bShowWidget);
 };
