@@ -59,6 +59,10 @@ void ASWATCharacter::ChangeState(ESWATState State) {
 	case ESWATState::ESS_Normal:
 		break;
 	case ESWATState::ESS_Rilfe:
+		CameraBoomSocketYOffset = 60;
+		CameraBoomTargetZOffset = 50;
+		CameraXOffset = 150;
+
 		break;
 	default:
 		break;
@@ -119,10 +123,19 @@ void ASWATCharacter::ToggleFire() {
 	}
 }
 
-// Called every frame
+void ASWATCharacter::UpdateCameraTargetPos(float DeltaTime) { // 更新相机偏移信息
+	if (!CameraBoom || !MainCamera) return;
+
+	CameraBoom->SocketOffset.Y = FMath::FInterpTo(CameraBoom->SocketOffset.Y, CameraBoomSocketYOffset, DeltaTime, 10);
+	CameraBoom->SocketOffset.Z = FMath::FInterpTo(CameraBoom->TargetOffset.Z, CameraBoomTargetZOffset, DeltaTime, 10);
+
+	float CameraX = FMath::FInterpTo(MainCamera->GetRelativeLocation().X, CameraXOffset, DeltaTime, 10);
+	MainCamera->SetRelativeLocation(FVector(CameraX, 0, 0));
+}
+
 void ASWATCharacter::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
-
+	UpdateCameraTargetPos(DeltaTime);
 }
 
 // Called to bind functionality to input

@@ -40,6 +40,8 @@ protected:
 	void SwitchWeaponButtonPressed();
 	void ToggleFire();
 
+	void UpdateCameraTargetPos(float DeltaTime);
+
 public:
 	virtual void Tick(float DeltaTime) override;
 
@@ -87,5 +89,9 @@ protected:
 	bool bAiming = false;
 
 	ESWATState CurrentState = ESWATState::ESS_Normal;
+
+	float CameraBoomSocketYOffset = 30;
+	float CameraBoomTargetZOffset;
+	float CameraXOffset;
 
 };
