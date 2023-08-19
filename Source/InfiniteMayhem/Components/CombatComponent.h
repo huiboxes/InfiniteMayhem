@@ -20,14 +20,14 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	void EquipWeaponToSlot(class AWeaponActor* Weapon, const FName& SocketName);
-
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	friend class ASWATCharacter;
 
 	void EquipWeapon(class AWeaponActor* WeaponToEquip);
+
+	void SwitchWeapon();
 
 private:
 	class ASWATCharacter* Player;

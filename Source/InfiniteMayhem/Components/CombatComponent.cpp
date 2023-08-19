@@ -33,6 +33,7 @@ void UCombatComponent::EquipWeapon(AWeaponActor* WeaponToEquip) {
 		if (EquippedWeapon && StandByWeapon) { // 如果手上有也背了一把枪，把手上的 Mesh 先去掉
 			if (RightHandSocket) {
 				EquippedWeapon->DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
+				EquippedWeapon->ChangeWeaponState(EWeaponState::EWS_DROP);
 			}
 		}
 		EquippedWeapon = WeaponToEquip;
@@ -40,7 +41,6 @@ void UCombatComponent::EquipWeapon(AWeaponActor* WeaponToEquip) {
 
 		
 		if (RightHandSocket) { // 将武器附加到角色 Mesh 上
-			//RightHandSocket->AttachActor(EquippedWeapon, Player->GetMesh());
 			EquippedWeapon->AttachToComponent(Player->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("S_Rilfe"));
 		}
 
@@ -53,9 +53,8 @@ void UCombatComponent::EquipWeapon(AWeaponActor* WeaponToEquip) {
 		const USkeletalMeshSocket* SpareWeaponSocket = Player->GetMesh()->GetSocketByName(FName("S_SpareWeapon"));
 
 		if (SpareWeaponSocket) { // 将武器附加到角色 Mesh 上
-			//SpareWeaponSocket->AttachActor(StandByWeapon, Player->GetMesh());
 			StandByWeapon->AttachToComponent(Player->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("S_SpareWeapon"));
-
+			EquippedWeapon->ChangeWeaponState(EWeaponState::EWS_STANDBY);
 		}
 
 		StandByWeapon->SetOwner(Player);
@@ -63,5 +62,32 @@ void UCombatComponent::EquipWeapon(AWeaponActor* WeaponToEquip) {
 	}
 	
 	Player->ChangeState(ESWATState::ESS_Rilfe);
+}
+
+void UCombatComponent::SwitchWeapon() { // 只有有两把武器时才能切换武器
+	if (!Player || !EquippedWeapon || !StandByWeapon) return;
+
+	const USkeletalMeshSocket* RightHandSocket = Player->GetMesh()->GetSocketByName(FName("S_Rilfe"));
+	const USkeletalMeshSocket* SpareWeaponSocket = Player->GetMesh()->GetSocketByName(FName("S_SpareWeapon"));
+
+	if (!RightHandSocket || !SpareWeaponSocket) return;  // 确保获取到插槽
+
+	EquippedWeapon->DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
+	EquippedWeapon->AttachToComponent(Player->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("S_SpareWeapon"));
+	EquippedWeapon->ChangeWeaponState(EWeaponState::EWS_STANDBY);
+
+	StandByWeapon->DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
+	StandByWeapon->AttachToComponent(Player->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("S_Rilfe"));
+	StandByWeapon->ChangeWeaponState(EWeaponState::EWS_EQUIPPED);
+
+	// 更新EquippedWeapon和StandByWeapon的指针引用
+	AWeaponActor* Temp = EquippedWeapon;
+	EquippedWeapon = StandByWeapon;
+	StandByWeapon = Temp;
+
+	StandByWeapon->SetOwner(Player);
+	StandByWeapon->ShowPickupWidget(false);
+	EquippedWeapon->SetOwner(Player);
+	EquippedWeapon->ShowPickupWidget(false);
 }
 

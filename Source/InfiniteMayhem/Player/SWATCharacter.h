@@ -37,6 +37,7 @@ protected:
 	void IronsightButtonPressed();
 	void IronsightButtonReleased();
 	void PickupButtonPressed();
+	void SwitchWeaponButtonPressed();
 
 public:
 	virtual void Tick(float DeltaTime) override;

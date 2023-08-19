@@ -104,6 +104,11 @@ void ASWATCharacter::PickupButtonPressed() {
 	}
 }
 
+void ASWATCharacter::SwitchWeaponButtonPressed() {
+	if (CombatComp) {
+		CombatComp->SwitchWeapon();
+	}
+}
 
 // Called every frame
 void ASWATCharacter::Tick(float DeltaTime) {
@@ -126,6 +131,7 @@ void ASWATCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction(TEXT("Ironsight"), IE_Pressed, this, &ASWATCharacter::IronsightButtonPressed);
 	PlayerInputComponent->BindAction(TEXT("Ironsight"), IE_Released, this, &ASWATCharacter::IronsightButtonReleased);
 	PlayerInputComponent->BindAction(TEXT("Pickup"), IE_Pressed, this, &ASWATCharacter::PickupButtonPressed);
+	PlayerInputComponent->BindAction(TEXT("SwitchWeapon"), IE_Pressed, this, &ASWATCharacter::SwitchWeaponButtonPressed);
 
 }
 
@@ -162,4 +168,5 @@ void ASWATCharacter::SetOverlappingWeapon(AWeaponActor* Weapon) {
 	}
 
 }
+
 
