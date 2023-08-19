@@ -3,13 +3,19 @@
 
 #include "IMFPSHUD.h"
 #include "Engine/Canvas.h"
+#include <Kismet/GameplayStatics.h>
+#include "../Player/SWATCharacter.h"
 
 void AIMFPSHUD::DrawHUD() {
 	Super::DrawHUD();
+
 	DrawCrosshair();
 }
 
 void AIMFPSHUD::DrawCrosshair() {
+	ASWATCharacter* Player = Cast<ASWATCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
+	if (!Player || !Player->IsHoldWeapon()) return;
+
 	float TargetX = Canvas->ClipX / 2;
 	float TargetY = Canvas->ClipY / 2;
 

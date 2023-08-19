@@ -67,7 +67,7 @@ void ASWATCharacter::ChangeState(ESWATState State) {
 }
 
 void ASWATCharacter::Accelerate() {
-	if (IsHoldWeapon()) return;
+	//if (IsHoldWeapon()) return;
 	bIsAcceleration = true;
 }
 
