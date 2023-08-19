@@ -68,6 +68,8 @@ public:
 
 	void SetOverlappingWeapon(class AWeaponActor* Weapon);
 
+	class UCombatComponent* GetCombatComp() { return CombatComp; };
+
 protected:
 
 	UPROPERTY(VisibleAnywhere)

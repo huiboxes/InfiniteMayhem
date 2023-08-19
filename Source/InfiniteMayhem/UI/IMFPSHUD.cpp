@@ -5,6 +5,7 @@
 #include "Engine/Canvas.h"
 #include <Kismet/GameplayStatics.h>
 #include "../Player/SWATCharacter.h"
+#include "../Components/CombatComponent.h"
 
 void AIMFPSHUD::DrawHUD() {
 	Super::DrawHUD();
@@ -21,8 +22,11 @@ void AIMFPSHUD::DrawCrosshair() {
 
 	ASWATCharacter* Player = Cast<ASWATCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
 	if (Player && Player->IsHoldWeapon()) { // 如果玩家持有枪械时，绘制十字准星
+		UCombatComponent* CombatComp =  Player->GetCombatComp();
+		if (!CombatComp) return;
+		float FireCrosshairOffset = CombatComp->GetFireCrosshairOffset();
 		float LineLength = 10;
-		float Offset = 5;
+		float Offset = 5 + FireCrosshairOffset;
 
 		// 上
 		DrawLine(TargetX, TargetY - (LineLength + Offset), TargetX, TargetY - Offset, FLinearColor::Yellow);

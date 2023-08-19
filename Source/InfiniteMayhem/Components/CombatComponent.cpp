@@ -23,7 +23,7 @@ void UCombatComponent::BeginPlay()
 void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
+	UpdateFireCrosshairOffset(DeltaTime);
 }
 
 void UCombatComponent::EquipWeapon(AWeaponActor* WeaponToEquip) {
@@ -93,5 +93,24 @@ void UCombatComponent::SwitchWeapon() { // 只有有两把武器时才能切换�
 
 bool UCombatComponent::IsFiring() {
 	return EquippedWeapon && EquippedWeapon->GetCurrentState() == EWeaponState::EWS_FIRING;
+}
+
+void UCombatComponent::UpdateFireCrosshairOffset(float DeltaTime) {
+	if (!Player) return;
+	float Speed = Player->GetVelocity().Size();
+	float Offset = 0;
+
+	if (Speed < 150) {
+		Offset = 5;
+	} else if (Speed < 300) {
+		Offset = 15;
+	} else if (Speed < 500) {
+		Offset = 25;
+	} else if(Speed < 800) { 
+		Offset = 35;
+	} else { // 实在太快了，不显示准星
+		FireCrosshairOffset = 1000;
+	}
+	FireCrosshairOffset = FMath::FInterpTo(FireCrosshairOffset, Offset, DeltaTime, 3);
 }
 

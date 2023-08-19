@@ -31,10 +31,16 @@ public:
 
 	bool IsFiring();
 
+	float GetFireCrosshairOffset() { return FireCrosshairOffset; };
+
 private:
 	class ASWATCharacter* Player;
 	class AWeaponActor* EquippedWeapon;
 	class AWeaponActor* StandByWeapon;
+
+	float FireCrosshairOffset = 0;
+
+	void UpdateFireCrosshairOffset(float DeltaTime);
 
 		
 };
