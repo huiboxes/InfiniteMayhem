@@ -14,6 +14,7 @@ void UIMFPSAnimInstance::NativeUpdateAnimation(float DeltaTime) {
 	bIsInAir = Player->IsInAir();
 	bAiming = Player->IsAiming();
 	bHoldWeapon = Player->IsHoldWeapon();
+	bFire = Player->IsFiring();
 
 	FVector MoveDir = Player->GetVelocity();
 	MoveDir.Normalize();

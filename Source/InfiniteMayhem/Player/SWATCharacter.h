@@ -38,6 +38,7 @@ protected:
 	void IronsightButtonReleased();
 	void PickupButtonPressed();
 	void SwitchWeaponButtonPressed();
+	void ToggleFire();
 
 public:
 	virtual void Tick(float DeltaTime) override;
@@ -53,6 +54,8 @@ public:
 	bool IsInAir();
 
 	bool IsAiming();
+
+	bool IsFiring();
 
 	ESWATState GetCurrentState() { return CurrentState; };
 

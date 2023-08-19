@@ -29,6 +29,8 @@ public:
 
 	void SwitchWeapon();
 
+	bool IsFiring();
+
 private:
 	class ASWATCharacter* Player;
 	class AWeaponActor* EquippedWeapon;

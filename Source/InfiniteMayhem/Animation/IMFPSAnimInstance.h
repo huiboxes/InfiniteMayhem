@@ -36,6 +36,10 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	bool bHoldWeapon;
 	
+	
+	UPROPERTY(BlueprintReadOnly)
+	bool bFire;
+	
 	UPROPERTY(BlueprintReadOnly)
 	float Direction;
 

@@ -91,3 +91,7 @@ void UCombatComponent::SwitchWeapon() { // 只有有两把武器时才能切换�
 	EquippedWeapon->ShowPickupWidget(false);
 }
 
+bool UCombatComponent::IsFiring() {
+	return EquippedWeapon && EquippedWeapon->GetCurrentState() == EWeaponState::EWS_FIRING;
+}
+

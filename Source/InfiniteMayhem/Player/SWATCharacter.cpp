@@ -110,6 +110,15 @@ void ASWATCharacter::SwitchWeaponButtonPressed() {
 	}
 }
 
+void ASWATCharacter::ToggleFire() {
+	if (!CombatComp || !CombatComp->EquippedWeapon) return;
+	if (CombatComp->EquippedWeapon->IsEquipped()) { // 装备着武器时开枪，其它状态停止开枪
+		CombatComp->EquippedWeapon->StartFire();
+	} else {
+		CombatComp->EquippedWeapon->StopFire();
+	}
+}
+
 // Called every frame
 void ASWATCharacter::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
@@ -132,6 +141,8 @@ void ASWATCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction(TEXT("Ironsight"), IE_Released, this, &ASWATCharacter::IronsightButtonReleased);
 	PlayerInputComponent->BindAction(TEXT("Pickup"), IE_Pressed, this, &ASWATCharacter::PickupButtonPressed);
 	PlayerInputComponent->BindAction(TEXT("SwitchWeapon"), IE_Pressed, this, &ASWATCharacter::SwitchWeaponButtonPressed);
+	PlayerInputComponent->BindAction(TEXT("Fire"), IE_Pressed, this, &ASWATCharacter::ToggleFire);
+	PlayerInputComponent->BindAction(TEXT("Fire"), IE_Released, this, &ASWATCharacter::ToggleFire);
 
 }
 
@@ -151,6 +162,10 @@ bool ASWATCharacter::IsInAir() {
 
 bool ASWATCharacter::IsAiming() {
 	return bAiming;
+}
+
+bool ASWATCharacter::IsFiring() {
+	return CombatComp && CombatComp->IsFiring();
 }
 
 USpringArmComponent* ASWATCharacter::GetCameraBoom() {

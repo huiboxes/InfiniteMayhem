@@ -11,7 +11,9 @@ enum class EWeaponState : uint8 {
 	EWS_INITIAL UMETA(DisplayName = "Initial State"),
 	EWS_STANDBY UMETA(DisplayName = "Stand-by"),
 	EWS_EQUIPPED UMETA(DisplayName = "Equipped"),
-	EWS_DROP UMETA(DisplayName = "Drop"), //
+	EWS_DROP UMETA(DisplayName = "Drop"),
+	EWS_FIRING UMETA(DisplayName = "Firing"),
+	EWS_RELOAD UMETA(DisplayName = "Reload"),
 
 	EWS_MAX UMETA(DisplayName = "DefaultMAX")
 
@@ -57,5 +59,8 @@ private:
 public:
 	void ChangeWeaponState(EWeaponState State);
 	bool IsEquipped() { return CurrentState == EWeaponState::EWS_EQUIPPED; };
+	EWeaponState GetCurrentState() { return CurrentState; };
 	void ShowPickupWidget(bool bShowWidget);
+	void StartFire();
+	void StopFire();
 };

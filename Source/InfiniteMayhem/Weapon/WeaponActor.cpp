@@ -77,3 +77,10 @@ void AWeaponActor::ShowPickupWidget(bool bShowWidget) {
 }
 
 
+void AWeaponActor::StartFire() {
+	ChangeWeaponState(EWeaponState::EWS_FIRING);
+}
+
+void AWeaponActor::StopFire() {
+	ChangeWeaponState(EWeaponState::EWS_EQUIPPED);
+}
