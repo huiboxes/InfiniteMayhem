@@ -59,6 +59,10 @@ public:
 
 	bool IsFiring();
 
+	bool IsEquiping() { return bIsEquiping; };
+
+	void PlayEquipAnim();
+
 	ESWATState GetCurrentState() { return CurrentState; };
 
 	void ChangeState(ESWATState State);
@@ -69,6 +73,7 @@ public:
 	void SetOverlappingWeapon(class AWeaponActor* Weapon);
 
 	class UCombatComponent* GetCombatComp() { return CombatComp; };
+
 
 protected:
 
@@ -89,6 +94,10 @@ protected:
 	bool bIsCrouched = false;
 
 	bool bAiming = false;
+	
+	bool bIsEquiping = false;
+
+	FTimerHandle EquipTimerHandle;
 
 	ESWATState CurrentState = ESWATState::ESS_Normal;
 

@@ -60,7 +60,7 @@ void UCombatComponent::EquipWeapon(AWeaponActor* WeaponToEquip) {
 		StandByWeapon->SetOwner(Player);
 		StandByWeapon->ShowPickupWidget(false);
 	}
-	
+	Player->PlayEquipAnim();
 	Player->ChangeState(ESWATState::ESS_Rilfe);
 }
 
@@ -89,6 +89,8 @@ void UCombatComponent::SwitchWeapon() { // 只有有两把武器时才能切换�
 	StandByWeapon->ShowPickupWidget(false);
 	EquippedWeapon->SetOwner(Player);
 	EquippedWeapon->ShowPickupWidget(false);
+	Player->PlayEquipAnim();
+	
 }
 
 bool UCombatComponent::IsFiring() {

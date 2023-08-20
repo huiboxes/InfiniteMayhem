@@ -181,6 +181,23 @@ bool ASWATCharacter::IsFiring() {
 	return CombatComp && CombatComp->IsFiring();
 }
 
+void ASWATCharacter::PlayEquipAnim() {
+	if (!bIsEquiping) { // 当前没有播放时才可以设置
+		bIsEquiping = true;
+		
+		FTimerDelegate TimerDelegate;
+		TimerDelegate.BindLambda([this]() {
+			bIsEquiping = false; // 只要播放了装备动画，即可切回
+			// 删除定时器
+			GetWorld()->GetTimerManager().ClearTimer(EquipTimerHandle);
+			});
+
+		GetWorld()->GetTimerManager().SetTimer(EquipTimerHandle, TimerDelegate, .1f, false);
+
+	}
+}
+
+
 USpringArmComponent* ASWATCharacter::GetCameraBoom() {
 	return CameraBoom;
 }

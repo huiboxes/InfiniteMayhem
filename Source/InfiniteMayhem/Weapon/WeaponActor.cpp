@@ -44,8 +44,10 @@ void AWeaponActor::ChangeWeaponState(EWeaponState State) {
 	case EWeaponState::EWS_INITIAL:
 		break;
 	case EWeaponState::EWS_EQUIPPED:
+		SphereCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
 		break;
 	case EWeaponState::EWS_DROP:
+		SphereCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 		break;
 	case EWeaponState::EWS_MAX:
 		break;
