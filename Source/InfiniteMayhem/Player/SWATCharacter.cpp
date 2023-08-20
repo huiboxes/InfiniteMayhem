@@ -181,23 +181,6 @@ bool ASWATCharacter::IsFiring() {
 	return CombatComp && CombatComp->IsFiring();
 }
 
-void ASWATCharacter::PlayEquipAnim() {
-	if (!bIsEquiping) { // 当前没有播放时才可以设置
-		bIsEquiping = true;
-		
-		FTimerDelegate TimerDelegate;
-		TimerDelegate.BindLambda([this]() {
-			bIsEquiping = false; // 只要播放了装备动画，即可切回
-			// 删除定时器
-			GetWorld()->GetTimerManager().ClearTimer(EquipTimerHandle);
-			});
-
-		GetWorld()->GetTimerManager().SetTimer(EquipTimerHandle, TimerDelegate, .1f, false);
-
-	}
-}
-
-
 USpringArmComponent* ASWATCharacter::GetCameraBoom() {
 	return CameraBoom;
 }
@@ -212,6 +195,13 @@ void ASWATCharacter::SetOverlappingWeapon(AWeaponActor* Weapon) {
 		OverlappingWeapon->ShowPickupWidget(true);
 	}
 
+}
+
+void ASWATCharacter::EnableEquiping() {
+	if (!bIsEquiping) {
+		bIsEquiping = true; // 一秒钟后切换回关闭状态
+		GetWorldTimerManager().SetTimer(TimerHandle, this, &ASWATCharacter::DisableEquiping, 0.05f, false);
+	}
 }
 
 

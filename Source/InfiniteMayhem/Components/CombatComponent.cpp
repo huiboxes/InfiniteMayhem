@@ -28,6 +28,9 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 void UCombatComponent::EquipWeapon(AWeaponActor* WeaponToEquip) {
 	if (!Player || !WeaponToEquip) return;
+	if (Player->IsEquiping())  return; // 如果正在换枪，则不允许捡枪
+	Player->EnableEquiping();
+
 	if (!EquippedWeapon || ((EquippedWeapon && StandByWeapon))) { // 手上未持有武器，或者手上和背包都有武器，则将武器放到手上插槽
 		const USkeletalMeshSocket* RightHandSocket = Player->GetMesh()->GetSocketByName(FName("S_Rilfe"));
 		if (EquippedWeapon && StandByWeapon) { // 如果手上有也背了一把枪，把手上的 Mesh 先去掉
@@ -60,13 +63,15 @@ void UCombatComponent::EquipWeapon(AWeaponActor* WeaponToEquip) {
 		StandByWeapon->SetOwner(Player);
 		StandByWeapon->ShowPickupWidget(false);
 	}
-	Player->PlayEquipAnim();
+	
 	Player->ChangeState(ESWATState::ESS_Rilfe);
 }
 
 void UCombatComponent::SwitchWeapon() { // 只有有两把武器时才能切换武器
 	if (!Player || !EquippedWeapon || !StandByWeapon) return;
 
+	if (Player->IsEquiping())  return; // 如果正在换枪，则不允许切换
+	Player->EnableEquiping();
 	const USkeletalMeshSocket* RightHandSocket = Player->GetMesh()->GetSocketByName(FName("S_Rilfe"));
 	const USkeletalMeshSocket* SpareWeaponSocket = Player->GetMesh()->GetSocketByName(FName("S_SpareWeapon"));
 
@@ -89,7 +94,7 @@ void UCombatComponent::SwitchWeapon() { // 只有有两把武器时才能切换�
 	StandByWeapon->ShowPickupWidget(false);
 	EquippedWeapon->SetOwner(Player);
 	EquippedWeapon->ShowPickupWidget(false);
-	Player->PlayEquipAnim();
+	
 	
 }
 

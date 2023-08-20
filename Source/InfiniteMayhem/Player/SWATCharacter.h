@@ -61,7 +61,8 @@ public:
 
 	bool IsEquiping() { return bIsEquiping; };
 
-	void PlayEquipAnim();
+	void EnableEquiping() ;
+	void DisableEquiping() { bIsEquiping = false; };
 
 	ESWATState GetCurrentState() { return CurrentState; };
 
@@ -76,6 +77,8 @@ public:
 
 
 protected:
+
+	FTimerHandle TimerHandle;
 
 	UPROPERTY(VisibleAnywhere)
 	class USpringArmComponent* CameraBoom;
@@ -96,8 +99,6 @@ protected:
 	bool bAiming = false;
 	
 	bool bIsEquiping = false;
-
-	FTimerHandle EquipTimerHandle;
 
 	ESWATState CurrentState = ESWATState::ESS_Normal;
 

@@ -37,3 +37,9 @@ void UIMFPSAnimInstance::NativeBeginPlay() {
 	Super::NativeBeginPlay();
 	Player = Cast<ASWATCharacter>(TryGetPawnOwner());
 }
+
+
+void UIMFPSAnimInstance::DisableEquiping() {
+	if (!Player) return;
+	Player->DisableEquiping();
+}

@@ -19,6 +19,9 @@ public:
 	virtual void NativeUpdateAnimation(float DeltaTime) override;
 	virtual void NativeBeginPlay() override;
 
+	UFUNCTION(BlueprintCallable)
+	void DisableEquiping();
+
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	float Speed;
