@@ -28,8 +28,6 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 void UCombatComponent::EquipWeapon(AWeaponActor* WeaponToEquip) {
 	if (!Player || !WeaponToEquip) return;
-	if (Player->IsEquiping())  return; // 如果正在换枪，则不允许捡枪
-	Player->EnableEquiping();
 
 	if (!EquippedWeapon || ((EquippedWeapon && StandByWeapon))) { // 手上未持有武器，或者手上和背包都有武器，则将武器放到手上插槽
 		const USkeletalMeshSocket* RightHandSocket = Player->GetMesh()->GetSocketByName(FName("S_Rilfe"));
@@ -68,10 +66,20 @@ void UCombatComponent::EquipWeapon(AWeaponActor* WeaponToEquip) {
 }
 
 void UCombatComponent::SwitchWeapon() { // 只有有两把武器时才能切换武器
-	if (!Player || !EquippedWeapon || !StandByWeapon) return;
+	if (!bCanSwitch || !Player || !EquippedWeapon || !StandByWeapon) return;
 
 	if (Player->IsEquiping())  return; // 如果正在换枪，则不允许切换
 	Player->EnableEquiping();
+	
+
+	bCanSwitch = false;
+	// 播放完切换动画后，才允许再次切枪
+	GetWorld()->GetTimerManager().SetTimer(TimerSWitchHandle, this, &ThisClass::SetCanSwitch, 1.17f, false);
+	// 切换动画播放一半时切换皮肤
+	GetWorld()->GetTimerManager().SetTimer(TimerChangeEquippedWeaponHandle, this, &ThisClass::ChangeEquippedWeapon, .5f, false);
+}
+
+void UCombatComponent::ChangeEquippedWeapon() {
 	const USkeletalMeshSocket* RightHandSocket = Player->GetMesh()->GetSocketByName(FName("S_Rilfe"));
 	const USkeletalMeshSocket* SpareWeaponSocket = Player->GetMesh()->GetSocketByName(FName("S_SpareWeapon"));
 
@@ -94,8 +102,6 @@ void UCombatComponent::SwitchWeapon() { // 只有有两把武器时才能切换�
 	StandByWeapon->ShowPickupWidget(false);
 	EquippedWeapon->SetOwner(Player);
 	EquippedWeapon->ShowPickupWidget(false);
-	
-	
 }
 
 bool UCombatComponent::IsFiring() {

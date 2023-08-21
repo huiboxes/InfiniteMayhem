@@ -200,7 +200,7 @@ void ASWATCharacter::SetOverlappingWeapon(AWeaponActor* Weapon) {
 void ASWATCharacter::EnableEquiping() {
 	if (!bIsEquiping) {
 		bIsEquiping = true; // 一秒钟后切换回关闭状态
-		GetWorldTimerManager().SetTimer(TimerHandle, this, &ASWATCharacter::DisableEquiping, 0.05f, false);
+		GetWorldTimerManager().SetTimer(TimerEquipHandle, this, &ASWATCharacter::DisableEquiping, 0.05f, false);
 	}
 }
 

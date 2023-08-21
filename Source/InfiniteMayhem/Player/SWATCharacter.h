@@ -78,7 +78,7 @@ public:
 
 protected:
 
-	FTimerHandle TimerHandle;
+	FTimerHandle TimerEquipHandle;
 
 	UPROPERTY(VisibleAnywhere)
 	class USpringArmComponent* CameraBoom;

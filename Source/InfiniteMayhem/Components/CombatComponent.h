@@ -30,8 +30,17 @@ public:
 	void SwitchWeapon();
 
 	bool IsFiring();
+	
+	void SetCanSwitch() { bCanSwitch = true; };
 
 	float GetFireCrosshairOffset() { return FireCrosshairOffset; };
+	FTimerHandle TimerSWitchHandle;
+
+	FTimerHandle TimerChangeEquippedWeaponHandle;
+
+
+protected:
+	void ChangeEquippedWeapon();
 
 private:
 	class ASWATCharacter* Player;
@@ -42,5 +51,8 @@ private:
 
 	void UpdateFireCrosshairOffset(float DeltaTime);
 
+	bool bCanSwitch = true;
+
+	
 		
 };
