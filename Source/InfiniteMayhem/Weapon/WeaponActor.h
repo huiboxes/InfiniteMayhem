@@ -55,6 +55,19 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
 	class UWidgetComponent* PickupWidget;
 
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+	int32 AmmonMaxCounter; // 当前弹匣的最大容量
+
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+	class USoundBase* FireSound; // 开火声音
+
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+	class USoundBase* EmptySound; // 子弹打空声音
+
+	int32 AmmonCurrent; // 当前弹匣剩余子弹
+
+	void HandleFire();
+
 	
 public:
 	void ChangeWeaponState(EWeaponState State);
@@ -63,4 +76,7 @@ public:
 	void ShowPickupWidget(bool bShowWidget);
 	void StartFire();
 	void StopFire();
+
+	FORCEINLINE int32 GetAmmonMaxCounter() { return AmmonMaxCounter; };
+	FORCEINLINE int32 GetAmmonCurrent() { return AmmonCurrent; };
 };

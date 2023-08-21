@@ -5,12 +5,16 @@
 #include "Engine/Canvas.h"
 #include <Kismet/GameplayStatics.h>
 #include "../Player/SWATCharacter.h"
+#include "../Weapon/WeaponActor.h"
 #include "../Components/CombatComponent.h"
 
 void AIMFPSHUD::DrawHUD() {
 	Super::DrawHUD();
 
+	DrawWeaponAmmon();
 	DrawCrosshair();
+
+	
 }
 
 void AIMFPSHUD::DrawCrosshair() {
@@ -40,5 +44,21 @@ void AIMFPSHUD::DrawCrosshair() {
 	}
 
 	
+}
+
+void AIMFPSHUD::DrawWeaponAmmon() {
+	ASWATCharacter* Player = Cast<ASWATCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
+
+	float PaintX = Canvas->ClipX - 40;
+	float PaintY = Canvas->ClipY - 50;
+
+	AWeaponActor*  EquippedWeapon = Player->GetEquippedWeapon();
+	if (!Player || !Player->IsHoldWeapon() || !EquippedWeapon) {
+		DrawText(TEXT("--/--"),FLinearColor::Yellow, PaintX, PaintY);
+		return;
+	}
+
+	FString Msg = FString::Printf(TEXT("%d/%d"), EquippedWeapon->GetAmmonCurrent(), EquippedWeapon->GetAmmonMaxCounter());
+	DrawText(Msg, FLinearColor::Yellow, PaintX, PaintY);
 }
 

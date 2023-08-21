@@ -5,6 +5,7 @@
 #include "../Player/SWATCharacter.h"
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 AWeaponActor::AWeaponActor()
 {
@@ -23,19 +24,28 @@ AWeaponActor::AWeaponActor()
 	PickupWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("PickupWidget"));
 	PickupWidget->SetupAttachment(RootComponent);
 	PickupWidget->SetVisibility(false);
-
 }
 
 void AWeaponActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	AmmonCurrent = AmmonMaxCounter;
 }
 
 void AWeaponActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void AWeaponActor::HandleFire() {
+	if (AmmonCurrent <= 0) {
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), EmptySound, GetActorLocation());
+		return;
+	}
+
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), FireSound, GetActorLocation());
+	AmmonCurrent--;
 }
 
 void AWeaponActor::ChangeWeaponState(EWeaponState State) {
@@ -81,6 +91,7 @@ void AWeaponActor::ShowPickupWidget(bool bShowWidget) {
 
 void AWeaponActor::StartFire() {
 	ChangeWeaponState(EWeaponState::EWS_Firing);
+	HandleFire();
 }
 
 void AWeaponActor::StopFire() {

@@ -75,6 +75,8 @@ public:
 
 	void SetOverlappingWeapon(class AWeaponActor* Weapon);
 
+	class AWeaponActor* GetEquippedWeapon();
+
 	FORCEINLINE class UCombatComponent* GetCombatComp() { return CombatComp; };
 	
 	FORCEINLINE float GetAO_Yaw() const { return AO_Yaw; };

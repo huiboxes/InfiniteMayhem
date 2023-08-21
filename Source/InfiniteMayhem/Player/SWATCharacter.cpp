@@ -188,6 +188,11 @@ USpringArmComponent* ASWATCharacter::GetCameraBoom() {
 	return CameraBoom;
 }
 
+AWeaponActor* ASWATCharacter::GetEquippedWeapon() {
+	if (!CombatComp || !CombatComp->EquippedWeapon) return nullptr;
+	return CombatComp->EquippedWeapon;
+}
+
 void ASWATCharacter::SetOverlappingWeapon(AWeaponActor* Weapon) {
 	if (OverlappingWeapon) { // 检查上一次的是否还存在
 		OverlappingWeapon->ShowPickupWidget(false);

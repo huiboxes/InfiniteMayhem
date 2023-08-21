@@ -20,5 +20,6 @@ protected:
 	virtual void DrawHUD() override;
 
 	void DrawCrosshair();
+	void DrawWeaponAmmon();
 	
 };
