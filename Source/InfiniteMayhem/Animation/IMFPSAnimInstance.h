@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "../Player/SWATCharacter.h"
+
 #include "IMFPSAnimInstance.generated.h"
 
 /**
@@ -19,8 +21,6 @@ public:
 	virtual void NativeUpdateAnimation(float DeltaTime) override;
 	virtual void NativeBeginPlay() override;
 
-	UFUNCTION(BlueprintCallable)
-	void DisableEquiping();
 
 protected:
 	UPROPERTY(BlueprintReadOnly)
@@ -58,6 +58,4 @@ protected:
 	UPROPERTY()
 	class ASWATCharacter* Player;
 
-	
-	
 };

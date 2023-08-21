@@ -8,6 +8,7 @@
 #include "../Weapon/WeaponActor.h"
 #include "../Components/FPSCharacterMovementComponent.h"
 #include "../Components/CombatComponent.h"
+#include <Kismet/KismetMathLibrary.h>
 
 ASWATCharacter::ASWATCharacter(const FObjectInitializer& Initializer): Super(Initializer.SetDefaultSubobjectClass<UFPSCharacterMovementComponent>(ACharacter::CharacterMovementComponentName)) {
 
@@ -20,6 +21,7 @@ ASWATCharacter::ASWATCharacter(const FObjectInitializer& Initializer): Super(Ini
 	MainCamera->SetupAttachment(CameraBoom);
 
 	CombatComp = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComp"));
+
 }
 
 // Called when the game starts or when spawned
@@ -135,6 +137,7 @@ void ASWATCharacter::UpdateCameraTargetPos(float DeltaTime) { // 更新相机偏
 
 void ASWATCharacter::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
+	AimOffset(DeltaTime);
 	UpdateCameraTargetPos(DeltaTime);
 }
 
@@ -204,4 +207,22 @@ void ASWATCharacter::EnableEquiping() {
 	}
 }
 
+
+void ASWATCharacter::AimOffset(float DeltaTime) {
+	//if (CombatComp && !CombatComp->EquippedWeapon) return;
+	FVector Velocity = GetVelocity();
+	Velocity.Z = 0.f;
+	Speed = Velocity.Size();
+	bool bIsInAir = IsInAir();
+	
+
+	FRotator Rot = GetControlRotation() - GetActorRotation();
+	AO_Pitch = Rot.Pitch;
+	AO_Yaw = Rot.Yaw;
+
+	FQuat Qua = ActorToWorld().InverseTransformRotation(GetControlRotation().Quaternion());
+	AO_Pitch = Qua.Rotator().Pitch;
+	AO_Yaw = Qua.Rotator().Yaw;
+
+}
 

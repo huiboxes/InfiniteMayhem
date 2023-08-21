@@ -41,12 +41,12 @@ void AWeaponActor::Tick(float DeltaTime)
 void AWeaponActor::ChangeWeaponState(EWeaponState State) {
 
 	switch (State) {
-	case EWeaponState::EWS_INITIAL:
+	case EWeaponState::EWS_Initial:
 		break;
-	case EWeaponState::EWS_EQUIPPED:
+	case EWeaponState::EWS_Equipped:
 		SphereCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
 		break;
-	case EWeaponState::EWS_DROP:
+	case EWeaponState::EWS_Drop:
 		SphereCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 		break;
 	case EWeaponState::EWS_MAX:
@@ -80,9 +80,9 @@ void AWeaponActor::ShowPickupWidget(bool bShowWidget) {
 
 
 void AWeaponActor::StartFire() {
-	ChangeWeaponState(EWeaponState::EWS_FIRING);
+	ChangeWeaponState(EWeaponState::EWS_Firing);
 }
 
 void AWeaponActor::StopFire() {
-	ChangeWeaponState(EWeaponState::EWS_EQUIPPED);
+	ChangeWeaponState(EWeaponState::EWS_Equipped);
 }

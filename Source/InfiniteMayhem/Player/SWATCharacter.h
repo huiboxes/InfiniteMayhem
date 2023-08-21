@@ -42,6 +42,8 @@ protected:
 
 	void UpdateCameraTargetPos(float DeltaTime);
 
+	void AimOffset(float DeltaTime);
+
 public:
 	virtual void Tick(float DeltaTime) override;
 
@@ -59,12 +61,12 @@ public:
 
 	bool IsFiring();
 
-	bool IsEquiping() { return bIsEquiping; };
+	FORCEINLINE bool IsEquiping() { return bIsEquiping; };
 
 	void EnableEquiping() ;
-	void DisableEquiping() { bIsEquiping = false; };
+	FORCEINLINE void DisableEquiping() { bIsEquiping = false; };
 
-	ESWATState GetCurrentState() { return CurrentState; };
+	FORCEINLINE ESWATState GetCurrentState() { return CurrentState; };
 
 	void ChangeState(ESWATState State);
 
@@ -73,8 +75,13 @@ public:
 
 	void SetOverlappingWeapon(class AWeaponActor* Weapon);
 
-	class UCombatComponent* GetCombatComp() { return CombatComp; };
+	FORCEINLINE class UCombatComponent* GetCombatComp() { return CombatComp; };
+	
+	FORCEINLINE float GetAO_Yaw() const { return AO_Yaw; };
+	FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; };
 
+
+	FORCEINLINE float GetSpeed() const { return Speed; };
 
 protected:
 
@@ -105,5 +112,19 @@ protected:
 	float CameraBoomSocketYOffset = 30;
 	float CameraBoomTargetZOffset;
 	float CameraXOffset;
+
+	// 驱动 AimOffset 的 Yaw
+	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
+	float AO_Yaw;
+
+	// 驱动 AimOffset 的 Pitch
+	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
+	float AO_Pitch = 0;
+
+	float Speed = 0;
+
+	FRotator StartingAimRotation; // 开始转身时的方向
+
+	float InterpAO_Yaw;
 
 };

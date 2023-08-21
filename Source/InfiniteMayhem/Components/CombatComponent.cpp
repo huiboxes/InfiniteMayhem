@@ -34,11 +34,11 @@ void UCombatComponent::EquipWeapon(AWeaponActor* WeaponToEquip) {
 		if (EquippedWeapon && StandByWeapon) { // 如果手上有也背了一把枪，把手上的 Mesh 先去掉
 			if (RightHandSocket) {
 				EquippedWeapon->DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
-				EquippedWeapon->ChangeWeaponState(EWeaponState::EWS_DROP);
+				EquippedWeapon->ChangeWeaponState(EWeaponState::EWS_Drop);
 			}
 		}
 		EquippedWeapon = WeaponToEquip;
-		EquippedWeapon->ChangeWeaponState(EWeaponState::EWS_EQUIPPED);
+		EquippedWeapon->ChangeWeaponState(EWeaponState::EWS_Equipped);
 
 		
 		if (RightHandSocket) { // 将武器附加到角色 Mesh 上
@@ -49,13 +49,13 @@ void UCombatComponent::EquipWeapon(AWeaponActor* WeaponToEquip) {
 		EquippedWeapon->ShowPickupWidget(false);
 	} else if(EquippedWeapon && !StandByWeapon) { // 如果手上有武器，备用武器槽没有武器则放到备用插槽
 		StandByWeapon = WeaponToEquip;
-		StandByWeapon->ChangeWeaponState(EWeaponState::EWS_EQUIPPED);
+		StandByWeapon->ChangeWeaponState(EWeaponState::EWS_Equipped);
 
 		const USkeletalMeshSocket* SpareWeaponSocket = Player->GetMesh()->GetSocketByName(FName("S_SpareWeapon"));
 
 		if (SpareWeaponSocket) { // 将武器附加到角色 Mesh 上
 			StandByWeapon->AttachToComponent(Player->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("S_SpareWeapon"));
-			EquippedWeapon->ChangeWeaponState(EWeaponState::EWS_STANDBY);
+			EquippedWeapon->ChangeWeaponState(EWeaponState::EWS_Standby);
 		}
 
 		StandByWeapon->SetOwner(Player);
@@ -87,11 +87,11 @@ void UCombatComponent::ChangeEquippedWeapon() {
 
 	EquippedWeapon->DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
 	EquippedWeapon->AttachToComponent(Player->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("S_SpareWeapon"));
-	EquippedWeapon->ChangeWeaponState(EWeaponState::EWS_STANDBY);
+	EquippedWeapon->ChangeWeaponState(EWeaponState::EWS_Standby);
 
 	StandByWeapon->DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
 	StandByWeapon->AttachToComponent(Player->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("S_Rilfe"));
-	StandByWeapon->ChangeWeaponState(EWeaponState::EWS_EQUIPPED);
+	StandByWeapon->ChangeWeaponState(EWeaponState::EWS_Equipped);
 
 	// 更新EquippedWeapon和StandByWeapon的指针引用
 	AWeaponActor* Temp = EquippedWeapon;
@@ -105,7 +105,7 @@ void UCombatComponent::ChangeEquippedWeapon() {
 }
 
 bool UCombatComponent::IsFiring() {
-	return EquippedWeapon && EquippedWeapon->GetCurrentState() == EWeaponState::EWS_FIRING;
+	return EquippedWeapon && EquippedWeapon->GetCurrentState() == EWeaponState::EWS_Firing;
 }
 
 void UCombatComponent::UpdateFireCrosshairOffset(float DeltaTime) {

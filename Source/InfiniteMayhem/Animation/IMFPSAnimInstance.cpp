@@ -2,13 +2,12 @@
 
 
 #include "IMFPSAnimInstance.h"
-#include "../Player/SWATCharacter.h"
 
 void UIMFPSAnimInstance::NativeUpdateAnimation(float DeltaTime) {
 	Super::NativeUpdateAnimation(DeltaTime);
 	if (!Player) return;
 
-	Speed = Player->GetVelocity().Size2D();
+	Speed = Player->GetSpeed();
 
 	bIsCrouched = Player->IsCrouched();
 	bIsInAir = Player->IsInAir();
@@ -22,15 +21,8 @@ void UIMFPSAnimInstance::NativeUpdateAnimation(float DeltaTime) {
 
 	Direction = CalculateDirection(Player->GetVelocity(), FRotator(0, Player->GetControlRotation().Yaw,0)); // 获取给定向量和旋转之间的夹角
 
-	// 计算当前的瞄准方向值
-	FRotator Rot = Player->GetControlRotation() - Player->GetActorRotation();
-	AO_Pitch = Rot.Pitch;
-	AO_Yaw = Rot.Yaw;
-
-	FQuat Qua = Player->ActorToWorld().InverseTransformRotation(Player->GetControlRotation().Quaternion());
-	AO_Pitch = Qua.Rotator().Pitch;
-	AO_Yaw = Qua.Rotator().Yaw;
-
+	AO_Yaw = Player->GetAO_Yaw();
+	AO_Pitch = Player->GetAO_Pitch();
 }
 
 void UIMFPSAnimInstance::NativeBeginPlay() {
@@ -38,8 +30,3 @@ void UIMFPSAnimInstance::NativeBeginPlay() {
 	Player = Cast<ASWATCharacter>(TryGetPawnOwner());
 }
 
-
-void UIMFPSAnimInstance::DisableEquiping() {
-	if (!Player) return;
-	Player->DisableEquiping();
-}
