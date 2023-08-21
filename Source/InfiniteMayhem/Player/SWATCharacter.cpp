@@ -81,7 +81,7 @@ void ASWATCharacter::UnAccelerate() {
 
 
 void ASWATCharacter::CrouchButtonPressed() {
-	if (!IsHoldWeapon()) return ;
+	//if (!IsHoldWeapon()) return ;
 	bIsCrouched = true;
 	Crouch();
 }
