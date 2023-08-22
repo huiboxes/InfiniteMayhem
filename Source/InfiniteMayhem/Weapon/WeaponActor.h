@@ -102,4 +102,6 @@ public:
 
 	FORCEINLINE int32 GetAmmonMaxCounter() { return AmmonMaxCounter; };
 	FORCEINLINE int32 GetAmmonCurrent() { return AmmonCurrent; };
+
+	class USkeletalMeshComponent* GetMesh();
 };

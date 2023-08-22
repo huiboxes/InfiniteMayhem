@@ -126,3 +126,7 @@ void AWeaponActor::ReloadAmmonOver() {
 	AmmonCurrent = AmmonMaxCounter;
 	ChangeWeaponFireState(EWeaponFireState::EWS_Idle);
 }
+
+USkeletalMeshComponent* AWeaponActor::GetMesh() {
+	return WeaponMesh;
+}
