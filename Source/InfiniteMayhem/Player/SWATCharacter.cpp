@@ -118,7 +118,7 @@ void ASWATCharacter::SwitchWeaponButtonPressed() {
 
 void ASWATCharacter::ToggleFire() {
 	if (!CombatComp || !CombatComp->EquippedWeapon) return;
-	if (CombatComp->EquippedWeapon->IsEquipped()) { // 装备着武器时开枪，其它状态停止开枪
+	if (!CombatComp->IsFiring()) { // 装备着武器时开枪，其它状态停止开枪
 		CombatComp->EquippedWeapon->StartFire();
 	} else {
 		CombatComp->EquippedWeapon->StopFire();

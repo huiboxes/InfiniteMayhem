@@ -58,4 +58,8 @@ protected:
 	UPROPERTY()
 	class ASWATCharacter* Player;
 
+
+	UFUNCTION()
+	void AnimNotify_ReloadOver();
+
 };

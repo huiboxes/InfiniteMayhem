@@ -2,6 +2,7 @@
 
 
 #include "IMFPSAnimInstance.h"
+#include "../Weapon/WeaponActor.h"
 
 void UIMFPSAnimInstance::NativeUpdateAnimation(float DeltaTime) {
 	Super::NativeUpdateAnimation(DeltaTime);
@@ -30,3 +31,9 @@ void UIMFPSAnimInstance::NativeBeginPlay() {
 	Player = Cast<ASWATCharacter>(TryGetPawnOwner());
 }
 
+
+void UIMFPSAnimInstance::AnimNotify_ReloadOver() {
+	if (Player && Player->IsHoldWeapon()) {
+		Player->GetEquippedWeapon()->ReloadAmmonOver();
+	}
+}

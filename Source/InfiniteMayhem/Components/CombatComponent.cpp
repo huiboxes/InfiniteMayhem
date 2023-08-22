@@ -105,7 +105,7 @@ void UCombatComponent::ChangeEquippedWeapon() {
 }
 
 bool UCombatComponent::IsFiring() {
-	return EquippedWeapon && EquippedWeapon->GetCurrentState() == EWeaponState::EWS_Firing;
+	return EquippedWeapon && EquippedWeapon->GetCurrentFireState() == EWeaponFireState::EWS_Firing;
 }
 
 void UCombatComponent::UpdateFireCrosshairOffset(float DeltaTime) {

@@ -39,6 +39,7 @@ void AWeaponActor::Tick(float DeltaTime)
 }
 
 void AWeaponActor::HandleFire() {
+	ChangeWeaponFireState(EWeaponFireState::EWS_Firing);
 	if (AmmonCurrent <= 0) {
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), EmptySound, GetActorLocation());
 		return;
@@ -49,9 +50,10 @@ void AWeaponActor::HandleFire() {
 }
 
 void AWeaponActor::ChangeWeaponState(EWeaponState State) {
-
 	switch (State) {
 	case EWeaponState::EWS_Initial:
+		break;
+	case EWeaponState::EWS_Standby:
 		break;
 	case EWeaponState::EWS_Equipped:
 		SphereCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
@@ -64,8 +66,13 @@ void AWeaponActor::ChangeWeaponState(EWeaponState State) {
 	default:
 		break;
 	}
+
 	
 	CurrentState = State;
+}
+
+void AWeaponActor::ChangeWeaponFireState(EWeaponFireState State) {
+	CurrentFireState = State;
 }
 
 void AWeaponActor::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OterComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
@@ -90,26 +97,32 @@ void AWeaponActor::ShowPickupWidget(bool bShowWidget) {
 
 
 void AWeaponActor::StartFire() {
-	ChangeWeaponState(EWeaponState::EWS_Firing);
+	if (!CanFire()) return;
 	HandleFire();
 }
 
 void AWeaponActor::StopFire() {
-	ChangeWeaponState(EWeaponState::EWS_Equipped);
+	ChangeWeaponFireState(EWeaponFireState::EWS_Idle);
 }
 
 
 void AWeaponActor::ReloadWeapon() {
 	
 	ASWATCharacter* Player = Cast<ASWATCharacter>(GetOwner());
-	if (!Player) return;
+	if (!Player || CurrentFireState == EWeaponFireState::EWS_Reload) return;
 	
-	FName SectionName = "Default";
+	ChangeWeaponFireState(EWeaponFireState::EWS_Reload);
+
+	/*FName SectionName = "Default";
 	if (Player->IsCrouched()) {
 		SectionName = "CrouchReload";
 	}
-	Player->PlayAnimMontage(ReloadMontage, 1, SectionName);
+	Player->PlayAnimMontage(ReloadMontage, 1, SectionName);*/
+	Player->PlayAnimMontage(ReloadMontage);
+}
+
+
+void AWeaponActor::ReloadAmmonOver() {
 	AmmonCurrent = AmmonMaxCounter;
-
-
+	ChangeWeaponFireState(EWeaponFireState::EWS_Idle);
 }

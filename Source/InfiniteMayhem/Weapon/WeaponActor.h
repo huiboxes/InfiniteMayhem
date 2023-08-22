@@ -12,11 +12,18 @@ enum class EWeaponState : uint8 {
 	EWS_Standby UMETA(DisplayName = "Stand-by"),
 	EWS_Equipped UMETA(DisplayName = "Equipped"),
 	EWS_Drop UMETA(DisplayName = "Drop"),
+
+	EWS_MAX UMETA(DisplayName = "DefaultMAX")
+
+};
+
+UENUM(BlueprintType)
+enum class EWeaponFireState :uint8 {
+	EWS_Idle UMETA(DisplayName = "Idle"),
 	EWS_Firing UMETA(DisplayName = "Firing"),
 	EWS_Reload UMETA(DisplayName = "Reload"),
 
 	EWS_MAX UMETA(DisplayName = "DefaultMAX")
-
 };
 
 UCLASS()
@@ -44,12 +51,18 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	EWeaponState CurrentState = EWeaponState::EWS_Drop;
+	
+	UPROPERTY(VisibleAnywhere)
+	EWeaponFireState CurrentFireState = EWeaponFireState::EWS_Idle;
+
+
 
 	UFUNCTION(BlueprintCallable)
 	virtual void OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OterComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION(BlueprintCallable)
 	virtual void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
@@ -75,12 +88,17 @@ private:
 	
 public:
 	void ChangeWeaponState(EWeaponState State);
+	void ChangeWeaponFireState(EWeaponFireState State);
 	bool IsEquipped() { return CurrentState == EWeaponState::EWS_Equipped; };
 	EWeaponState GetCurrentState() { return CurrentState; };
+	EWeaponFireState GetCurrentFireState() { return CurrentFireState; };
 	void ShowPickupWidget(bool bShowWidget);
 	void StartFire();
 	void StopFire();
 	void ReloadWeapon();
+	void ReloadAmmonOver();
+
+	FORCEINLINE bool CanFire() { return CurrentFireState != EWeaponFireState::EWS_Reload;  };
 
 	FORCEINLINE int32 GetAmmonMaxCounter() { return AmmonMaxCounter; };
 	FORCEINLINE int32 GetAmmonCurrent() { return AmmonCurrent; };
