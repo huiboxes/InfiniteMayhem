@@ -125,6 +125,11 @@ void ASWATCharacter::ToggleFire() {
 	}
 }
 
+void ASWATCharacter::ReloadWeaponButtonPressed() {
+	if (!IsHoldWeapon()) return;
+	CombatComp->EquippedWeapon->ReloadWeapon();
+}
+
 void ASWATCharacter::UpdateCameraTargetPos(float DeltaTime) { // 更新相机偏移信息
 	if (!CameraBoom || !MainCamera) return;
 
@@ -159,6 +164,7 @@ void ASWATCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction(TEXT("SwitchWeapon"), IE_Pressed, this, &ASWATCharacter::SwitchWeaponButtonPressed);
 	PlayerInputComponent->BindAction(TEXT("Fire"), IE_Pressed, this, &ASWATCharacter::ToggleFire);
 	PlayerInputComponent->BindAction(TEXT("Fire"), IE_Released, this, &ASWATCharacter::ToggleFire);
+	PlayerInputComponent->BindAction(TEXT("ReloadWeapon"), IE_Pressed, this, &ASWATCharacter::ReloadWeaponButtonPressed);
 
 }
 

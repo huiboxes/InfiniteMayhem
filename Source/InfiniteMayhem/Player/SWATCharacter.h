@@ -39,6 +39,7 @@ protected:
 	void PickupButtonPressed();
 	void SwitchWeaponButtonPressed();
 	void ToggleFire();
+	void ReloadWeaponButtonPressed();
 
 	void UpdateCameraTargetPos(float DeltaTime);
 

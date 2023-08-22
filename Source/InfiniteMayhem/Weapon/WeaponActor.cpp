@@ -97,3 +97,19 @@ void AWeaponActor::StartFire() {
 void AWeaponActor::StopFire() {
 	ChangeWeaponState(EWeaponState::EWS_Equipped);
 }
+
+
+void AWeaponActor::ReloadWeapon() {
+	
+	ASWATCharacter* Player = Cast<ASWATCharacter>(GetOwner());
+	if (!Player) return;
+	
+	FName SectionName = "Default";
+	if (Player->IsCrouched()) {
+		SectionName = "CrouchReload";
+	}
+	Player->PlayAnimMontage(ReloadMontage, 1, SectionName);
+	AmmonCurrent = AmmonMaxCounter;
+
+
+}
