@@ -44,7 +44,7 @@ void AWeaponActor::HandleFire() {
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), EmptySound, GetActorLocation());
 		return;
 	}
-
+	FireTheAmmon();
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), FireSound, GetActorLocation());
 	AmmonCurrent--;
 }
@@ -89,6 +89,41 @@ void AWeaponActor::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, 
 	}
 }
 
+void AWeaponActor::FireTheAmmon() {
+	APlayerController* Pc = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	if (!Pc) return;
+	int32 Width = 0;
+	int32 Height = 0;
+
+	Pc->GetViewportSize(Width, Height);
+	FVector STWPos;
+	FVector STWDir;
+
+	Pc->DeprojectScreenPositionToWorld(Width / 2, Height / 2, STWPos, STWDir);
+
+	FHitResult Hit;
+	if (GetWorld()->LineTraceSingleByChannel(Hit, STWPos, STWPos + STWDir * MaxShootDistance, ECC_Visibility)) {
+		Projectile(Hit.ImpactPoint);
+	}
+}
+
+
+void AWeaponActor::Projectile(FVector TargetPos) {
+	// 从枪口发射射线
+	FVector MuzzlePos = WeaponMesh->GetSocketLocation(TEXT("Gun_Muzzle"));
+	
+	FVector FireDir = TargetPos - MuzzlePos;
+	FireDir.Normalize();
+	
+	FHitResult Hit;
+	if (GetWorld()->LineTraceSingleByChannel(Hit, MuzzlePos, MuzzlePos + FireDir * MaxShootDistance, ECC_Visibility)) {
+		if (Hit.Actor.IsValid()) {
+			Hit.Component->SetSimulatePhysics(true);
+		}
+	}
+
+}
+
 void AWeaponActor::ShowPickupWidget(bool bShowWidget) {
 	if (PickupWidget) {
 		PickupWidget->SetVisibility(bShowWidget);
@@ -113,12 +148,11 @@ void AWeaponActor::ReloadWeapon() {
 	
 	ChangeWeaponFireState(EWeaponFireState::EWS_Reload);
 
-	/*FName SectionName = "Default";
+	FName SectionName = TEXT("Default");
 	if (Player->IsCrouched()) {
-		SectionName = "CrouchReload";
+		SectionName = TEXT("CrouchReload");
 	}
-	Player->PlayAnimMontage(ReloadMontage, 1, SectionName);*/
-	Player->PlayAnimMontage(ReloadMontage);
+	Player->PlayAnimMontage(ReloadMontage, 1, SectionName);
 }
 
 

@@ -63,6 +63,8 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	virtual void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	void Projectile(FVector TargetPos);
+	void FireTheAmmon();
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
@@ -82,6 +84,9 @@ private:
 
 
 	int32 AmmonCurrent; // 当前弹匣剩余子弹
+
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+	float MaxShootDistance = 50000;
 
 	void HandleFire();
 
