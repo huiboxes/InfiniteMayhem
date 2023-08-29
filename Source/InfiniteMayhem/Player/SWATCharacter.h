@@ -88,8 +88,6 @@ public:
 
 protected:
 
-	FTimerHandle TimerEquipHandle;
-
 	UPROPERTY(VisibleAnywhere)
 	class USpringArmComponent* CameraBoom;
 
@@ -126,8 +124,6 @@ protected:
 
 	float Speed = 0;
 
-	FRotator StartingAimRotation; // 开始转身时的方向
 
-	float InterpAO_Yaw;
 
 };

@@ -3,6 +3,7 @@
 
 #include "IMFPSAnimInstance.h"
 #include "../Weapon/WeaponActor.h"
+#include "../Components/CombatComponent.h"
 
 void UIMFPSAnimInstance::NativeUpdateAnimation(float DeltaTime) {
 	Super::NativeUpdateAnimation(DeltaTime);
@@ -42,6 +43,18 @@ void UIMFPSAnimInstance::UpdateStatusFromPlayer() {
 void UIMFPSAnimInstance::AnimNotify_ReloadOver() {
 	if (Player && Player->IsHoldWeapon()) {
 		Player->GetEquippedWeapon()->ReloadAmmonOver();
+	}
+}
+
+void UIMFPSAnimInstance::AnimNotify_PullOutWeapon() {
+	if (Player) {
+		Player->GetCombatComp()->ChangeEquippedWeapon();
+	}
+}
+
+void UIMFPSAnimInstance::AnimNotify_SwitchWeaponOver() {
+	if (Player) {
+		Player->DisableEquiping();
 	}
 }
 

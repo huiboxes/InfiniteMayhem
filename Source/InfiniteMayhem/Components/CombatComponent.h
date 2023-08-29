@@ -31,18 +31,14 @@ public:
 
 	bool IsFiring();
 	
-	void SetCanSwitch() { bCanSwitch = true; };
-
 	float GetFireCrosshairOffset() { return FireCrosshairOffset; };
-	FTimerHandle TimerSWitchHandle;
 
-	FTimerHandle TimerChangeEquippedWeaponHandle;
-
-
-protected:
 	void ChangeEquippedWeapon();
 
 private:
+	UPROPERTY(EditAnywhere, Category = "Anim Properties")
+	class UAnimMontage* EquipMontage;
+
 	class ASWATCharacter* Player;
 	class AWeaponActor* EquippedWeapon;
 	class AWeaponActor* StandByWeapon;
@@ -51,8 +47,5 @@ private:
 
 	void UpdateFireCrosshairOffset(float DeltaTime);
 
-	bool bCanSwitch = true;
 
-	
-		
 };

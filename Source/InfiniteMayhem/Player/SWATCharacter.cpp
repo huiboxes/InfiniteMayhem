@@ -63,7 +63,7 @@ void ASWATCharacter::ChangeState(ESWATState State) {
 	case ESWATState::ESS_Rilfe:
 		CameraBoomSocketYOffset = 60;
 		CameraBoomTargetZOffset = 50;
-		CameraXOffset = 150;
+		CameraXOffset = 120;
 
 		break;
 	default:
@@ -213,14 +213,13 @@ void ASWATCharacter::SetOverlappingWeapon(AWeaponActor* Weapon) {
 
 void ASWATCharacter::EnableEquiping() {
 	if (!bIsEquiping) {
-		bIsEquiping = true; // 一秒钟后切换回关闭状态
-		GetWorldTimerManager().SetTimer(TimerEquipHandle, this, &ASWATCharacter::DisableEquiping, 0.05f, false);
+		bIsEquiping = true;
+
 	}
 }
 
 
 void ASWATCharacter::AimOffset(float DeltaTime) {
-	//if (CombatComp && !CombatComp->EquippedWeapon) return;
 	FVector Velocity = GetVelocity();
 	Velocity.Z = 0.f;
 	Speed = Velocity.Size();
@@ -228,6 +227,7 @@ void ASWATCharacter::AimOffset(float DeltaTime) {
 	
 
 	FRotator Rot = GetControlRotation() - GetActorRotation();
+
 	AO_Pitch = Rot.Pitch;
 	AO_Yaw = Rot.Yaw;
 
@@ -236,4 +236,6 @@ void ASWATCharacter::AimOffset(float DeltaTime) {
 	AO_Yaw = Qua.Rotator().Yaw;
 
 }
+
+
 

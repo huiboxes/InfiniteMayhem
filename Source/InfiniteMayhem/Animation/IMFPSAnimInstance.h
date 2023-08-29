@@ -71,6 +71,13 @@ protected:
 
 	UFUNCTION()
 	void AnimNotify_ReloadOver();
+	
+	
+	UFUNCTION()
+	void AnimNotify_PullOutWeapon();
+	
+	UFUNCTION()
+	void AnimNotify_SwitchWeaponOver();
 
 	void UpdateLeftHandTransform(); // 更新手掌托扶的位置
 

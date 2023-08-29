@@ -145,7 +145,7 @@ void AWeaponActor::ReloadWeapon() {
 	
 	ASWATCharacter* Player = Cast<ASWATCharacter>(GetOwner());
 	if (!Player || CurrentFireState == EWeaponFireState::EWS_Reload) return;
-	
+
 	ChangeWeaponFireState(EWeaponFireState::EWS_Reload);
 
 	FName SectionName = TEXT("Default");
