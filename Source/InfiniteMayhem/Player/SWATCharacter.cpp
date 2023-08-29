@@ -63,8 +63,8 @@ void ASWATCharacter::ChangeState(ESWATState State) {
 	case ESWATState::ESS_Normal:
 		break;
 	case ESWATState::ESS_Rilfe:
-		CameraBoomSocketYOffset = -60;
-		CameraXOffset = 120;
+		CameraBoomSocketYOffset = -50;
+		CameraXOffset = 150;
 
 		break;
 	default:
