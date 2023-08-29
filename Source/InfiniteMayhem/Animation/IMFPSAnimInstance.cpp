@@ -10,7 +10,7 @@ void UIMFPSAnimInstance::NativeUpdateAnimation(float DeltaTime) {
 	if (!Player) return;
 
 	UpdateStatusFromPlayer();
-	UpdateLeftHandTransform();
+	//UpdateLeftHandTransform();
 
 }
 
@@ -59,7 +59,7 @@ void UIMFPSAnimInstance::AnimNotify_SwitchWeaponOver() {
 }
 
 void UIMFPSAnimInstance::UpdateLeftHandTransform() {
-	if (Player && Player->IsHoldWeapon()) {
+	if (Player->IsHoldWeapon()) {
 		// 获取左手插槽的变换信息
 		LeftHandTransform = Player->GetEquippedWeapon()->GetMesh()->GetSocketTransform(TEXT("S_ForeEndHand"), ERelativeTransformSpace::RTS_World);
 			

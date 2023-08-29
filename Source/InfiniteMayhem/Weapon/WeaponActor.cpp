@@ -99,7 +99,7 @@ void AWeaponActor::FireTheAmmon() {
 	FVector STWPos;
 	FVector STWDir;
 
-	Pc->DeprojectScreenPositionToWorld(Width / 2, Height / 2, STWPos, STWDir);
+	Pc->DeprojectScreenPositionToWorld(Width / 2.f, Height / 2.f, STWPos, STWDir);
 
 	FHitResult Hit;
 	if (GetWorld()->LineTraceSingleByChannel(Hit, STWPos, STWPos + STWDir * MaxShootDistance, ECC_Visibility)) {

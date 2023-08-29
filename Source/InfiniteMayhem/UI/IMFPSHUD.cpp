@@ -14,23 +14,22 @@ void AIMFPSHUD::DrawHUD() {
 	DrawWeaponAmmon();
 	DrawCrosshair();
 
-	
 }
 
 void AIMFPSHUD::DrawCrosshair() {
-	float TargetX = Canvas->ClipX / 2;
-	float TargetY = Canvas->ClipY / 2;
+	float TargetX = Canvas->ClipX / 2.f;
+	float TargetY = Canvas->ClipY / 2.f;
 
 	// 绘制中心点
-	DrawRect(FLinearColor::Yellow, TargetX - 1, TargetY - 1, 2, 2);
+	DrawRect(FLinearColor::Yellow, TargetX - 1.f, TargetY - 1.f, 2.f, 2.f);
 
 	ASWATCharacter* Player = Cast<ASWATCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
 	if (Player && Player->IsHoldWeapon()) { // 如果玩家持有枪械时，绘制十字准星
 		UCombatComponent* CombatComp =  Player->GetCombatComp();
 		if (!CombatComp) return;
 		float FireCrosshairOffset = CombatComp->GetFireCrosshairOffset();
-		float LineLength = 10;
-		float Offset = 5 + FireCrosshairOffset;
+		float LineLength = 10.f;
+		float Offset = 5.f + FireCrosshairOffset;
 
 		// 上
 		DrawLine(TargetX, TargetY - (LineLength + Offset), TargetX, TargetY - Offset, FLinearColor::Yellow);

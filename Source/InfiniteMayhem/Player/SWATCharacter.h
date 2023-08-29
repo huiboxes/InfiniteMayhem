@@ -110,9 +110,9 @@ protected:
 
 	ESWATState CurrentState = ESWATState::ESS_Normal;
 
-	float CameraBoomSocketYOffset = 30;
-	float CameraBoomTargetZOffset = 0;
+	float CameraBoomSocketYOffset = -20;
 	float CameraXOffset = 0;
+	
 
 	// 驱动 AimOffset 的 Yaw
 	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))

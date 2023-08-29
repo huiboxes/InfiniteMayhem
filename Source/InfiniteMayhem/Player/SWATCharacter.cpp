@@ -17,6 +17,8 @@ ASWATCharacter::ASWATCharacter(const FObjectInitializer& Initializer): Super(Ini
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
 
+	CameraBoom->TargetOffset.Z = 50;
+
 	MainCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("MainCamera"));
 	MainCamera->SetupAttachment(CameraBoom);
 
@@ -61,8 +63,7 @@ void ASWATCharacter::ChangeState(ESWATState State) {
 	case ESWATState::ESS_Normal:
 		break;
 	case ESWATState::ESS_Rilfe:
-		CameraBoomSocketYOffset = 60;
-		CameraBoomTargetZOffset = 50;
+		CameraBoomSocketYOffset = -60;
 		CameraXOffset = 120;
 
 		break;
@@ -73,12 +74,14 @@ void ASWATCharacter::ChangeState(ESWATState State) {
 }
 
 void ASWATCharacter::Accelerate() {
-	CameraXOffset -= 50;
+	if (Speed > 0) CameraXOffset -= 50; // 镜头后拉的效果
+	
 	bIsAcceleration = true;
 }
 
 void ASWATCharacter::UnAccelerate() {
-	CameraXOffset += 50;
+	
+	if(Speed != 0) CameraXOffset += 50;
 	bIsAcceleration = false;
 }
 
@@ -93,7 +96,6 @@ void ASWATCharacter::CrouchButtonPressed() {
 void ASWATCharacter::CrouchButtonReleased() {
 	bIsCrouched = false;
 	UnCrouch();
-
 }
 
 void ASWATCharacter::IronsightButtonPressed() {
@@ -135,7 +137,6 @@ void ASWATCharacter::UpdateCameraTargetPos(float DeltaTime) { // 更新相机偏
 	if (!CameraBoom || !MainCamera) return;
 
 	CameraBoom->SocketOffset.Y = FMath::FInterpTo(CameraBoom->SocketOffset.Y, CameraBoomSocketYOffset, DeltaTime, 10);
-	CameraBoom->SocketOffset.Z = FMath::FInterpTo(CameraBoom->TargetOffset.Z, CameraBoomTargetZOffset, DeltaTime, 10);
 
 	float CameraX = FMath::FInterpTo(MainCamera->GetRelativeLocation().X, CameraXOffset, DeltaTime, 10);
 	MainCamera->SetRelativeLocation(FVector(CameraX, 0, 0));
