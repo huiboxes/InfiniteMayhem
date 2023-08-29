@@ -73,11 +73,12 @@ void ASWATCharacter::ChangeState(ESWATState State) {
 }
 
 void ASWATCharacter::Accelerate() {
-	//if (IsHoldWeapon()) return;
+	CameraXOffset -= 50;
 	bIsAcceleration = true;
 }
 
 void ASWATCharacter::UnAccelerate() {
+	CameraXOffset += 50;
 	bIsAcceleration = false;
 }
 
