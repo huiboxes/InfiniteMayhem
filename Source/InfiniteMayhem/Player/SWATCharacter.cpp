@@ -63,8 +63,9 @@ void ASWATCharacter::ChangeState(ESWATState State) {
 	case ESWATState::ESS_Normal:
 		break;
 	case ESWATState::ESS_Rilfe:
-		CameraBoomSocketYOffset = -50;
-		CameraXOffset = 150;
+		CameraBoomSocketYOffset = 90;
+		CameraBoomSocketZOffset = 60;
+		CameraXOffset = 80;
 
 		break;
 	default:
@@ -87,7 +88,6 @@ void ASWATCharacter::UnAccelerate() {
 
 
 void ASWATCharacter::CrouchButtonPressed() {
-	//if (!IsHoldWeapon()) return ;
 	bIsCrouched = true;
 	Crouch();
 }
@@ -137,6 +137,7 @@ void ASWATCharacter::UpdateCameraTargetPos(float DeltaTime) { // 更新相机偏
 	if (!CameraBoom || !MainCamera) return;
 
 	CameraBoom->SocketOffset.Y = FMath::FInterpTo(CameraBoom->SocketOffset.Y, CameraBoomSocketYOffset, DeltaTime, 10);
+	CameraBoom->SocketOffset.Z = FMath::FInterpTo(CameraBoom->SocketOffset.Z, CameraBoomSocketZOffset, DeltaTime, 10);
 
 	float CameraX = FMath::FInterpTo(MainCamera->GetRelativeLocation().X, CameraXOffset, DeltaTime, 10);
 	MainCamera->SetRelativeLocation(FVector(CameraX, 0, 0));

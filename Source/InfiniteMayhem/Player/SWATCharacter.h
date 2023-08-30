@@ -110,7 +110,8 @@ protected:
 
 	ESWATState CurrentState = ESWATState::ESS_Normal;
 
-	float CameraBoomSocketYOffset = -20;
+	float CameraBoomSocketYOffset = 20;
+	float CameraBoomSocketZOffset = 40;
 	float CameraXOffset = 0;
 	
 
