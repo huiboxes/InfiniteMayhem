@@ -28,10 +28,13 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class UProjectileMovementComponent* ProjectileMovementComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Hit Properties")
+	class UMaterialInterface* HitDecal; // 击中物体后的贴花
 
 protected:
 
 	UFUNCTION()
 	void OnSphereHitEvent(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
+	void HitObjectHandle(const FHitResult& Hit);
 };

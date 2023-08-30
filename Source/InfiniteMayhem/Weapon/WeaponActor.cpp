@@ -3,6 +3,8 @@
 
 #include "WeaponActor.h"
 #include "../Player/SWATCharacter.h"
+#include "Bullet.h"
+
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -103,24 +105,22 @@ void AWeaponActor::FireTheAmmon() {
 
 	FHitResult Hit;
 	if (GetWorld()->LineTraceSingleByChannel(Hit, STWPos, STWPos + STWDir * MaxShootDistance, ECC_Visibility)) {
-		Projectile(Hit.ImpactPoint);
+		Projectile(Hit);
 	}
 }
 
 
-void AWeaponActor::Projectile(FVector TargetPos) {
+void AWeaponActor::Projectile(const FHitResult& Hit) {
+	FVector TargetPos = Hit.ImpactPoint;
 	// 从枪口发射射线
 	FVector MuzzlePos = WeaponMesh->GetSocketLocation(TEXT("Gun_Muzzle"));
 	
-	FVector FireDir = TargetPos - MuzzlePos;
-	FireDir.Normalize();
+	FVector FireDir = (TargetPos - MuzzlePos).GetSafeNormal();
 	
-	FHitResult Hit;
-	if (GetWorld()->LineTraceSingleByChannel(Hit, MuzzlePos, MuzzlePos + FireDir * MaxShootDistance, ECC_Visibility)) {
-		if (Hit.Actor.IsValid()) {
-			Hit.Component->SetSimulatePhysics(true);
-		}
+	if (BulletClass) {// 从枪口生成一个子弹
+		ABullet* Bullet = GetWorld()->SpawnActor<ABullet>(BulletClass, MuzzlePos, FireDir.Rotation());
 	}
+
 
 }
 

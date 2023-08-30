@@ -63,7 +63,7 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	virtual void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	void Projectile(FVector TargetPos);
+	void Projectile(const FHitResult& Hit);
 	void FireTheAmmon();
 
 private:
@@ -72,6 +72,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
 	class UAnimMontage* ReloadMontage;
+	
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+	TSubclassOf<class ABullet> BulletClass;
 
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
 	int32 AmmonMaxCounter; // 当前弹匣的最大容量
