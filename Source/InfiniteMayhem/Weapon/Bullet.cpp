@@ -62,33 +62,36 @@ void ABullet::HitObjectHandle(const FHitResult& Hit) {
 		UPhysicalMaterial* mat = Outhit.PhysMaterial.Get();
 
 		FVector HitLoc = Outhit.Location;
+		FVector FxScale = FVector(.5f, .5f, .5f);
+
 		switch (mat->SurfaceType) {
 		case EPhysicalSurface::SurfaceType1: // 打中了 Metal
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitMetalFX, FTransform(Hit.Normal.Rotation(), HitLoc, FVector(.5f, .5f, .5f)));
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitMetalFX, FTransform(Hit.Normal.Rotation(), HitLoc, FxScale));
 			UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitMetalSound, Hit.Location);
 			break;
 		case EPhysicalSurface::SurfaceType2: // 打中了 Gravel
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitGravelFX, FTransform(Hit.Normal.Rotation(), HitLoc, FVector(.5f, .5f, .5f)));
+			
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitGravelFX, FTransform(Hit.Normal.Rotation(), HitLoc, FxScale));
 			UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitGravelSound, Hit.Location);
 			break;
 		case EPhysicalSurface::SurfaceType3: // 打中了 Conocrete
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitConcreteFX, FTransform(Hit.Normal.Rotation(), HitLoc, FVector(.5f, .5f, .5f)));
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitConcreteFX, FTransform(Hit.Normal.Rotation(), HitLoc, FxScale));
 			UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitConcreteSound, Hit.Location);
 			break;
 		case EPhysicalSurface::SurfaceType4: // 打中了 Wood
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitWoodFX, FTransform(Hit.Normal.Rotation(), HitLoc, FVector(.5f, .5f, .5f)));
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitWoodFX, FTransform(Hit.Normal.Rotation(), HitLoc, FxScale));
 			UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitWoodSound, Hit.Location);
 			break;
 		case EPhysicalSurface::SurfaceType5: // 打中了 Rock
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitRockFX, FTransform(Hit.Normal.Rotation(), HitLoc, FVector(.5f, .5f, .5f)));
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitRockFX, FTransform(Hit.Normal.Rotation(), HitLoc, FxScale));
 			UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitRockSound, Hit.Location);
 			break;
 		case EPhysicalSurface::SurfaceType6: // 打中了 Grass
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitGrassFX, FTransform(Hit.Normal.Rotation(), HitLoc, FVector(.5f, .5f, .5f)));
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitGrassFX, FTransform(Hit.Normal.Rotation(), HitLoc, FxScale));
 			UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitGrassSound, Hit.Location);
 			break;
 		default: // 默认打中的沙地
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitGravelFX, FTransform(Hit.Normal.Rotation(), HitLoc, FVector(.5f, .5f, .5f)));
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitGravelFX, FTransform(Hit.Normal.Rotation(), HitLoc, FxScale));
 			UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitGravelSound, Hit.Location);
 			break;
 		}

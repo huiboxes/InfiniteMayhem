@@ -48,6 +48,12 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
 	class USphereComponent* SphereCollision;
+	
+	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
+	class UArrowComponent* GunBoltArrow;
+
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties|Fire")
+	class UParticleSystem* ShellEjectionFX; // 默认击中物体后的特效
 
 	UPROPERTY(VisibleAnywhere)
 	EWeaponState CurrentState = EWeaponState::EWS_Drop;
@@ -73,7 +79,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
 	class UAnimMontage* ReloadMontage;
 	
-	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties|Fire")
 	TSubclassOf<class ABullet> BulletClass;
 
 	FTimerHandle FireTimerHandle;
@@ -85,10 +91,10 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
 	int32 AmmonMaxCounter; // 当前弹匣的最大容量
 
-	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties|Sound")
 	class USoundBase* FireSound; // 开火声音
 
-	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties|Sound")
 	class USoundBase* EmptySound; // 子弹打空声音
 
 

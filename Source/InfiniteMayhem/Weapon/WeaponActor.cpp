@@ -6,6 +6,7 @@
 #include "Bullet.h"
 
 #include "Components/SphereComponent.h"
+#include "Components/ArrowComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -21,6 +22,11 @@ AWeaponActor::AWeaponActor()
 	SphereCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 	SphereCollision->OnComponentBeginOverlap.AddDynamic(this, &AWeaponActor::OnSphereBeginOverlap);
 	SphereCollision->OnComponentEndOverlap.AddDynamic(this, &AWeaponActor::OnSphereEndOverlap);
+
+
+	GunBoltArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("GunBoltArrow"));
+	GunBoltArrow->SetVisibility(false);
+	GunBoltArrow->SetupAttachment(RootComponent);
 	
 	PickupWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("PickupWidget"));
 	PickupWidget->SetupAttachment(RootComponent);
@@ -124,6 +130,10 @@ void AWeaponActor::HandleFire() {
 	}
 	FireTheAmmon();
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), FireSound, GetActorLocation());
+
+	FTransform GunBoltArrowTransform = GunBoltArrow->GetComponentTransform();
+	
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ShellEjectionFX, GunBoltArrowTransform);
 	AmmonCurrent--;
 }
 
