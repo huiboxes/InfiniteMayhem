@@ -110,15 +110,21 @@ void UCombatComponent::UpdateFireCrosshairOffset(float DeltaTime) {
 	float Offset = 0;
 
 	if (Speed < 150) {
-		Offset = 5;
-	} else if (Speed < 300) {
 		Offset = 15;
-	} else if (Speed < 500) {
+		// FireCrosshairOffset = 5;
+	} else if (Speed < 300) {
 		Offset = 25;
-	} else if(Speed < 800) { 
+		// FireCrosshairOffset = 15;
+	} else if (Speed < 500) {
 		Offset = 35;
+		// FireCrosshairOffset = 25;
+	} else if(Speed < 800) { 
+		Offset = 50;
+		//FireCrosshairOffset = 35;
 	} else { // 实在太快了，不显示准星
-		FireCrosshairOffset = 1000;
+		Offset = 100;
+		//return;
+		//FireCrosshairOffset = -1;
 	}
 	FireCrosshairOffset = FMath::FInterpTo(FireCrosshairOffset, Offset, DeltaTime, 3);
 }

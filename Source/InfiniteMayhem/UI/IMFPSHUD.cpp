@@ -28,6 +28,8 @@ void AIMFPSHUD::DrawCrosshair() {
 		UCombatComponent* CombatComp =  Player->GetCombatComp();
 		if (!CombatComp) return;
 		float FireCrosshairOffset = CombatComp->GetFireCrosshairOffset();
+		if (FireCrosshairOffset >= 60) return; // 如果移速过快，直接不绘制准星
+		if (Player->IsAiming()) FireCrosshairOffset -= 10; // 瞄准状态降低准星偏移
 		float LineLength = 10.f;
 		float Offset = 5.f + FireCrosshairOffset;
 
