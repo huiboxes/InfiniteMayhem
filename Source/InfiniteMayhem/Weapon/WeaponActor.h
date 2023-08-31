@@ -85,6 +85,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties|Fire")
 	TSubclassOf<class ABullet> BulletClass;
 
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties|Fire")
+	UAnimationAsset* FireAnim;
+
 	FTimerHandle FireTimerHandle;
 
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties|Fire")

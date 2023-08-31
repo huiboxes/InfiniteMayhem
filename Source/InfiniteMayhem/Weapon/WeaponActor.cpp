@@ -143,6 +143,10 @@ void AWeaponActor::HandleFire() {
 	// 播放开火特效
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MuzzleFlameFX, MuzzleTransform);
 
+	// 播放武器开火动画
+	GetMesh()->PlayAnimation(FireAnim, false);
+
+	// 射出子弹
 	FireTheAmmon();
 	AmmonCurrent--;
 }
