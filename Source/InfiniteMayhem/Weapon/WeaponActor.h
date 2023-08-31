@@ -86,6 +86,8 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
 	class UAnimMontage* ReloadMontage;
+
+	FTimerHandle FireTimerHandle; // 开火定时器句柄
 	
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties|Fire")
 	TSubclassOf<class ABullet> BulletClass;
@@ -93,11 +95,11 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties|Fire")
 	UAnimationAsset* FireAnim;
 
-	FTimerHandle FireTimerHandle;
-
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties|Fire")
 	float FiringRate = .1f;
-	
+
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties|Fire")
+	bool bIsFullyAutomatic = true; // 是否全自动开火模式
 
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
 	int32 AmmonMaxCounter; // 当前弹匣的最大容量
@@ -140,6 +142,8 @@ public:
 
 	FORCEINLINE int32 GetAmmonMaxCounter() { return AmmonMaxCounter; };
 	FORCEINLINE int32 GetAmmonCurrent() { return AmmonCurrent; };
+	FORCEINLINE void SwitchFireMode() { bIsFullyAutomatic = !bIsFullyAutomatic; };
+
 
 	class USkeletalMeshComponent* GetMesh();
 };

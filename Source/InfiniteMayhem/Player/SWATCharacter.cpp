@@ -122,13 +122,22 @@ void ASWATCharacter::SwitchWeaponButtonPressed() {
 	}
 }
 
+void ASWATCharacter::SwitchFireModeButtonPressed() {
+	if (CombatComp && CombatComp->EquippedWeapon) {
+		CombatComp->EquippedWeapon->SwitchFireMode();
+	}
+}
+
 void ASWATCharacter::ToggleFire() {
 	if (!CombatComp || !CombatComp->EquippedWeapon) return;
 	if (!CombatComp->IsFiring()) { // 装备着武器时开枪，其它状态停止开枪
 		CombatComp->EquippedWeapon->StartFire();
-	} else {
-		CombatComp->EquippedWeapon->StopFire();
 	}
+}
+
+void ASWATCharacter::StopFire() {
+	if (!CombatComp || !CombatComp->EquippedWeapon) return;
+	CombatComp->EquippedWeapon->StopFire();
 }
 
 void ASWATCharacter::ReloadWeaponButtonPressed() {
@@ -168,8 +177,9 @@ void ASWATCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction(TEXT("Ironsight"), IE_Released, this, &ASWATCharacter::IronsightButtonReleased);
 	PlayerInputComponent->BindAction(TEXT("Pickup"), IE_Pressed, this, &ASWATCharacter::PickupButtonPressed);
 	PlayerInputComponent->BindAction(TEXT("SwitchWeapon"), IE_Pressed, this, &ASWATCharacter::SwitchWeaponButtonPressed);
+	PlayerInputComponent->BindAction(TEXT("SwitchFireMode"), IE_Pressed, this, &ASWATCharacter::SwitchFireModeButtonPressed);
 	PlayerInputComponent->BindAction(TEXT("Fire"), IE_Pressed, this, &ASWATCharacter::ToggleFire);
-	PlayerInputComponent->BindAction(TEXT("Fire"), IE_Released, this, &ASWATCharacter::ToggleFire);
+	PlayerInputComponent->BindAction(TEXT("Fire"), IE_Released, this, &ASWATCharacter::StopFire);
 	PlayerInputComponent->BindAction(TEXT("ReloadWeapon"), IE_Pressed, this, &ASWATCharacter::ReloadWeaponButtonPressed);
 
 }

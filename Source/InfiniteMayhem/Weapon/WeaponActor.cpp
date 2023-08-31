@@ -130,6 +130,7 @@ void AWeaponActor::HandleFire() {
 	
 	if (AmmonCurrent <= 0) { // 没子弹时的枪声
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), EmptySound, GetActorLocation());
+		StopFire();
 		return;
 	}
 	// 普通枪声
@@ -171,7 +172,13 @@ void AWeaponActor::OnEmptyShellCollide(FName EventName, float EmitterTime, int32
 
 void AWeaponActor::StartFire() {
 	ChangeWeaponFireState(EWeaponFireState::EWS_Firing);
-	GetWorldTimerManager().SetTimer(FireTimerHandle, this, &ThisClass::HandleFire, FiringRate, true, 0);
+	if (bIsFullyAutomatic) {
+		GetWorldTimerManager().SetTimer(FireTimerHandle, this, &ThisClass::HandleFire, FiringRate, true, 0);
+	} else {
+		HandleFire();
+		StopFire(); // 单发则提前停止
+	}
+
 }
 
 void AWeaponActor::StopFire() {

@@ -38,7 +38,9 @@ protected:
 	void IronsightButtonReleased();
 	void PickupButtonPressed();
 	void SwitchWeaponButtonPressed();
+	void SwitchFireModeButtonPressed();
 	void ToggleFire();
+	void StopFire();
 	void ReloadWeaponButtonPressed();
 
 	void UpdateCameraTargetPos(float DeltaTime);
