@@ -158,13 +158,7 @@ void AWeaponActor::HandleFire() {
 }
 
 void AWeaponActor::OnEmptyShellCollide(FName EventName, float EmitterTime, int32 ParticleTime, FVector Location, FVector Velocity, FVector Direction, FVector Normal, FName BoneName, UPhysicalMaterial* PhysMat){
-
-	
-	int32 j = 0;
-	UGameplayStatics::PlaySoundAtLocation(GetWorld(), ShellBounceSound, Location);
 	for (int32 i = 0; i < 3; i++) {
-		++j;
-		UE_LOG(LogTemp, Log, TEXT("ddddddddddddddddddddd  ===  %d"), j);
 		if (i == 2) { // 结束时播放结束声音
 			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ShellCollideSound, Location);
 		} else { // 反复弹跳的声音

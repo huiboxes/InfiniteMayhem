@@ -13,7 +13,6 @@ ABullet::ABullet() {
 
 	SphereCollision = CreateDefaultSubobject<USphereComponent>("SphereCollision");
 	SetRootComponent(SphereCollision);
-	//SphereCollision->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
 
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovementComponent");
 
