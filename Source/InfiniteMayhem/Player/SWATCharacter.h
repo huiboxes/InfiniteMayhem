@@ -100,6 +100,12 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	class UCombatComponent* CombatComp;
 
+	UPROPERTY(EditAnywhere, Category = "Character|Sound")
+	class USoundBase* RaiseArmSound; // 子弹在地上反复弹跳的声音
+	
+	UPROPERTY(EditAnywhere, Category = "Character|Sound")
+	class USoundBase* HolsterSound; // 子弹在地上反复弹跳的声音
+
 	bool bIsAcceleration = false;
 	
 	bool bIsCrouched = false;

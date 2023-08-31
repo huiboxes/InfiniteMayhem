@@ -9,6 +9,7 @@
 #include "../Components/FPSCharacterMovementComponent.h"
 #include "../Components/CombatComponent.h"
 #include <Kismet/KismetMathLibrary.h>
+#include <Kismet/GameplayStatics.h>
 
 ASWATCharacter::ASWATCharacter(const FObjectInitializer& Initializer): Super(Initializer.SetDefaultSubobjectClass<UFPSCharacterMovementComponent>(ACharacter::CharacterMovementComponentName)) {
 
@@ -100,10 +101,12 @@ void ASWATCharacter::CrouchButtonReleased() {
 
 void ASWATCharacter::IronsightButtonPressed() {
 	if (!IsHoldWeapon()) return;
+	UGameplayStatics::PlaySound2D(GetWorld(), RaiseArmSound);
 	bAiming = true;
 }
 
 void ASWATCharacter::IronsightButtonReleased() {
+	UGameplayStatics::PlaySound2D(GetWorld(), HolsterSound);
 	bAiming = false;
 }
 
