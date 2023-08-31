@@ -41,6 +41,7 @@ protected:
 public:	
 	virtual void Tick(float DeltaTime) override;
 
+	
 
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
@@ -65,17 +66,21 @@ protected:
 	EWeaponFireState CurrentFireState = EWeaponFireState::EWS_Idle;
 
 
-
 	UFUNCTION(BlueprintCallable)
 	virtual void OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OterComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION(BlueprintCallable)
 	virtual void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	UFUNCTION()
+	void OnEmptyShellCollide(FName EventName, float EmitterTime, int32 ParticleTime, FVector Location, FVector Velocity, FVector Direction, FVector Normal, FName BoneName, UPhysicalMaterial* PhysMat);
+
 	void Projectile(FVector TargetPos);
 	void FireTheAmmon();
 
 private:
+
+
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
 	class UWidgetComponent* PickupWidget;
 
@@ -102,6 +107,12 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties|Sound")
 	class USoundBase* EmptySound; // 子弹打空声音
+	
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties|Sound")
+	class USoundBase* ShellBounceSound; // 子弹在地上反复弹跳的声音
+	
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties|Sound")
+	class USoundBase* ShellCollideSound; // 子弹落地声音
 
 
 	int32 AmmonCurrent; // 当前弹匣剩余子弹

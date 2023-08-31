@@ -8,6 +8,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/ArrowComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Particles/ParticleSystemComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 AWeaponActor::AWeaponActor()
@@ -23,7 +24,6 @@ AWeaponActor::AWeaponActor()
 	SphereCollision->OnComponentBeginOverlap.AddDynamic(this, &AWeaponActor::OnSphereBeginOverlap);
 	SphereCollision->OnComponentEndOverlap.AddDynamic(this, &AWeaponActor::OnSphereEndOverlap);
 
-
 	GunBoltArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("GunBoltArrow"));
 	GunBoltArrow->SetVisibility(false);
 	GunBoltArrow->SetupAttachment(RootComponent);
@@ -31,6 +31,7 @@ AWeaponActor::AWeaponActor()
 	PickupWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("PickupWidget"));
 	PickupWidget->SetupAttachment(RootComponent);
 	PickupWidget->SetVisibility(false);
+
 }
 
 void AWeaponActor::BeginPlay()
@@ -127,21 +128,26 @@ void AWeaponActor::ShowPickupWidget(bool bShowWidget) {
 
 void AWeaponActor::HandleFire() {
 	
-	if (AmmonCurrent <= 0) {
+	if (AmmonCurrent <= 0) { // 没子弹时的枪声
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), EmptySound, GetActorLocation());
 		return;
 	}
+	// 普通枪声
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), FireSound, GetActorLocation());
-
-	// 播放抛壳特效
-	FTransform GunBoltArrowTransform = GunBoltArrow->GetComponentTransform();
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ShellEjectionFX, GunBoltArrowTransform);
 
 	// 获取枪口位置信息
 	MuzzleTransform = WeaponMesh->GetSocketTransform(TEXT("Gun_Muzzle"));
-	MuzzleTransform.SetScale3D(FVector(.2f, .2f, .2f));
+	MuzzleTransform.SetScale3D(FVector(.3f, .3f, .3f));
+
 	// 播放开火特效
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MuzzleFlameFX, MuzzleTransform);
+
+	// 播放抛壳特效
+	FTransform GunBoltArrowTransform = GunBoltArrow->GetComponentTransform();
+
+	// 抛出的空弹壳粒子碰到地面时播放声音
+	UParticleSystemComponent* EmptyShellPSC = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ShellEjectionFX, GunBoltArrowTransform);
+	EmptyShellPSC->OnParticleCollide.AddDynamic(this, &ThisClass::OnEmptyShellCollide);
 
 	// 播放武器开火动画
 	GetMesh()->PlayAnimation(FireAnim, false);
@@ -150,6 +156,24 @@ void AWeaponActor::HandleFire() {
 	FireTheAmmon();
 	AmmonCurrent--;
 }
+
+void AWeaponActor::OnEmptyShellCollide(FName EventName, float EmitterTime, int32 ParticleTime, FVector Location, FVector Velocity, FVector Direction, FVector Normal, FName BoneName, UPhysicalMaterial* PhysMat){
+
+	
+	int32 j = 0;
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), ShellBounceSound, Location);
+	for (int32 i = 0; i < 3; i++) {
+		++j;
+		UE_LOG(LogTemp, Log, TEXT("ddddddddddddddddddddd  ===  %d"), j);
+		if (i == 2) { // 结束时播放结束声音
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ShellCollideSound, Location);
+		} else { // 反复弹跳的声音
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ShellBounceSound, Location);
+		}
+	}
+
+}
+
 
 void AWeaponActor::StartFire() {
 	ChangeWeaponFireState(EWeaponFireState::EWS_Firing);
