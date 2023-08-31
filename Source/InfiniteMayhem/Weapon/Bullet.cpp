@@ -9,7 +9,7 @@
 
 
 ABullet::ABullet() {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	SphereCollision = CreateDefaultSubobject<USphereComponent>("SphereCollision");
 	SetRootComponent(SphereCollision);

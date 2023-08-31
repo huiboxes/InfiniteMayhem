@@ -11,8 +11,7 @@
 
 AWeaponActor::AWeaponActor()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
 	SetRootComponent(WeaponMesh);
@@ -38,17 +37,6 @@ void AWeaponActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-}
-
-void AWeaponActor::HandleFire() {
-	ChangeWeaponFireState(EWeaponFireState::EWS_Firing);
-	if (AmmonCurrent <= 0) {
-		UGameplayStatics::PlaySoundAtLocation(GetWorld(), EmptySound, GetActorLocation());
-		return;
-	}
-	FireTheAmmon();
-	UGameplayStatics::PlaySoundAtLocation(GetWorld(), FireSound, GetActorLocation());
-	AmmonCurrent--;
 }
 
 void AWeaponActor::ChangeWeaponState(EWeaponState State) {
@@ -128,13 +116,24 @@ void AWeaponActor::ShowPickupWidget(bool bShowWidget) {
 	}
 }
 
+void AWeaponActor::HandleFire() {
+	
+	if (AmmonCurrent <= 0) {
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), EmptySound, GetActorLocation());
+		return;
+	}
+	FireTheAmmon();
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), FireSound, GetActorLocation());
+	AmmonCurrent--;
+}
 
 void AWeaponActor::StartFire() {
-	if (!CanFire()) return;
-	HandleFire();
+	ChangeWeaponFireState(EWeaponFireState::EWS_Firing);
+	GetWorldTimerManager().SetTimer(FireTimerHandle, this, &ThisClass::HandleFire, FiringRate, true, 0);
 }
 
 void AWeaponActor::StopFire() {
+	GetWorldTimerManager().ClearTimer(FireTimerHandle);
 	ChangeWeaponFireState(EWeaponFireState::EWS_Idle);
 }
 

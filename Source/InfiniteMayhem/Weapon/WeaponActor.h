@@ -76,6 +76,12 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
 	TSubclassOf<class ABullet> BulletClass;
 
+	FTimerHandle FireTimerHandle;
+
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties|Fire")
+	float FiringRate = .1f;
+	
+
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
 	int32 AmmonMaxCounter; // 当前弹匣的最大容量
 
@@ -106,7 +112,6 @@ public:
 	void ReloadWeapon();
 	void ReloadAmmonOver();
 
-	FORCEINLINE bool CanFire() { return CurrentFireState != EWeaponFireState::EWS_Reload;  };
 
 	FORCEINLINE int32 GetAmmonMaxCounter() { return AmmonMaxCounter; };
 	FORCEINLINE int32 GetAmmonCurrent() { return AmmonCurrent; };
