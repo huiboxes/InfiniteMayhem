@@ -105,13 +105,12 @@ void AWeaponActor::FireTheAmmon() {
 
 	FHitResult Hit;
 	if (GetWorld()->LineTraceSingleByChannel(Hit, STWPos, STWPos + STWDir * MaxShootDistance, ECC_Visibility)) {
-		Projectile(Hit);
+		Projectile(Hit.ImpactPoint);
 	}
 }
 
 
-void AWeaponActor::Projectile(const FHitResult& Hit) {
-	FVector TargetPos = Hit.ImpactPoint;
+void AWeaponActor::Projectile(FVector TargetPos) {
 	// 从枪口发射射线
 	FVector MuzzlePos = WeaponMesh->GetSocketLocation(TEXT("Gun_Muzzle"));
 	
@@ -120,7 +119,6 @@ void AWeaponActor::Projectile(const FHitResult& Hit) {
 	if (BulletClass) {// 从枪口生成一个子弹
 		ABullet* Bullet = GetWorld()->SpawnActor<ABullet>(BulletClass, MuzzlePos, FireDir.Rotation());
 	}
-
 
 }
 
