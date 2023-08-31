@@ -95,6 +95,7 @@ void AWeaponActor::FireTheAmmon() {
 	FVector STWPos;
 	FVector STWDir;
 
+
 	Pc->DeprojectScreenPositionToWorld(Width / 2.f, Height / 2.f, STWPos, STWDir);
 
 	FHitResult Hit;
@@ -105,13 +106,15 @@ void AWeaponActor::FireTheAmmon() {
 
 
 void AWeaponActor::Projectile(FVector TargetPos) {
-	// 从枪口发射射线
-	FVector MuzzlePos = WeaponMesh->GetSocketLocation(TEXT("Gun_Muzzle"));
-	
+	FVector MuzzlePos = MuzzleTransform.GetLocation();
+
+	// 获得枪口到目标位置的方向，用于纠正射击位置
 	FVector FireDir = (TargetPos - MuzzlePos).GetSafeNormal();
 	
 	if (BulletClass) {// 从枪口生成一个子弹
 		ABullet* Bullet = GetWorld()->SpawnActor<ABullet>(BulletClass, MuzzlePos, FireDir.Rotation());
+
+		
 	}
 
 }
@@ -128,12 +131,19 @@ void AWeaponActor::HandleFire() {
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), EmptySound, GetActorLocation());
 		return;
 	}
-	FireTheAmmon();
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), FireSound, GetActorLocation());
 
+	// 播放抛壳特效
 	FTransform GunBoltArrowTransform = GunBoltArrow->GetComponentTransform();
-	
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ShellEjectionFX, GunBoltArrowTransform);
+
+	// 获取枪口位置信息
+	MuzzleTransform = WeaponMesh->GetSocketTransform(TEXT("Gun_Muzzle"));
+	MuzzleTransform.SetScale3D(FVector(.2f, .2f, .2f));
+	// 播放开火特效
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MuzzleFlameFX, MuzzleTransform);
+
+	FireTheAmmon();
 	AmmonCurrent--;
 }
 

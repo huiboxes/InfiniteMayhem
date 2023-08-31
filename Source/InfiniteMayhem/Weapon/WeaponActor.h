@@ -53,7 +53,10 @@ protected:
 	class UArrowComponent* GunBoltArrow;
 
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties|Fire")
-	class UParticleSystem* ShellEjectionFX; // 默认击中物体后的特效
+	class UParticleSystem* ShellEjectionFX; // 抛壳特效
+	
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties|Fire")
+	class UParticleSystem* MuzzleFlameFX; // 开火特效
 
 	UPROPERTY(VisibleAnywhere)
 	EWeaponState CurrentState = EWeaponState::EWS_Drop;
@@ -104,6 +107,8 @@ private:
 	float MaxShootDistance = 50000;
 
 	void HandleFire();
+
+	FTransform MuzzleTransform;
 
 	
 public:

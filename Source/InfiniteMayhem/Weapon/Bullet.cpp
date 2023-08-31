@@ -62,7 +62,7 @@ void ABullet::HitObjectHandle(const FHitResult& Hit) {
 		UPhysicalMaterial* mat = Outhit.PhysMaterial.Get();
 
 		FVector HitLoc = Outhit.Location;
-		FVector FxScale = FVector(.5f, .5f, .5f);
+		FVector FxScale = FVector(.3f, .3f, .3f);
 
 		switch (mat->SurfaceType) {
 		case EPhysicalSurface::SurfaceType1: // 打中了 Metal
