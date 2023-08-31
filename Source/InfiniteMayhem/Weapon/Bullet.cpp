@@ -41,10 +41,17 @@ void ABullet::Tick(float DeltaTime)
 void ABullet::OnSphereHitEvent(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
 	
 	FVector HitLoc = Hit.Location;
-	FRotator HitRot = Hit.GetActor()->GetActorRotation();
 	
 	if (HitDecal) { // 在击中的地方生成贴花
 		UGameplayStatics::SpawnDecalAtLocation(GetWorld(), HitDecal, FVector(7.f, 7.f, 7.f), HitLoc, Hit.Normal.Rotation(), 20.f);
+	}
+
+	/*if (OtherComp) { // 单位死亡
+		OtherComp->SetSimulatePhysics(true);
+	}*/
+
+	if (OtherComp && OtherComp->IsSimulatingPhysics()) { // 如果被击中的单位开启了物理模拟，就施加冲击力
+		OtherComp->AddImpulse(GetVelocity() * ImpulseCoeff);
 	}
 
 	Destroy();

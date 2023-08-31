@@ -31,6 +31,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Hit Properties")
 	class UMaterialInterface* HitDecal; // 击中物体后的贴花
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Hit Properties")
+	float ImpulseCoeff = 2; // 击中物体后的贴花
+
 protected:
 
 	UFUNCTION()
