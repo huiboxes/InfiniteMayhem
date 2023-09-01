@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/TimelineComponent.h"
 #include "WeaponActor.generated.h"
 
 UENUM(BlueprintType)
@@ -78,6 +79,38 @@ protected:
 	void Projectile(FVector TargetPos);
 	void FireTheAmmon();
 
+
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties|Fire")
+	float RecoilPitch = -0.2;
+
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties|Fire")
+	float RecoilYaw = 0.2;
+
+	UPROPERTY(VisibleAnywhere)
+	class UTimelineComponent* RecoilTimeline; // 后坐力 Timeline
+
+	UPROPERTY()
+	TEnumAsByte<ETimelineDirection::Type> RecoilTimelineDirection; // 时间轴播放方向
+
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties|Fire")
+	UCurveFloat* RecoilFloatCurve; // 后坐力曲线
+
+	UPROPERTY()
+	float RecoilFloatCurveFloat;
+
+	FOnTimelineFloat RecoilTimelineFloatDelegate{};
+
+	FOnTimelineEvent OnRecoilTimelineFinishDelegate{};
+
+	UFUNCTION()
+	void UpdateRecoil(float CurveOutput); // 更新后坐力值
+
+	void AddRecoil(); // 添加后坐力
+
+	UFUNCTION()
+	void RecoilRebound(); // 后座力回弹
+
+
 private:
 
 
@@ -124,9 +157,8 @@ private:
 
 	void HandleFire();
 
-	FTransform MuzzleTransform;
+	FTransform MuzzleTransform; // 枪口变换信息
 
-	
 public:
 	void ChangeWeaponState(EWeaponState State);
 	void ChangeWeaponFireState(EWeaponFireState State);

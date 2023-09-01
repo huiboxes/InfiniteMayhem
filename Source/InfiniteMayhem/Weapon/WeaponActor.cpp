@@ -8,6 +8,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/ArrowComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Curves/CurveFloat.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -18,26 +19,55 @@ AWeaponActor::AWeaponActor()
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
 	SetRootComponent(WeaponMesh);
 
+	// 球形碰撞，用于显示拾取提示 UI 
 	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollision"));
 	SphereCollision->SetupAttachment(RootComponent);
 	SphereCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 	SphereCollision->OnComponentBeginOverlap.AddDynamic(this, &AWeaponActor::OnSphereBeginOverlap);
 	SphereCollision->OnComponentEndOverlap.AddDynamic(this, &AWeaponActor::OnSphereEndOverlap);
 
+	// 枪栓位置箭头，用于确定抛壳特效位置
 	GunBoltArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("GunBoltArrow"));
 	GunBoltArrow->SetVisibility(false);
 	GunBoltArrow->SetupAttachment(RootComponent);
 	
+	// 拾取提示 UI
 	PickupWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("PickupWidget"));
 	PickupWidget->SetupAttachment(RootComponent);
 	PickupWidget->SetVisibility(false);
 
+	//static ConstructorHelpers::FObjectFinder<UCurveVector> RecoilFloatCurveAsset(TEXT("CurveFloat'/Game/InfiniteMayhem/Data/Curve_Recoil.Curve_Recoil'"));
+
+	/*static ConstructorHelpers::FObjectFinder<UCurveFloat> RecoilFloatCurveAsset(TEXT("CurveFloat'/Game/InfiniteMayhem/Data/Curve_Recoil.Curve_Recoil'"));
+	check(RecoilFloatCurveAsset.Succeeded());
+
+	RecoilFloatCurve = RecoilFloatCurveAsset.Object;*/
 }
 
 void AWeaponActor::BeginPlay()
 {
 	Super::BeginPlay();
 	AmmonCurrent = AmmonMaxCounter;
+
+	if (RecoilFloatCurve != nullptr) {
+
+		// 创建 Timeline
+		RecoilTimeline = NewObject<UTimelineComponent>(this, TEXT("RecoilTimeline"));
+		//RecoilTimeline->SetPlayRate(1.0f);
+		RecoilTimeline->SetPropertySetObject(this);
+		RecoilTimeline->SetDirectionPropertyName(TEXT("RecoilTimelineDirection"));
+
+		// 绑定更新委托
+		
+		RecoilTimelineFloatDelegate.BindDynamic(this, &AWeaponActor::UpdateRecoil);
+		
+		// 绑定完成委托
+		
+		OnRecoilTimelineFinishDelegate.BindDynamic(this, &AWeaponActor::RecoilRebound);
+		
+		RecoilTimeline->AddInterpFloat(RecoilFloatCurve, RecoilTimelineFloatDelegate, TEXT("RecoilFloatCurveFloat"), TEXT("RecoilFloatCurve"));
+
+	}
 }
 
 void AWeaponActor::Tick(float DeltaTime)
@@ -86,6 +116,36 @@ void AWeaponActor::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, 
 	}
 }
 
+void AWeaponActor::UpdateRecoil(float CurveOutput) {
+	ASWATCharacter* Player = Cast<ASWATCharacter>(GetOwner());
+	if (!Player) return;
+	//float CurrentValue = RecoilFloatCurve->GetFloatValue(RecoilTimeline->GetPlaybackPosition());
+	/*RecoilPitch *= CurrentValue;
+	RecoilYaw *= CurrentValue;*/
+	
+	UE_LOG(LogTemp, Log, TEXT("RecoilPitch  ===  %f   RecoilYaw  ===  %f   RecoilTimeline->GetPlaybackPosition() ===  %f  CurrentValue  ===  %f"), RecoilPitch, RecoilYaw, RecoilTimeline->GetPlaybackPosition(), RecoilFloatCurve->GetFloatValue(0.025));
+
+		/*RecoilTimelineDirection == ETimelineDirection::Type::Forward*/
+	if (RecoilTimelineDirection == ETimelineDirection::Type::Forward) { // 如果是正向播放就加后坐力
+		Player->AddControllerPitchInput(RecoilPitch);
+		Player->AddControllerYawInput(FMath::FRandRange(-RecoilYaw, RecoilYaw));
+	} else { // 反方向则回弹 Pitch
+		UE_LOG(LogTemp, Log, TEXT("66666"));
+		Player->AddControllerPitchInput(-RecoilPitch);
+	}
+
+}
+
+void AWeaponActor::AddRecoil() {
+	RecoilTimeline->PlayFromStart();
+}
+
+void AWeaponActor::RecoilRebound() {
+	UE_LOG(LogTemp, Log, TEXT("  RecoilRebound   "));
+
+	RecoilTimeline->Reverse();
+}
+
 void AWeaponActor::FireTheAmmon() {
 	APlayerController* Pc = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	if (!Pc) return;
@@ -114,8 +174,6 @@ void AWeaponActor::Projectile(FVector TargetPos) {
 	
 	if (BulletClass) {// 从枪口生成一个子弹
 		ABullet* Bullet = GetWorld()->SpawnActor<ABullet>(BulletClass, MuzzlePos, FireDir.Rotation());
-
-		
 	}
 
 }
@@ -128,11 +186,14 @@ void AWeaponActor::ShowPickupWidget(bool bShowWidget) {
 
 void AWeaponActor::HandleFire() {
 	
-	if (AmmonCurrent <= 0) { // 没子弹时的枪声
+	if (AmmonCurrent <= 0) { // 播放没子弹时的枪声并结束开枪
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), EmptySound, GetActorLocation());
 		StopFire();
 		return;
 	}
+	// 添加后坐力
+	AddRecoil();
+
 	// 普通枪声
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), FireSound, GetActorLocation());
 
@@ -166,7 +227,6 @@ void AWeaponActor::OnEmptyShellCollide(FName EventName, float EmitterTime, int32
 			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ShellBounceSound, Location);
 		}
 	}
-
 }
 
 
@@ -178,7 +238,7 @@ void AWeaponActor::StartFire() {
 		HandleFire();
 		StopFire(); // 单发则提前停止
 	}
-
+	
 }
 
 void AWeaponActor::StopFire() {
