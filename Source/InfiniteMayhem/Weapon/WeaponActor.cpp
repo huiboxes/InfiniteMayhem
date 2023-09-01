@@ -36,12 +36,6 @@ AWeaponActor::AWeaponActor()
 	PickupWidget->SetupAttachment(RootComponent);
 	PickupWidget->SetVisibility(false);
 
-	//static ConstructorHelpers::FObjectFinder<UCurveVector> RecoilFloatCurveAsset(TEXT("CurveFloat'/Game/InfiniteMayhem/Data/Curve_Recoil.Curve_Recoil'"));
-
-	/*static ConstructorHelpers::FObjectFinder<UCurveFloat> RecoilFloatCurveAsset(TEXT("CurveFloat'/Game/InfiniteMayhem/Data/Curve_Recoil.Curve_Recoil'"));
-	check(RecoilFloatCurveAsset.Succeeded());
-
-	RecoilFloatCurve = RecoilFloatCurveAsset.Object;*/
 }
 
 void AWeaponActor::BeginPlay()
@@ -49,31 +43,12 @@ void AWeaponActor::BeginPlay()
 	Super::BeginPlay();
 	AmmonCurrent = AmmonMaxCounter;
 
-	if (RecoilFloatCurve != nullptr) {
-
-		// 创建 Timeline
-		RecoilTimeline = NewObject<UTimelineComponent>(this, TEXT("RecoilTimeline"));
-		//RecoilTimeline->SetPlayRate(1.0f);
-		RecoilTimeline->SetPropertySetObject(this);
-		RecoilTimeline->SetDirectionPropertyName(TEXT("RecoilTimelineDirection"));
-
-		// 绑定更新委托
-		
-		RecoilTimelineFloatDelegate.BindDynamic(this, &AWeaponActor::UpdateRecoil);
-		
-		// 绑定完成委托
-		
-		OnRecoilTimelineFinishDelegate.BindDynamic(this, &AWeaponActor::RecoilRebound);
-		
-		RecoilTimeline->AddInterpFloat(RecoilFloatCurve, RecoilTimelineFloatDelegate, TEXT("RecoilFloatCurveFloat"), TEXT("RecoilFloatCurve"));
-
-	}
 }
 
 void AWeaponActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
 }
 
 void AWeaponActor::ChangeWeaponState(EWeaponState State) {
@@ -114,36 +89,6 @@ void AWeaponActor::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, 
 	if (Player) {
 		Player->SetOverlappingWeapon(nullptr);
 	}
-}
-
-void AWeaponActor::UpdateRecoil(float CurveOutput) {
-	ASWATCharacter* Player = Cast<ASWATCharacter>(GetOwner());
-	if (!Player) return;
-	//float CurrentValue = RecoilFloatCurve->GetFloatValue(RecoilTimeline->GetPlaybackPosition());
-	/*RecoilPitch *= CurrentValue;
-	RecoilYaw *= CurrentValue;*/
-	
-	UE_LOG(LogTemp, Log, TEXT("RecoilPitch  ===  %f   RecoilYaw  ===  %f   RecoilTimeline->GetPlaybackPosition() ===  %f  CurrentValue  ===  %f"), RecoilPitch, RecoilYaw, RecoilTimeline->GetPlaybackPosition(), RecoilFloatCurve->GetFloatValue(0.025));
-
-		/*RecoilTimelineDirection == ETimelineDirection::Type::Forward*/
-	if (RecoilTimelineDirection == ETimelineDirection::Type::Forward) { // 如果是正向播放就加后坐力
-		Player->AddControllerPitchInput(RecoilPitch);
-		Player->AddControllerYawInput(FMath::FRandRange(-RecoilYaw, RecoilYaw));
-	} else { // 反方向则回弹 Pitch
-		UE_LOG(LogTemp, Log, TEXT("66666"));
-		Player->AddControllerPitchInput(-RecoilPitch);
-	}
-
-}
-
-void AWeaponActor::AddRecoil() {
-	RecoilTimeline->PlayFromStart();
-}
-
-void AWeaponActor::RecoilRebound() {
-	UE_LOG(LogTemp, Log, TEXT("  RecoilRebound   "));
-
-	RecoilTimeline->Reverse();
 }
 
 void AWeaponActor::FireTheAmmon() {
@@ -191,8 +136,9 @@ void AWeaponActor::HandleFire() {
 		StopFire();
 		return;
 	}
-	// 添加后坐力
-	AddRecoil();
+
+	// 执行蓝图中的扩展方法
+	OnWeaponFire.Broadcast();
 
 	// 普通枪声
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), FireSound, GetActorLocation());
