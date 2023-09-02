@@ -69,9 +69,10 @@ protected:
 protected:
 	void UpdateStatusFromPlayer();
 
+	void UpdateLeftHandTransform(); // 更新手掌托扶的位置
+
 	UFUNCTION()
 	void AnimNotify_ReloadOver();
-	
 	
 	UFUNCTION()
 	void AnimNotify_PullOutWeapon();
@@ -79,6 +80,12 @@ protected:
 	UFUNCTION()
 	void AnimNotify_SwitchWeaponOver();
 
-	void UpdateLeftHandTransform(); // 更新手掌托扶的位置
+	UFUNCTION()
+	void AnimNotify_RemoveMag();
+
+	UFUNCTION()
+	void AnimNotify_GenerateMag();
+
+	
 
 };

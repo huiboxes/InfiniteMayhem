@@ -58,6 +58,19 @@ void UIMFPSAnimInstance::AnimNotify_SwitchWeaponOver() {
 	}
 }
 
+void UIMFPSAnimInstance::AnimNotify_RemoveMag() {
+	if (Player) {
+		Player->GetEquippedWeapon()->RemoveMag();
+	}
+
+}
+
+void UIMFPSAnimInstance::AnimNotify_GenerateMag() {
+	if (Player) {
+		Player->GetEquippedWeapon()->GenerateMag();
+	}
+}
+
 void UIMFPSAnimInstance::UpdateLeftHandTransform() {
 	if (Player->IsHoldWeapon()) {
 		// 获取左手插槽的变换信息

@@ -84,7 +84,6 @@ protected:
 	UPROPERTY(BlueprintAssignable, Category = "Weapon Properties|Fire")
 	FHandleFireDelegate OnWeaponFire;
 
-
 private:
 
 
@@ -93,8 +92,6 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
 	class UAnimMontage* ReloadMontage;
-
-	FTimerHandle FireTimerHandle; // 开火定时器句柄
 	
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties|Fire")
 	TSubclassOf<class ABullet> BulletClass;
@@ -122,6 +119,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties|Ammon")
 	TSubclassOf<class AMagazine> MagClass;
+	
+	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties|Ammon")
+	AMagazine* MagComp;
 
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties|Ammon")
 	int32 AmmonMaxCounter = 30; // 当前弹匣的最大容量
@@ -131,8 +131,6 @@ private:
 
 	int32 AmmonCurrent = 0; // 当前弹匣剩余子弹
 
-	
-
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
 	float MaxShootDistance = 50000;
 
@@ -140,28 +138,33 @@ private:
 
 	FTransform MuzzleTransform; // 枪口变换信息
 
+	FTimerHandle FireTimerHandle; // 开火定时器句柄
+
+	FTimerHandle RemoveMagTimerHandle; // 移除弹夹定时器句柄
+
 	bool bCanFire = true;
 	void SetCanFire(bool _bCanFire) { bCanFire = _bCanFire; };
 
 public:
 	void ChangeWeaponState(EWeaponState State);
 	void ChangeWeaponFireState(EWeaponFireState State);
-	bool IsEquipped() { return CurrentState == EWeaponState::EWS_Equipped; };
-	EWeaponState GetCurrentState() { return CurrentState; };
-	EWeaponFireState GetCurrentFireState() { return CurrentFireState; };
 	void ShowPickupWidget(bool bShowWidget);
 	void StartFire();
 	void StopFire();
 	void ReloadWeapon();
 	void ReloadAmmonOver();
-	bool CanFire() { return bCanFire; };
+	void RemoveMag();
+	void GenerateMag();
 
 
+	FORCEINLINE bool IsEquipped() { return CurrentState == EWeaponState::EWS_Equipped; };
+	FORCEINLINE EWeaponState GetCurrentState() { return CurrentState; };
+	FORCEINLINE EWeaponFireState GetCurrentFireState() { return CurrentFireState; };
+	FORCEINLINE bool CanFire() { return bCanFire; };
 	FORCEINLINE int32 GetAmmonMaxCounter() { return AmmonMaxCounter; };
 	FORCEINLINE int32 GetAmmonCurrent() { return AmmonCurrent; };
 	FORCEINLINE int32 GetMagNum() { return MagNum; };
 	FORCEINLINE void SwitchFireMode() { bIsFullyAutomatic = !bIsFullyAutomatic; };
-
 
 	class USkeletalMeshComponent* GetMesh();
 };

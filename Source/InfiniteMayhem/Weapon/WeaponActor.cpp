@@ -48,8 +48,8 @@ void AWeaponActor::BeginPlay()
 		MagNum--;
 
 		if (MagClass) {
-			AMagazine* Mag = GetWorld()->SpawnActor<AMagazine>(MagClass);
-			Mag->AttachToComponent(WeaponMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("Gun_magazinesocket"));
+			MagComp = GetWorld()->SpawnActor<AMagazine>(MagClass);
+			MagComp->AttachToComponent(WeaponMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("Gun_magazinesocket"));
 		}
 	}
 }
@@ -175,13 +175,7 @@ void AWeaponActor::HandleFire() {
 }
 
 void AWeaponActor::OnEmptyShellCollide(FName EventName, float EmitterTime, int32 ParticleTime, FVector Location, FVector Velocity, FVector Direction, FVector Normal, FName BoneName, UPhysicalMaterial* PhysMat){
-	for (int32 i = 0; i < 3; i++) {
-		if (i == 2) { // 结束时播放结束声音
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ShellCollideSound, Location);
-		} else { // 反复弹跳的声音
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ShellBounceSound, Location);
-		}
-	}
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), ShellBounceSound, Location);
 }
 
 
@@ -220,11 +214,31 @@ void AWeaponActor::ReloadWeapon() {
 
 void AWeaponActor::ReloadAmmonOver() {
 	SetCanFire(true);
+	MagComp->AttachToComponent(WeaponMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("Gun_magazinesocket"));
 	AmmonCurrent = AmmonMaxCounter;
-	MagNum--;
-	
+
 	ChangeWeaponFireState(EWeaponFireState::EWS_Idle);
 	
+}
+
+void AWeaponActor::RemoveMag() {
+	ASWATCharacter* Player = Cast<ASWATCharacter>(GetOwner());
+	if (!Player) return;
+
+	MagComp->AttachToComponent(Player->GetMesh(), FAttachmentTransformRules::KeepWorldTransform, TEXT("S_Mag"));
+	GetWorldTimerManager().SetTimer(RemoveMagTimerHandle, MagComp, &AMagazine::DetachMag, 0.2f, false);
+	
+}
+
+
+void AWeaponActor::GenerateMag() {
+	ASWATCharacter* Player = Cast<ASWATCharacter>(GetOwner());
+	if (!Player) return;
+
+	MagComp = GetWorld()->SpawnActor<AMagazine>(MagClass);
+	MagComp->AttachToComponent(Player->GetMesh(), FAttachmentTransformRules::KeepWorldTransform, TEXT("S_Mag"));
+
+	MagNum--;
 }
 
 USkeletalMeshComponent* AWeaponActor::GetMesh() {

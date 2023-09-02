@@ -26,5 +26,12 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Magazine Properties")
 	class USkeletalMeshComponent* MagMesh;
 
+	FTimerHandle DetachTimerHandle;
+
+public:
+
+	void DetachMag();
+
+	void DestroyMag();
 
 };

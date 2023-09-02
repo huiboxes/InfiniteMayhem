@@ -14,7 +14,6 @@ AMagazine::AMagazine()
 	MagMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	MagMesh->SetCollisionProfileName(TEXT("PhysicsBody"));
 	MagMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
-
 }
 
 void AMagazine::BeginPlay()
@@ -27,5 +26,17 @@ void AMagazine::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void AMagazine::DetachMag() {
+	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+	MagMesh->SetSimulatePhysics(true);
+	
+	GetWorldTimerManager().SetTimer(DetachTimerHandle, this, &ThisClass::DestroyMag, 30, false);
+
+}
+
+void AMagazine::DestroyMag() {
+	Destroy();
 }
 
