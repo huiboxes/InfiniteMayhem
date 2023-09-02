@@ -121,6 +121,9 @@ private:
 	class USoundBase* ShellCollideSound; // 子弹落地声音
 
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties|Ammon")
+	TSubclassOf<class AMagazine> MagClass;
+
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties|Ammon")
 	int32 AmmonMaxCounter = 30; // 当前弹匣的最大容量
 
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties|Ammon")

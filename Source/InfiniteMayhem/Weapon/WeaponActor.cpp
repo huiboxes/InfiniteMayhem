@@ -4,6 +4,7 @@
 #include "WeaponActor.h"
 #include "../Player/SWATCharacter.h"
 #include "Bullet.h"
+#include "Magazine.h"
 
 #include "Components/SphereComponent.h"
 #include "Components/ArrowComponent.h"
@@ -45,6 +46,11 @@ void AWeaponActor::BeginPlay()
 	if (MagNum) {
 		AmmonCurrent = AmmonMaxCounter;
 		MagNum--;
+
+		if (MagClass) {
+			AMagazine* Mag = GetWorld()->SpawnActor<AMagazine>(MagClass);
+			Mag->AttachToComponent(WeaponMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("Gun_magazinesocket"));
+		}
 	}
 }
 
