@@ -109,6 +109,7 @@ void UCombatComponent::UpdateFireCrosshairOffset(float DeltaTime) {
 	float Speed = Player->GetVelocity().Size();
 	float Offset = 0;
 
+
 	if (Speed < 150) {
 		Offset = 15;
 		// FireCrosshairOffset = 5;
@@ -123,9 +124,9 @@ void UCombatComponent::UpdateFireCrosshairOffset(float DeltaTime) {
 		//FireCrosshairOffset = 35;
 	} else { // 实在太快了，不显示准星
 		Offset = 100;
-		//return;
-		//FireCrosshairOffset = -1;
 	}
-	FireCrosshairOffset = FMath::FInterpTo(FireCrosshairOffset, Offset, DeltaTime, 3);
+	float RecoilOffset = Player->IsFiring() ? 20 : 0; // 开枪则增加准星偏移
+
+	FireCrosshairOffset = FMath::FInterpTo(FireCrosshairOffset, Offset + RecoilOffset, DeltaTime, 3);
 }
 
