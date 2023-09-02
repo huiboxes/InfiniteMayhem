@@ -66,7 +66,7 @@ void ASWATCharacter::ChangeState(ESWATState State) {
 	case ESWATState::ESS_Rilfe:
 		CameraBoomSocketYOffset = 90;
 		CameraBoomSocketZOffset = 60;
-		CameraXOffset = 80;
+		CameraXOffset = 50;
 
 		break;
 	default:
@@ -76,13 +76,11 @@ void ASWATCharacter::ChangeState(ESWATState State) {
 }
 
 void ASWATCharacter::Accelerate() {
-	if (Speed > 0) CameraXOffset -= 50; // 镜头后拉的效果
-	
+	if (Speed >= 10) CameraXOffset -= 50; // 镜头后拉的效果
 	bIsAcceleration = true;
 }
 
 void ASWATCharacter::UnAccelerate() {
-	
 	if(Speed != 0) CameraXOffset += 50;
 	bIsAcceleration = false;
 }
@@ -230,7 +228,6 @@ void ASWATCharacter::SetOverlappingWeapon(AWeaponActor* Weapon) {
 void ASWATCharacter::EnableEquiping() {
 	if (!bIsEquiping) {
 		bIsEquiping = true;
-
 	}
 }
 

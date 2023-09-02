@@ -59,7 +59,7 @@ void AIMFPSHUD::DrawWeaponAmmon() {
 		return;
 	}
 
-	FString Msg = FString::Printf(TEXT("%d/%d"), EquippedWeapon->GetAmmonCurrent(), EquippedWeapon->GetAmmonMaxCounter());
+	FString Msg = FString::Printf(TEXT("%d/%d"), EquippedWeapon->GetAmmonCurrent(), EquippedWeapon->GetMagNum() * EquippedWeapon->GetAmmonMaxCounter());
 	DrawText(Msg, FLinearColor::Yellow, PaintX, PaintY);
 }
 

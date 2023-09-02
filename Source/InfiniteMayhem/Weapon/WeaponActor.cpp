@@ -41,8 +41,11 @@ AWeaponActor::AWeaponActor()
 void AWeaponActor::BeginPlay()
 {
 	Super::BeginPlay();
-	AmmonCurrent = AmmonMaxCounter;
 
+	if (MagNum) {
+		AmmonCurrent = AmmonMaxCounter;
+		MagNum--;
+	}
 }
 
 void AWeaponActor::Tick(float DeltaTime)
@@ -212,7 +215,10 @@ void AWeaponActor::ReloadWeapon() {
 void AWeaponActor::ReloadAmmonOver() {
 	SetCanFire(true);
 	AmmonCurrent = AmmonMaxCounter;
+	MagNum--;
+	
 	ChangeWeaponFireState(EWeaponFireState::EWS_Idle);
+	
 }
 
 USkeletalMeshComponent* AWeaponActor::GetMesh() {
