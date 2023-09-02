@@ -106,7 +106,7 @@ void ASWATCharacter::IronsightButtonPressed() {
 }
 
 void ASWATCharacter::IronsightButtonReleased() {
-	UGameplayStatics::PlaySound2D(GetWorld(), HolsterSound);
+	if (IsHoldWeapon()) UGameplayStatics::PlaySound2D(GetWorld(), HolsterSound);
 	bAiming = false;
 }
 

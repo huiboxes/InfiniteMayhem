@@ -138,7 +138,7 @@ void AWeaponActor::HandleFire() {
 	}
 
 	// 执行蓝图中的扩展方法
-	OnWeaponFire.Broadcast();
+	//OnWeaponFire.Broadcast();
 
 	// 普通枪声
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), FireSound, GetActorLocation());
