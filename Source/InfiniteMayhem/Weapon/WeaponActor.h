@@ -123,8 +123,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties|Sound")
 	class USoundBase* ShellCollideSound; // 子弹落地声音
 
-
 	int32 AmmonCurrent; // 当前弹匣剩余子弹
+
+	int32 MagNum = 1; // 弹夹数量
 
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
 	float MaxShootDistance = 50000;
@@ -132,6 +133,9 @@ private:
 	void HandleFire();
 
 	FTransform MuzzleTransform; // 枪口变换信息
+
+	bool bCanFire = true;
+	void SetCanFire(bool _bCanFire) { bCanFire = _bCanFire; };
 
 public:
 	void ChangeWeaponState(EWeaponState State);
@@ -144,6 +148,7 @@ public:
 	void StopFire();
 	void ReloadWeapon();
 	void ReloadAmmonOver();
+	bool CanFire() { return bCanFire; };
 
 
 	FORCEINLINE int32 GetAmmonMaxCounter() { return AmmonMaxCounter; };

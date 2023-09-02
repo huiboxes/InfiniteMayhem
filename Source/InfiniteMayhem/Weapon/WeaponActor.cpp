@@ -138,7 +138,7 @@ void AWeaponActor::HandleFire() {
 	}
 
 	// 执行蓝图中的扩展方法
-	//OnWeaponFire.Broadcast();
+	OnWeaponFire.Broadcast();
 
 	// 普通枪声
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), FireSound, GetActorLocation());
@@ -177,6 +177,7 @@ void AWeaponActor::OnEmptyShellCollide(FName EventName, float EmitterTime, int32
 
 
 void AWeaponActor::StartFire() {
+	if (!CanFire()) return;
 	ChangeWeaponFireState(EWeaponFireState::EWS_Firing);
 	if (bIsFullyAutomatic) {
 		GetWorldTimerManager().SetTimer(FireTimerHandle, this, &ThisClass::HandleFire, FiringRate, true, 0);
@@ -194,10 +195,10 @@ void AWeaponActor::StopFire() {
 
 
 void AWeaponActor::ReloadWeapon() {
-	
 	ASWATCharacter* Player = Cast<ASWATCharacter>(GetOwner());
-	if (!Player || CurrentFireState == EWeaponFireState::EWS_Reload) return;
-
+	if (!Player || CurrentFireState == EWeaponFireState::EWS_Reload || AmmonCurrent >= AmmonMaxCounter || MagNum <= 0) return;
+	
+	SetCanFire(false);
 	ChangeWeaponFireState(EWeaponFireState::EWS_Reload);
 
 	FName SectionName = TEXT("Default");
@@ -209,6 +210,7 @@ void AWeaponActor::ReloadWeapon() {
 
 
 void AWeaponActor::ReloadAmmonOver() {
+	SetCanFire(true);
 	AmmonCurrent = AmmonMaxCounter;
 	ChangeWeaponFireState(EWeaponFireState::EWS_Idle);
 }
