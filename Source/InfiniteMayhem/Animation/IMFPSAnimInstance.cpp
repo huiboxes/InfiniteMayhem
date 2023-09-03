@@ -71,6 +71,18 @@ void UIMFPSAnimInstance::AnimNotify_GenerateMag() {
 	}
 }
 
+void UIMFPSAnimInstance::AnimNotify_LeftFootStep() {
+	if (Player) {
+		Player->PlayLeftFootStep();
+	}
+}
+
+void UIMFPSAnimInstance::AnimNotify_RightFootStep() {
+	if (Player) {
+		Player->PlayRighttFootStep();
+	}
+}
+
 void UIMFPSAnimInstance::UpdateLeftHandTransform() {
 	if (Player->IsHoldWeapon()) {
 		// 获取左手插槽的变换信息

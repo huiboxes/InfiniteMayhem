@@ -64,37 +64,36 @@ void ABullet::HitObjectHandle(const FHitResult& Hit) {
 		FVector FxScale = FVector(.4f, .4f, .4f);
 
 		switch (mat->SurfaceType) {
-		case EPhysicalSurface::SurfaceType1: // 打中了 Metal
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitMetalFX, FTransform(Hit.Normal.Rotation(), HitLoc, FxScale));
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitMetalSound, Hit.Location);
-			break;
-		case EPhysicalSurface::SurfaceType2: // 打中了 Gravel
+			case EPhysicalSurface::SurfaceType1: // 打中了 Metal
+				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitMetalFX, FTransform(Outhit.Normal.Rotation(), HitLoc, FxScale));
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitMetalSound, Outhit.Location);
+				break;
+			case EPhysicalSurface::SurfaceType2: // 打中了 Gravel
 			
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitGravelFX, FTransform(Hit.Normal.Rotation(), HitLoc, FxScale));
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitGravelSound, Hit.Location);
-			break;
-		case EPhysicalSurface::SurfaceType3: // 打中了 Conocrete
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitConcreteFX, FTransform(Hit.Normal.Rotation(), HitLoc, FxScale));
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitConcreteSound, Hit.Location);
-			break;
-		case EPhysicalSurface::SurfaceType4: // 打中了 Wood
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitWoodFX, FTransform(Hit.Normal.Rotation(), HitLoc, FxScale));
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitWoodSound, Hit.Location);
-			break;
-		case EPhysicalSurface::SurfaceType5: // 打中了 Rock
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitRockFX, FTransform(Hit.Normal.Rotation(), HitLoc, FxScale));
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitRockSound, Hit.Location);
-			break;
-		case EPhysicalSurface::SurfaceType6: // 打中了 Grass
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitGrassFX, FTransform(Hit.Normal.Rotation(), HitLoc, FxScale));
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitGrassSound, Hit.Location);
-			break;
-		default: // 默认打中的沙地
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitGravelFX, FTransform(Hit.Normal.Rotation(), HitLoc, FxScale));
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitGravelSound, Hit.Location);
-			break;
+				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitGravelFX, FTransform(Outhit.Normal.Rotation(), HitLoc, FxScale));
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitGravelSound, Outhit.Location);
+				break;
+			case EPhysicalSurface::SurfaceType3: // 打中了 Conocrete
+				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitConcreteFX, FTransform(Outhit.Normal.Rotation(), HitLoc, FxScale));
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitConcreteSound, Outhit.Location);
+				break;
+			case EPhysicalSurface::SurfaceType4: // 打中了 Wood
+				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitWoodFX, FTransform(Outhit.Normal.Rotation(), HitLoc, FxScale));
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitWoodSound, Outhit.Location);
+				break;
+			case EPhysicalSurface::SurfaceType5: // 打中了 Rock
+				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitRockFX, FTransform(Outhit.Normal.Rotation(), HitLoc, FxScale));
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitRockSound, Outhit.Location);
+				break;
+			case EPhysicalSurface::SurfaceType6: // 打中了 Grass
+				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitGrassFX, FTransform(Outhit.Normal.Rotation(), HitLoc, FxScale));
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitGrassSound, Outhit.Location);
+				break;
+			default: // 默认打中的沙地
+				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitGravelFX, FTransform(Outhit.Normal.Rotation(), HitLoc, FxScale));
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitGravelSound, Outhit.Location);
+				break;
 		}
-
 	}
 }
 

@@ -53,53 +53,44 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	bool IsAcceleration();
-
 	bool IsHoldWeapon();
-	
-	bool IsCrouched() { return bIsCrouched; };
-
 	bool IsInAir();
-
 	bool IsAiming();
-
 	bool IsFiring();
 
-	FORCEINLINE bool IsEquiping() { return bIsEquiping; };
-
 	void EnableEquiping() ;
-	FORCEINLINE void DisableEquiping() { bIsEquiping = false; };
-
-	FORCEINLINE ESWATState GetCurrentState() { return CurrentState; };
-
 	void ChangeState(ESWATState State);
 
 
 	class USpringArmComponent* GetCameraBoom();
-
 	void SetOverlappingWeapon(class AWeaponActor* Weapon);
-
 	class AWeaponActor* GetEquippedWeapon();
 
+	void FootstepJudgment(FVector ToeLoc); // 传入的脚趾位置，判断踩到的什么材质
+	void PlayLeftFootStep(); // 播放左脚脚步
+	void PlayRighttFootStep(); // 播放右脚脚步
+
+	FORCEINLINE	bool IsCrouched() { return bIsCrouched; };
+	FORCEINLINE void DisableEquiping() { bIsEquiping = false; };
+	FORCEINLINE bool IsEquiping() { return bIsEquiping; };
+	FORCEINLINE ESWATState GetCurrentState() { return CurrentState; };
 	FORCEINLINE class UCombatComponent* GetCombatComp() { return CombatComp; };
-	
 	FORCEINLINE float GetAO_Yaw() const { return AO_Yaw; };
 	FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; };
-
-
 	FORCEINLINE float GetSpeed() const { return Speed; };
 
 protected:
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category = "Character Properties")
 	class USpringArmComponent* CameraBoom;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category = "Character Properties")
 	class UCameraComponent* MainCamera;
 	
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category = "Character Properties")
 	class AWeaponActor* OverlappingWeapon;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category = "Character Properties")
 	class UCombatComponent* CombatComp;
 
 	UPROPERTY(EditAnywhere, Category = "Character|Sound")
@@ -107,6 +98,27 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category = "Character|Sound")
 	class USoundBase* HolsterSound; // 子弹在地上反复弹跳的声音
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character|Sound|Step Sound|Default")
+	class USoundBase* HitDefaultSound; // 默认踩到地上的音效
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character|Sound|Step Sound|Metal")
+	class USoundBase* OnMetalSound; // 踩到金属后的音效
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character|Sound|Step Sound|Gravel")
+	class USoundBase* OnGravelSound; // 踩到沙地后的音效
+		   
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character|Sound|Step Sound|Concrete")
+	class USoundBase* OnConcreteSound; // 踩到混凝土后的音效
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character|Sound|Step Sound|Wood")
+	class USoundBase* OnWoodSound; // 踩到木头后的音效
+		  
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character|Sound|Step Sound|Rock")
+	class USoundBase* OnRockSound; // 踩到岩石后的音效
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character|Sound|Step Sound|Grass")
+	class USoundBase* OnGrassSound; // 踩到草地后的音效
 
 	bool bIsAcceleration = false;
 	

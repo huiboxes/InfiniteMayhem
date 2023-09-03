@@ -86,6 +86,10 @@ protected:
 	UFUNCTION()
 	void AnimNotify_GenerateMag();
 
+	UFUNCTION()
+	void AnimNotify_LeftFootStep(); // 左脚脚步声
 	
+	UFUNCTION()
+	void AnimNotify_RightFootStep(); // 右脚脚步
 
 };

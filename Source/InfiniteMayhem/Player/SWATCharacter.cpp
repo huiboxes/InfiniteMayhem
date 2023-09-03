@@ -2,12 +2,15 @@
 
 
 #include "SWATCharacter.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "Camera/CameraComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "../Weapon/WeaponActor.h"
 #include "../Components/FPSCharacterMovementComponent.h"
 #include "../Components/CombatComponent.h"
+
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "PhysicalMaterials/PhysicalMaterial.h"
+#include "Components/ArrowComponent.h"
 #include <Kismet/KismetMathLibrary.h>
 #include <Kismet/GameplayStatics.h>
 
@@ -24,10 +27,8 @@ ASWATCharacter::ASWATCharacter(const FObjectInitializer& Initializer): Super(Ini
 	MainCamera->SetupAttachment(CameraBoom);
 
 	CombatComp = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComp"));
-
 }
 
-// Called when the game starts or when spawned
 void ASWATCharacter::BeginPlay() {
 	Super::BeginPlay();
 
@@ -213,6 +214,7 @@ AWeaponActor* ASWATCharacter::GetEquippedWeapon() {
 	return CombatComp->EquippedWeapon;
 }
 
+
 void ASWATCharacter::SetOverlappingWeapon(AWeaponActor* Weapon) {
 	if (OverlappingWeapon) { // 检查上一次的是否还存在
 		OverlappingWeapon->ShowPickupWidget(false);
@@ -250,5 +252,53 @@ void ASWATCharacter::AimOffset(float DeltaTime) {
 
 }
 
+void ASWATCharacter::FootstepJudgment(FVector ToeLoc) {
+	FVector Start = ToeLoc;
+	FVector End = Start;
+	End.Z -= 50.f; // 向下偏移
 
+	FHitResult OutHit;
+	TArray<AActor*> ActorsToIgnore; // 如果有要忽略的 Actor，可以添加到这个数组
+	ActorsToIgnore.Add(Controller->GetPawn());
+
+	if (UKismetSystemLibrary::LineTraceSingle(GetWorld(), Start, End, ETraceTypeQuery::TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::None, OutHit, true)) { // 自定义的 Hit 通道
+		UPhysicalMaterial* mat = OutHit.PhysMaterial.Get();
+		FVector HitLoc = OutHit.Location;
+		
+		switch (mat->SurfaceType) {
+			case EPhysicalSurface::SurfaceType1: // 踩到了 Metal
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), OnMetalSound, OutHit.Location);
+				break;
+			case EPhysicalSurface::SurfaceType2: // 踩到了 Gravel
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), OnGravelSound, OutHit.Location);
+				break;
+			case EPhysicalSurface::SurfaceType3: // 踩到了 Conocrete
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), OnConcreteSound, OutHit.Location);
+				break;
+			case EPhysicalSurface::SurfaceType4: // 踩到了 Wood
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), OnWoodSound, OutHit.Location);
+				break;
+			case EPhysicalSurface::SurfaceType5: // 踩到了 Rock
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), OnRockSound, OutHit.Location);
+				break;
+			case EPhysicalSurface::SurfaceType6: // 踩到了 Grass
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), OnGrassSound, OutHit.Location);
+				break;
+			default: // 默认踩到泥土
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitDefaultSound, OutHit.Location);
+				break;
+		}
+	}
+
+}
+
+void ASWATCharacter::PlayLeftFootStep() {
+	FVector LeftToeBaseLoc = GetMesh()->GetSocketLocation(TEXT("LeftToeBase"));
+	FootstepJudgment(LeftToeBaseLoc);
+}
+
+void ASWATCharacter::PlayRighttFootStep() {
+	FVector LeftToeBaseLoc = GetMesh()->GetSocketLocation(TEXT("RightToeBase"));
+	FootstepJudgment(LeftToeBaseLoc);
+}
 
