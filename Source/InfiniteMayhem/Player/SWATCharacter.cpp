@@ -97,12 +97,14 @@ void ASWATCharacter::UnAccelerate() {
 
 void ASWATCharacter::CrouchButtonPressed() {
 	bIsCrouched = true;
+	SetStanding(0.f);
 	Crouch();
 }
 
 
 void ASWATCharacter::CrouchButtonReleased() {
 	bIsCrouched = false;
+	SetStanding(1.f);
 	UnCrouch();
 }
 
@@ -122,8 +124,13 @@ void ASWATCharacter::PickupButtonPressed() {
 		CombatComp->EquipWeapon(OverlappingWeapon);
 	}
 
+	
+
 	FHitResult OutHit;
 	if (PickRangeDetection(OutHit)) {
+		bPicking = true;
+		GetWorldTimerManager().SetTimer(PickupTimerHandle, this, &ASWATCharacter::CancelPicking, 0.6f, false);
+		
 		IIPickableInterface::Execute_Pickup(OutHit.GetActor());
 	}
 

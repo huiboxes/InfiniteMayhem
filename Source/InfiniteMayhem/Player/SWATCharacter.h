@@ -74,12 +74,15 @@ public:
 	FORCEINLINE	bool IsCrouched() { return bIsCrouched; };
 	FORCEINLINE void DisableEquiping() { bIsEquiping = false; };
 	FORCEINLINE bool IsEquiping() { return bIsEquiping; };
-	FORCEINLINE bool IsPicking() { return bPikcing; };
+	FORCEINLINE bool IsPicking() { return bPicking; };
+	FORCEINLINE void CancelPicking() { bPicking = false; };
 	FORCEINLINE ESWATState GetCurrentState() { return CurrentState; };
 	FORCEINLINE class UCombatComponent* GetCombatComp() { return CombatComp; };
 	FORCEINLINE float GetAO_Yaw() const { return AO_Yaw; };
 	FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; };
 	FORCEINLINE float GetSpeed() const { return Speed; };
+	FORCEINLINE float GetStanding() { return Standing; };
+	FORCEINLINE void SetStanding(float _Standing) { Standing = _Standing; };
 
 
 protected:
@@ -127,8 +130,10 @@ protected:
 	bool bIsCrouched = false;
 	bool bAiming = false;
 	bool bIsEquiping = false;
-	bool bPikcing = false;
-	
+	bool bPicking = false;
+
+	FTimerHandle PickupTimerHandle;
+	float Standing = 1.f;
 
 	ESWATState CurrentState = ESWATState::ESS_Normal;
 
