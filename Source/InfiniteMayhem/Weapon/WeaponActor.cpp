@@ -199,7 +199,7 @@ void AWeaponActor::StopFire() {
 
 void AWeaponActor::ReloadWeapon() {
 	ASWATCharacter* Player = Cast<ASWATCharacter>(GetOwner());
-	if (!Player || CurrentFireState == EWeaponFireState::EWS_Reload || AmmonCurrent >= AmmonMaxCounter || MagNum <= 0) return;
+	if (CurrentFireState == EWeaponFireState::EWS_Reload || !Player || Player->IsEquiping() || AmmonCurrent >= AmmonMaxCounter || MagNum <= 0) return;
 	
 	SetCanFire(false);
 	ChangeWeaponFireState(EWeaponFireState::EWS_Reload);
@@ -238,6 +238,13 @@ void AWeaponActor::GenerateMag() {
 	MagComp->AttachToComponent(Player->GetMesh(), FAttachmentTransformRules::KeepWorldTransform, TEXT("S_Mag"));
 
 	MagNum--;
+}
+
+bool AWeaponActor::CanFire() {
+	ASWATCharacter* Player = Cast<ASWATCharacter>(GetOwner());
+	if (!Player) return false;
+
+	return bCanFire && !Player->IsEquiping();
 }
 
 USkeletalMeshComponent* AWeaponActor::GetMesh() {

@@ -160,7 +160,7 @@ public:
 	FORCEINLINE bool IsEquipped() { return CurrentState == EWeaponState::EWS_Equipped; };
 	FORCEINLINE EWeaponState GetCurrentState() { return CurrentState; };
 	FORCEINLINE EWeaponFireState GetCurrentFireState() { return CurrentFireState; };
-	FORCEINLINE bool CanFire() { return bCanFire; };
+	FORCEINLINE bool CanFire();
 	FORCEINLINE int32 GetAmmonMaxCounter() { return AmmonMaxCounter; };
 	FORCEINLINE int32 GetAmmonCurrent() { return AmmonCurrent; };
 	FORCEINLINE int32 GetMagNum() { return MagNum; };

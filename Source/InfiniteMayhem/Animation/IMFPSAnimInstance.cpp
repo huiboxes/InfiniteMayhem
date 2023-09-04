@@ -29,6 +29,7 @@ void UIMFPSAnimInstance::UpdateStatusFromPlayer() {
 	bHoldWeapon = Player->IsHoldWeapon();
 	bFire = Player->IsFiring();
 	bEquiping = Player->IsEquiping();
+	bPikcing = Player->IsPicking();
 
 	FVector MoveDir = Player->GetVelocity();
 	MoveDir.Normalize();

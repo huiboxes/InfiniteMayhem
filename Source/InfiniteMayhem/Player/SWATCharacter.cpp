@@ -121,6 +121,12 @@ void ASWATCharacter::PickupButtonPressed() {
 	if (CombatComp) {
 		CombatComp->EquipWeapon(OverlappingWeapon);
 	}
+
+	FHitResult OutHit;
+	if (PickRangeDetection(OutHit)) {
+		IIPickableInterface::Execute_Pickup(OutHit.GetActor());
+	}
+
 }
 
 void ASWATCharacter::SwitchWeaponButtonPressed() {

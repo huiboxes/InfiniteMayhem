@@ -36,14 +36,17 @@ void APickableActor::Tick(float DeltaTime)
 
 void APickableActor::EnableOutlineDisplay_Implementation() {
 	ItemMesh->SetRenderCustomDepth(true);
-	UE_LOG(LogTemp, Log, TEXT("2222222222  ~~~·"));
 }
 
 void APickableActor::DisableOutlineDisplay_Implementation() {
 	ItemMesh->SetRenderCustomDepth(false);
-	UE_LOG(LogTemp, Log, TEXT("1111111111111  ~~~·"));
 }
 
 
-void APickableActor::Pickup_Implementation() {
+void APickableActor::Pickup_Implementation() { // 默认情况捡到了就销毁 Actor
+	GetWorldTimerManager().SetTimer(PickupTimerHandle, this, &APickableActor::DestroySelf, 0.2f, false);
+}
+
+void APickableActor::DestroySelf() {
+	Destroy();
 }

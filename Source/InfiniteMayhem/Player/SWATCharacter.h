@@ -74,11 +74,13 @@ public:
 	FORCEINLINE	bool IsCrouched() { return bIsCrouched; };
 	FORCEINLINE void DisableEquiping() { bIsEquiping = false; };
 	FORCEINLINE bool IsEquiping() { return bIsEquiping; };
+	FORCEINLINE bool IsPicking() { return bPikcing; };
 	FORCEINLINE ESWATState GetCurrentState() { return CurrentState; };
 	FORCEINLINE class UCombatComponent* GetCombatComp() { return CombatComp; };
 	FORCEINLINE float GetAO_Yaw() const { return AO_Yaw; };
 	FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; };
 	FORCEINLINE float GetSpeed() const { return Speed; };
+
 
 protected:
 
@@ -122,12 +124,11 @@ protected:
 	class USoundBase* OnGrassSound; // 踩到草地后的音效
 
 	bool bIsAcceleration = false;
-	
 	bool bIsCrouched = false;
-
 	bool bAiming = false;
-	
 	bool bIsEquiping = false;
+	bool bPikcing = false;
+	
 
 	ESWATState CurrentState = ESWATState::ESS_Normal;
 

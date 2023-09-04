@@ -37,5 +37,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "PickableItem Properties")
 	class USphereComponent* SphereCollision;
 
+	FTimerHandle PickupTimerHandle;
+
+	void DestroySelf();
 
 };
