@@ -44,8 +44,6 @@ protected:
 public:	
 	virtual void Tick(float DeltaTime) override;
 
-	
-
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
 	class USkeletalMeshComponent* WeaponMesh;
@@ -67,7 +65,6 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere)
 	EWeaponFireState CurrentFireState = EWeaponFireState::EWS_Idle;
-
 
 	UFUNCTION(BlueprintCallable)
 	virtual void OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OterComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

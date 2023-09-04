@@ -120,18 +120,13 @@ void ASWATCharacter::IronsightButtonReleased() {
 }
 
 void ASWATCharacter::PickupButtonPressed() {
-	if (CombatComp) {
-		CombatComp->EquipWeapon(OverlappingWeapon);
-	}
-
-	
 
 	FHitResult OutHit;
 	if (PickRangeDetection(OutHit)) {
 		bPicking = true;
 		GetWorldTimerManager().SetTimer(PickupTimerHandle, this, &ASWATCharacter::CancelPicking, 0.6f, false);
 		
-		IIPickableInterface::Execute_Pickup(OutHit.GetActor());
+		IIPickableInterface::Execute_Pickup(OutHit.GetActor(), this);
 	}
 
 }

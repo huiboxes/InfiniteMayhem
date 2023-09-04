@@ -43,7 +43,7 @@ void APickableActor::DisableOutlineDisplay_Implementation() {
 }
 
 
-void APickableActor::Pickup_Implementation() { // 默认情况捡到了就销毁 Actor
+void APickableActor::Pickup_Implementation(AActor* _Owner) { // 默认情况捡到了就销毁 Actor
 	GetWorldTimerManager().SetTimer(PickupTimerHandle, this, &APickableActor::DestroySelf, 0.2f, false);
 }
 

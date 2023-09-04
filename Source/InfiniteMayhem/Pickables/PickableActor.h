@@ -23,9 +23,9 @@ public:
 
 	virtual void EnableOutlineDisplay_Implementation() override;
 
-	void DisableOutlineDisplay_Implementation() override;
+	virtual void DisableOutlineDisplay_Implementation() override;
 
-	virtual void Pickup_Implementation() override;
+	virtual void Pickup_Implementation(AActor* _Owner) override;
 
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "PickableItem Properties")

@@ -29,7 +29,7 @@ public:
 	void DisableOutlineDisplay(); // 关闭描边
 
 	UFUNCTION(BlueprintNativeEvent)
-	void Pickup(); // 拾取 
+	void Pickup(AActor* _Owner); // 拾取 
 
 
 };
