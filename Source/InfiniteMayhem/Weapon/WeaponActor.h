@@ -47,9 +47,6 @@ public:
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
 	class USkeletalMeshComponent* WeaponMesh;
-
-	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
-	class USphereComponent* SphereCollision;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
 	class UArrowComponent* GunBoltArrow;
@@ -65,12 +62,6 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere)
 	EWeaponFireState CurrentFireState = EWeaponFireState::EWS_Idle;
-
-	UFUNCTION(BlueprintCallable)
-	virtual void OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OterComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	UFUNCTION(BlueprintCallable)
-	virtual void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	UFUNCTION()
 	void OnEmptyShellCollide(FName EventName, float EmitterTime, int32 ParticleTime, FVector Location, FVector Velocity, FVector Direction, FVector Normal, FName BoneName, UPhysicalMaterial* PhysMat);

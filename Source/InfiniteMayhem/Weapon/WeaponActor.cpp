@@ -19,14 +19,7 @@ AWeaponActor::AWeaponActor()
 
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
 	SetRootComponent(WeaponMesh);
-
-	// 球形碰撞，用于显示拾取提示 UI 
-	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollision"));
-	/*SphereCollision->SetupAttachment(RootComponent);
-	SphereCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
-	SphereCollision->OnComponentBeginOverlap.AddDynamic(this, &AWeaponActor::OnSphereBeginOverlap);
-	SphereCollision->OnComponentEndOverlap.AddDynamic(this, &AWeaponActor::OnSphereEndOverlap);*/
-
+	
 	// 枪栓位置箭头，用于确定抛壳特效位置
 	GunBoltArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("GunBoltArrow"));
 	GunBoltArrow->SetVisibility(false);
@@ -67,10 +60,10 @@ void AWeaponActor::ChangeWeaponState(EWeaponState State) {
 	case EWeaponState::EWS_Standby:
 		break;
 	case EWeaponState::EWS_Equipped:
-		SphereCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+		//SphereCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
 		break;
 	case EWeaponState::EWS_Drop:
-		SphereCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
+		//SphereCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 		break;
 	case EWeaponState::EWS_MAX:
 		break;
@@ -84,20 +77,6 @@ void AWeaponActor::ChangeWeaponState(EWeaponState State) {
 
 void AWeaponActor::ChangeWeaponFireState(EWeaponFireState State) {
 	CurrentFireState = State;
-}
-
-void AWeaponActor::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OterComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
-	ASWATCharacter* Player = Cast<ASWATCharacter>(OtherActor);
-	if (Player) {
-		Player->SetOverlappingWeapon(this);
-	}
-}
-
-void AWeaponActor::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
-	ASWATCharacter* Player = Cast<ASWATCharacter>(OtherActor);
-	if (Player) {
-		Player->SetOverlappingWeapon(nullptr);
-	}
 }
 
 void AWeaponActor::FireTheAmmon() {

@@ -2,6 +2,7 @@
 
 
 #include "PickableActor.h"
+#include "../Player/SWATCharacter.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/SphereComponent.h"
 
@@ -19,6 +20,10 @@ APickableActor::APickableActor()
 	SphereCollision->SetupAttachment(RootComponent);
 	SphereCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	SphereCollision->SetCollisionProfileName(TEXT("Custom"));
+
+	SphereCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
+	SphereCollision->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnSphereBeginOverlap);
+	SphereCollision->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnSphereEndOverlap);
 }
 
 void APickableActor::BeginPlay()
@@ -31,6 +36,20 @@ void APickableActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void APickableActor::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OterComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
+	ASWATCharacter* Player = Cast<ASWATCharacter>(OtherActor);
+	if (Player) {
+		//Player->SetOverlappingWeapon(this);
+	}
+}
+
+void APickableActor::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
+	ASWATCharacter* Player = Cast<ASWATCharacter>(OtherActor);
+	if (Player) {
+		Player->SetOverlappingWeapon(nullptr);
+	}
 }
 
 
