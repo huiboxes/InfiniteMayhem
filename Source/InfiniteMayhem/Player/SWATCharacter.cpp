@@ -119,8 +119,7 @@ void ASWATCharacter::IronsightButtonReleased() {
 	bAiming = false;
 }
 
-void ASWATCharacter::PickupButtonPressed() {
-
+void ASWATCharacter::PickupButtonPressed() { // 只对实现了 IIPickableInterface 的 Actor 有反应
 	FHitResult OutHit;
 	if (PickRangeDetection(OutHit)) {
 		bPicking = true;

@@ -6,7 +6,6 @@
 #include "Components/ActorComponent.h"
 #include "CombatComponent.generated.h"
 
-
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class INFINITEMAYHEM_API UCombatComponent : public UActorComponent
 {
@@ -42,6 +41,8 @@ private:
 	class ASWATCharacter* Player;
 	class AWeaponActor* EquippedWeapon;
 	class AWeaponActor* StandByWeapon;
+
+	FTimerHandle DestroyWeaponTimerHandle;
 
 	float FireCrosshairOffset = 0;
 

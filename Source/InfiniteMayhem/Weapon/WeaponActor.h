@@ -61,7 +61,7 @@ protected:
 	class UParticleSystem* MuzzleFlameFX; // 开火特效
 
 	UPROPERTY(VisibleAnywhere)
-	EWeaponState CurrentState = EWeaponState::EWS_Drop;
+	EWeaponState CurrentState = EWeaponState::EWS_Initial;
 	
 	UPROPERTY(VisibleAnywhere)
 	EWeaponFireState CurrentFireState = EWeaponFireState::EWS_Idle;
@@ -139,6 +139,7 @@ private:
 
 	FTimerHandle RemoveMagTimerHandle; // 移除弹夹定时器句柄
 
+	bool bReloading = false;
 	bool bCanFire = true;
 	void SetCanFire(bool _bCanFire) { bCanFire = _bCanFire; };
 
@@ -152,12 +153,14 @@ public:
 	void ReloadAmmonOver();
 	void RemoveMag();
 	void GenerateMag();
+	bool CanFire();
+
+	virtual void WeaponDestroy();
 
 
 	FORCEINLINE bool IsEquipped() { return CurrentState == EWeaponState::EWS_Equipped; };
 	FORCEINLINE EWeaponState GetCurrentState() { return CurrentState; };
 	FORCEINLINE EWeaponFireState GetCurrentFireState() { return CurrentFireState; };
-	FORCEINLINE bool CanFire();
 	FORCEINLINE int32 GetAmmonMaxCounter() { return AmmonMaxCounter; };
 	FORCEINLINE int32 GetAmmonCurrent() { return AmmonCurrent; };
 	FORCEINLINE int32 GetMagNum() { return MagNum; };

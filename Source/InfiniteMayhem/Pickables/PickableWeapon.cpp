@@ -22,14 +22,7 @@ void APickableWeapon::Pickup_Implementation(AActor* _Owner) {
 // 生成武器类并附加到手部插槽
 void APickableWeapon::AttachWeponToPlayer(ASWATCharacter* Player) {
 	if (Player && WeaponClass) {
-
 		AWeaponActor* Weapon = GetWorld()->SpawnActor<AWeaponActor>(WeaponClass);
-		
-		/*if (MagClass) {
-			MagComp = GetWorld()->SpawnActor<AMagazine>(MagClass);
-			MagComp->AttachToComponent(Weapon->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("Gun_magazinesocket"));
-		}*/
-
 		Player->GetCombatComp()->EquipWeapon(Weapon);
 	}
 

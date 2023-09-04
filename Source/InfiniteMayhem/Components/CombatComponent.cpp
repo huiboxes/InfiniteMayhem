@@ -26,16 +26,23 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	UpdateFireCrosshairOffset(DeltaTime);
 }
 
-void UCombatComponent::EquipWeapon(AWeaponActor* WeaponToEquip) {
-	if (!Player || !WeaponToEquip) return;
+// 偷个懒，暂时只能拾取 EWS_Initial 的武器
+void UCombatComponent::EquipWeapon(AWeaponActor* WeaponToEquip) { 
+	if (!Player || !WeaponToEquip || (WeaponToEquip->GetCurrentState() != EWeaponState::EWS_Initial)) return;
 
 	if (!EquippedWeapon || ((EquippedWeapon && StandByWeapon))) { // 手上未持有武器，或者手上和背包都有武器，则将武器放到手上插槽
 		const USkeletalMeshSocket* RightHandSocket = Player->GetMesh()->GetSocketByName(FName("S_Rilfe"));
-		if (EquippedWeapon && StandByWeapon) { // 如果手上有也背了一把枪，把手上的 Mesh 先去掉
-			if (RightHandSocket) {
-				EquippedWeapon->DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
-				EquippedWeapon->ChangeWeaponState(EWeaponState::EWS_Drop);
-			}
+		if (EquippedWeapon && StandByWeapon && RightHandSocket) { // 如果手上有也背了一把枪，把手上的 Mesh 先去掉
+
+			EquippedWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+			EquippedWeapon->ChangeWeaponState(EWeaponState::EWS_Drop);
+			EquippedWeapon->WeaponDestroy();
+
+			/*GetWorld()->GetTimerManager().SetTimer(DestroyWeaponTimerHandle, [=]() {
+				EquippedWeapon->WeaponDestroy();
+			}, 30, false);*/
+
+			// todo 在地上生成一个新的 Pickable 的武器
 		}
 		EquippedWeapon = WeaponToEquip;
 		EquippedWeapon->ChangeWeaponState(EWeaponState::EWS_Equipped);

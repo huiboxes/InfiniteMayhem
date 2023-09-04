@@ -22,10 +22,10 @@ AWeaponActor::AWeaponActor()
 
 	// 球形碰撞，用于显示拾取提示 UI 
 	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollision"));
-	SphereCollision->SetupAttachment(RootComponent);
+	/*SphereCollision->SetupAttachment(RootComponent);
 	SphereCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 	SphereCollision->OnComponentBeginOverlap.AddDynamic(this, &AWeaponActor::OnSphereBeginOverlap);
-	SphereCollision->OnComponentEndOverlap.AddDynamic(this, &AWeaponActor::OnSphereEndOverlap);
+	SphereCollision->OnComponentEndOverlap.AddDynamic(this, &AWeaponActor::OnSphereEndOverlap);*/
 
 	// 枪栓位置箭头，用于确定抛壳特效位置
 	GunBoltArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("GunBoltArrow"));
@@ -198,10 +198,11 @@ void AWeaponActor::StopFire() {
 
 
 void AWeaponActor::ReloadWeapon() {
+
 	ASWATCharacter* Player = Cast<ASWATCharacter>(GetOwner());
 	if (CurrentFireState == EWeaponFireState::EWS_Reload || !Player || Player->IsEquiping() || AmmonCurrent >= AmmonMaxCounter || MagNum <= 0) return;
 	
-	SetCanFire(false);
+	bReloading = true;
 	ChangeWeaponFireState(EWeaponFireState::EWS_Reload);
 
 	FName SectionName = TEXT("Default");
@@ -213,7 +214,7 @@ void AWeaponActor::ReloadWeapon() {
 
 
 void AWeaponActor::ReloadAmmonOver() {
-	SetCanFire(true);
+	bReloading = false;
 	MagComp->AttachToComponent(WeaponMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("Gun_magazinesocket"));
 	AmmonCurrent = AmmonMaxCounter;
 
@@ -244,7 +245,12 @@ bool AWeaponActor::CanFire() {
 	ASWATCharacter* Player = Cast<ASWATCharacter>(GetOwner());
 	if (!Player) return false;
 
-	return bCanFire && !Player->IsEquiping();
+	return bCanFire && !Player->IsEquiping() && !bReloading;
+}
+
+void AWeaponActor::WeaponDestroy() {
+	MagComp->Destroy();
+	Destroy();
 }
 
 USkeletalMeshComponent* AWeaponActor::GetMesh() {
