@@ -42,9 +42,10 @@ protected:
 	void ToggleFire();
 	void StopFire();
 	void ReloadWeaponButtonPressed();
+	bool PickRangeDetection(FHitResult& Hit);
+	bool OutlineDisplayDetection();
 
 	void UpdateCameraTargetPos(float DeltaTime);
-
 	void AimOffset(float DeltaTime);
 
 public:
@@ -145,5 +146,12 @@ protected:
 
 	float Speed = 0;
 
+private:
+	TArray<AActor*> ActorsToIgnoreInFootstep; // 脚步校验函数检测时忽略的Actor
 
+	TArray<AActor*> ActorsToIgnoreInPickRange; // 拾取检测函数忽略的Actor
+
+	AActor* DetectedPickableItem;
+	
+	bool bOutlineDisplayDetectionReset = true;
 };

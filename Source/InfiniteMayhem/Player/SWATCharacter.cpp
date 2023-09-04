@@ -2,9 +2,11 @@
 
 
 #include "SWATCharacter.h"
+#include "../IMFPSPlayerController.h"
 #include "../Weapon/WeaponActor.h"
 #include "../Components/FPSCharacterMovementComponent.h"
 #include "../Components/CombatComponent.h"
+#include "../Interface/IPickableInterface.h"
 
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
@@ -13,6 +15,7 @@
 #include "Components/ArrowComponent.h"
 #include <Kismet/KismetMathLibrary.h>
 #include <Kismet/GameplayStatics.h>
+#include "EngineUtils.h"
 
 ASWATCharacter::ASWATCharacter(const FObjectInitializer& Initializer): Super(Initializer.SetDefaultSubobjectClass<UFPSCharacterMovementComponent>(ACharacter::CharacterMovementComponentName)) {
 
@@ -27,12 +30,17 @@ ASWATCharacter::ASWATCharacter(const FObjectInitializer& Initializer): Super(Ini
 	MainCamera->SetupAttachment(CameraBoom);
 
 	CombatComp = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComp"));
+
+
 }
 
 void ASWATCharacter::BeginPlay() {
 	Super::BeginPlay();
 
-
+	if (Controller) {
+		ActorsToIgnoreInFootstep.Add(Controller->GetPawn());
+		ActorsToIgnoreInPickRange.Add(Controller->GetPawn());
+	}
 }
 
 void ASWATCharacter::MoveForward(float Value) {
@@ -144,6 +152,59 @@ void ASWATCharacter::ReloadWeaponButtonPressed() {
 	CombatComp->EquippedWeapon->ReloadWeapon();
 }
 
+ bool ASWATCharacter::PickRangeDetection(FHitResult& Hit) {
+	APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
+	if (!CameraManager) return false;
+	FVector CameraLoc = CameraManager->GetCameraLocation();
+	FVector End = CameraManager->GetActorForwardVector() * 450 + CameraLoc;
+	
+	if (UKismetSystemLibrary::SphereTraceSingle(GetWorld(), CameraLoc, End, 10, UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_GameTraceChannel4), false, ActorsToIgnoreInPickRange, EDrawDebugTrace::None, Hit, true)) {
+		
+		/*UE_LOG(LogTemp, Warning, TEXT("Hit Actor: %s"), *Hit.GetActor()->GetName());
+		UE_LOG(LogTemp, Warning, TEXT("Hit Location: %s"), *Hit.Location.ToString());
+		UE_LOG(LogTemp, Warning, TEXT("Hit Normal: %s"), *Hit.Normal.ToString());*/
+		return true;
+	}
+
+
+	return false;
+}
+
+ bool ASWATCharacter::OutlineDisplayDetection() {
+	 FHitResult OutHit;
+	 bool bHasPickableItem = PickRangeDetection(OutHit);
+	 if (bHasPickableItem) { // 检测到了可拾取物
+		 bOutlineDisplayDetectionReset = true;
+
+		 AActor* CurrentPickableItem = OutHit.GetActor();
+		 if (DetectedPickableItem != CurrentPickableItem) { // 保证永远只有一个可拾取物品开启了描边
+			 if (DetectedPickableItem) { // 关闭上次扫描到的可拾取物的描边
+				 // UE_LOG(LogTemp, Warning, TEXT("Hit Actor: %s"), *CurrentPickableItem->GetName());
+				 // UE_LOG(LogTemp, Warning, TEXT("Hit Location: %s"), *CurrentPickableItem->GetActorLocation().ToString());
+				 IIPickableInterface::Execute_DisableOutlineDisplay(DetectedPickableItem);
+				 IIPickableInterface::Execute_EnableOutlineDisplay(CurrentPickableItem);
+			 }
+			 DetectedPickableItem = CurrentPickableItem; // 重新设置
+		 }
+	 } else { // 未检测到可拾取物，将所有可拾取物关闭描边显示
+		 if (bOutlineDisplayDetectionReset) {
+			 for (TActorIterator<AActor> ActorItr(GetWorld()); ActorItr; ++ActorItr) { // 遍历所有 AActor
+				 AActor* CurrentActor = *ActorItr;
+
+				 // 检查当前Actor是否实现了 UIPickableInterface
+				 if (CurrentActor->GetClass()->ImplementsInterface(UIPickableInterface::StaticClass())) {
+					 IIPickableInterface::Execute_DisableOutlineDisplay(CurrentActor);
+					 DetectedPickableItem = nullptr;
+				 }
+			 }
+
+			bOutlineDisplayDetectionReset = false;
+		 }
+	 }
+
+	 return false;
+ }
+
 void ASWATCharacter::UpdateCameraTargetPos(float DeltaTime) { // 更新相机偏移信息
 	if (!CameraBoom || !MainCamera) return;
 
@@ -158,6 +219,7 @@ void ASWATCharacter::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 	AimOffset(DeltaTime);
 	UpdateCameraTargetPos(DeltaTime);
+	OutlineDisplayDetection();
 }
 
 // Called to bind functionality to input
@@ -253,15 +315,12 @@ void ASWATCharacter::AimOffset(float DeltaTime) {
 }
 
 void ASWATCharacter::FootstepJudgment(FVector ToeLoc) {
-	FVector Start = ToeLoc;
-	FVector End = Start;
+	FVector End = ToeLoc;
 	End.Z -= 50.f; // 向下偏移
 
-	FHitResult OutHit;
-	TArray<AActor*> ActorsToIgnore; // 如果有要忽略的 Actor，可以添加到这个数组
-	ActorsToIgnore.Add(Controller->GetPawn());
+	FHitResult OutHit;	
 
-	if (UKismetSystemLibrary::LineTraceSingle(GetWorld(), Start, End, ETraceTypeQuery::TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::None, OutHit, true)) { // 自定义的 Hit 通道
+	if (UKismetSystemLibrary::LineTraceSingle(GetWorld(), ToeLoc, End, ETraceTypeQuery::TraceTypeQuery1, false, ActorsToIgnoreInFootstep, EDrawDebugTrace::None, OutHit, true)) { // 自定义的 Hit 通道
 		UPhysicalMaterial* mat = OutHit.PhysMaterial.Get();
 		FVector HitLoc = OutHit.Location;
 		

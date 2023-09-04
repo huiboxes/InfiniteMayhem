@@ -227,7 +227,6 @@ void AWeaponActor::RemoveMag() {
 
 	MagComp->AttachToComponent(Player->GetMesh(), FAttachmentTransformRules::KeepWorldTransform, TEXT("S_Mag"));
 	GetWorldTimerManager().SetTimer(RemoveMagTimerHandle, MagComp, &AMagazine::DetachMag, 0.2f, false);
-	
 }
 
 
