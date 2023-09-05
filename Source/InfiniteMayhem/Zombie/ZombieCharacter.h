@@ -23,6 +23,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 
-protected:
-
+	void RandomWalk(); // 没发现玩家时
+	
+	void SawThePlayer(); // 发现玩家时
 };

@@ -1,11 +1,12 @@
 
 #include "ZombieCharacter.h"
 #include "Perception/AIPerceptionComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AZombieCharacter::AZombieCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	
+	GetCharacterMovement()->MaxWalkSpeed = 40;
 }
 
 void AZombieCharacter::BeginPlay()
@@ -24,5 +25,13 @@ void AZombieCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void AZombieCharacter::RandomWalk() {
+	GetCharacterMovement()->MaxWalkSpeed = 40;
+}
+
+void AZombieCharacter::SawThePlayer() {
+	GetCharacterMovement()->MaxWalkSpeed = FMath::RandRange(400.f, 500.f);
 }
 

@@ -2,6 +2,7 @@
 
 
 #include "ZombieAIController.h"
+#include "../Zombie/ZombieCharacter.h"
 #include "../Player/SWATCharacter.h"
 
 #include "Perception/AIPerceptionComponent.h"
@@ -35,13 +36,14 @@ AZombieAIController::AZombieAIController() {
 	AIPerceptionComp->ConfigureSense(*AISenseConfigSight);
 	AIPerceptionComp->ConfigureSense(*AISenseConfigHearing);
 	AIPerceptionComp->SetDominantSense(UAISenseConfig_Sight::StaticClass());
-	AAIController::SetGenericTeamId(FGenericTeamId(1));
+	AZombieAIController::SetGenericTeamId(FGenericTeamId(1));
 
 	BBComponent = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BBComponent"));
 	BTComponent = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("BTComponent"));
 }
 
 void AZombieAIController::BeginPlay() {
+	Super::BeginPlay();
 	AIPerceptionComp->OnTargetPerceptionUpdated.AddDynamic(this, &ThisClass::OnTargetPerceptionUpdated);
 }
 
@@ -51,13 +53,12 @@ void AZombieAIController::OnPossess(APawn* InPawn) {
 
 	
 	BBComponent->InitializeBlackboard(*BTree->BlackboardAsset);
-	//RunBehaviorTree(BTree);
-
-
-	/*BBComponent->SetValueAsVector(TEXT("TargetPos"), InPawn->GetActorLocation() + InPawn->GetActorForwardVector() * 1500);
-	FVector Loc = InPawn->GetActorLocation() + InPawn->GetActorForwardVector() * 500;
-	UE_LOG(LogTemp, Warning, TEXT("Loc.X = %f  Loc.Y = %f  Loc.Z = %f "), Loc.X, Loc.Y, Loc.Z);*/
 	BTComponent->StartTree(*BTree);
+}
+
+void AZombieAIController::OnUnPossess(){
+	Super::OnUnPossess();
+	BTComponent->StopTree();
 }
 
 
@@ -90,9 +91,21 @@ void AZombieAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus S
 	//}
 
 	ASWATCharacter* Player = Cast<ASWATCharacter>(Actor);
+	
+	
+	AZombieCharacter* Zombie = Cast<AZombieCharacter>(GetPawn());
 	if (Player) {
 		BBComponent->SetValueAsBool(TEXT("bPlayerInSight"), true);
 		BBComponent->SetValueAsVector(TEXT("Target"), Player->GetActorLocation());
-		UE_LOG(LogTemp, Warning, TEXT("eeeeeeeeeeeeeeeee X == %f Y == %f  Z == %f"), Player->GetActorLocation().X, Player->GetActorLocation().Y, Player->GetActorLocation().Z);
+		//UE_LOG(LogTemp, Warning, TEXT("eeeeee"));
+		Zombie->SawThePlayer();
+
+	} else {
+		BBComponent->SetValueAsBool(TEXT("bPlayerInSight"), false);
+		Zombie->RandomWalk();
 	}
+}
+
+FGenericTeamId AZombieAIController::GetGenericTeamId() const {
+	return FGenericTeamId(1);
 }
