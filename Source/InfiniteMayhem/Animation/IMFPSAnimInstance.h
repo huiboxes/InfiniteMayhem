@@ -44,7 +44,7 @@ protected:
 	bool bFire;
 	
 	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
-	bool bEquiping;
+	bool bIsEquiping;
 	
 	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
 	bool bPicking;

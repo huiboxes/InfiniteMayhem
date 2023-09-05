@@ -22,6 +22,8 @@ public:
 
 	virtual void BeginPlay() override;
 
+	virtual void OnPossess(APawn* InPawn) override;
+
 	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
 
 	UFUNCTION()
@@ -37,7 +39,19 @@ protected:
 
 	class UAISenseConfig_Hearing* AISenseConfigHearing = nullptr;
 
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+	class UBehaviorTree* BTree;
+	
 
+private:
+	UPROPERTY()
+	class UBehaviorTreeComponent* BTComponent;
+
+	UPROPERTY()
+	class UBlackboardComponent* BBComponent;
 	
-	
+public:
+	FORCEINLINE UBlackboardComponent* GetBBComponent() const { return BBComponent; }
+	FORCEINLINE UBehaviorTreeComponent* GetBTComponent() const { return BTComponent; }
+
 };

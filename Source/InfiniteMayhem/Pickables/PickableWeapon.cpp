@@ -24,6 +24,7 @@ void APickableWeapon::AttachWeponToPlayer(ASWATCharacter* Player) {
 	if (Player && WeaponClass) {
 		AWeaponActor* Weapon = GetWorld()->SpawnActor<AWeaponActor>(WeaponClass);
 		Player->GetCombatComp()->EquipWeapon(Weapon);
+		Player->ChangeState(ESWATState::ESS_Rilfe);
 	}
 
 }

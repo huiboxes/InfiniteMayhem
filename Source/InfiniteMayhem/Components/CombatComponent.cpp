@@ -8,7 +8,6 @@ UCombatComponent::UCombatComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 	Player = Cast<ASWATCharacter>(GetOwner());
-	// ...
 
 }
 
@@ -69,7 +68,6 @@ void UCombatComponent::EquipWeapon(AWeaponActor* WeaponToEquip) {
 		StandByWeapon->ShowPickupWidget(false);
 	}
 	
-	Player->ChangeState(ESWATState::ESS_Rilfe);
 }
 
 void UCombatComponent::SwitchWeapon() { // 只有有两把武器时才能切换武器
