@@ -8,3 +8,7 @@ AIMFPSPlayerController::AIMFPSPlayerController() {
 	PlayerCameraManagerClass = AIMFPSPlayerCameraManager::StaticClass();
 
 }
+
+FGenericTeamId AIMFPSPlayerController::GetGenericTeamId() const {
+	return TeamId;
+}

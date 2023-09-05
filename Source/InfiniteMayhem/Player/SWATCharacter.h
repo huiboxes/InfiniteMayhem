@@ -87,6 +87,9 @@ public:
 
 protected:
 
+	UPROPERTY(VisibleAnywhere, Category = "Character Properties|AI")
+	class UPawnNoiseEmitterComponent* PawnNoiseEmitterComponent;
+	
 	UPROPERTY(VisibleAnywhere, Category = "Character Properties")
 	class USpringArmComponent* CameraBoom;
 

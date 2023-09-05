@@ -9,12 +9,13 @@
 #include "../Interface/IPickableInterface.h"
 
 #include "GameFramework/SpringArmComponent.h"
-#include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "PhysicalMaterials/PhysicalMaterial.h"
+#include "Camera/CameraComponent.h"
 #include "Components/ArrowComponent.h"
+#include "Components/PawnNoiseEmitterComponent.h"
 #include <Kismet/KismetMathLibrary.h>
 #include <Kismet/GameplayStatics.h>
+#include "PhysicalMaterials/PhysicalMaterial.h"
 #include "EngineUtils.h"
 
 ASWATCharacter::ASWATCharacter(const FObjectInitializer& Initializer): Super(Initializer.SetDefaultSubobjectClass<UFPSCharacterMovementComponent>(ACharacter::CharacterMovementComponentName)) {
@@ -31,7 +32,7 @@ ASWATCharacter::ASWATCharacter(const FObjectInitializer& Initializer): Super(Ini
 
 	CombatComp = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComp"));
 
-
+	PawnNoiseEmitterComponent = CreateDefaultSubobject<UPawnNoiseEmitterComponent>("PawnNoiseEmitterComponent");
 }
 
 void ASWATCharacter::BeginPlay() {
@@ -146,6 +147,7 @@ void ASWATCharacter::ToggleFire() {
 	if (!CombatComp || !CombatComp->EquippedWeapon) return;
 	if (!CombatComp->IsFiring()) { // 装备着武器时开枪，其它状态停止开枪
 		CombatComp->EquippedWeapon->StartFire();
+		PawnNoiseEmitterComponent->MakeNoise(this, 1.f, GetActorLocation());
 	}
 }
 

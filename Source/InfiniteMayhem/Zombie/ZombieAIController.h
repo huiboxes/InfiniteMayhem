@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "Perception/AIPerceptionTypes.h"
+
 #include "ZombieAIController.generated.h"
 
 /**
@@ -13,5 +15,29 @@ UCLASS()
 class INFINITEMAYHEM_API AZombieAIController : public AAIController
 {
 	GENERATED_BODY()
+
+
+public:
+	AZombieAIController();
+
+	virtual void BeginPlay() override;
+
+	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
+
+	UFUNCTION()
+	void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
+
+protected:
+
+
+	UPROPERTY(VisibleAnywhere, Category = "AI")
+	class UAIPerceptionComponent* AIPerceptionComp = nullptr;
+
+	class UAISenseConfig_Sight* AISenseConfigSight = nullptr;
+
+	class UAISenseConfig_Hearing* AISenseConfigHearing = nullptr;
+
+
+	
 	
 };
