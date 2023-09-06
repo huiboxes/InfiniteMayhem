@@ -67,7 +67,7 @@ public:
 	void SetOverlappingWeapon(class AWeaponActor* Weapon);
 	class AWeaponActor* GetEquippedWeapon();
 
-	void FootstepJudgment(FVector ToeLoc); // 传入的脚趾位置，判断踩到的什么材质
+	void FootstepHandle(FVector ToeLoc); // 传入的脚趾位置，判断踩到的什么材质
 	void PlayLeftFootStep(); // 播放左脚脚步
 	void PlayRighttFootStep(); // 播放右脚脚步
 

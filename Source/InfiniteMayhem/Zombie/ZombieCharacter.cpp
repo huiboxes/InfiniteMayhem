@@ -6,6 +6,7 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
+//#include "Components/PoseableMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -13,12 +14,16 @@
 AZombieCharacter::AZombieCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
 	GetCharacterMovement()->MaxWalkSpeed = 40;
+	/*PoseableMesh = CreateDefaultSubobject<UPoseableMeshComponent>(TEXT("CharacterPoseableMesh"));
+	PoseableMesh->SetupAttachment(RootComponent);*/
 }
 
 void AZombieCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	InitZombie();
 	
 }
 
@@ -89,4 +94,11 @@ void AZombieCharacter::SawThePlayer() {
 		GetCharacterMovement()->MaxWalkSpeed = FMath::RandRange(400.f, 500.f);
 		UGameplayStatics::SpawnSoundAttached(ChaseSound, GetMesh(), TEXT("head")); // 播放丧尸追逐声音
 	}, Time, false);
+}
+
+void AZombieCharacter::InitZombie() {
+	int32 Index = FMath::RandRange(0, 11);
+	GetMesh()->SetSkeletalMesh(ZombieMeshArray[Index]); // 随机外观
+
+	SetActorRotation(FRotator(0, FMath::RandRange(-180, 180), 0)); // 随机朝向
 }

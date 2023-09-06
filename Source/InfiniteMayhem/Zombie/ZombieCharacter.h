@@ -55,10 +55,19 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Zombie Properties|Sound")
 	class USoundBase* ChaseSound; // 追逐玩家的声音
 
+	/*UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
+	class UPoseableMeshComponent* PoseableMesh;*/
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zombie Properties|Mesh")
+	TArray<class USkeletalMesh*> ZombieMeshArray;
+
+	void InitZombie();
+
 public:
 
 	void RandomWalk(); // 没发现玩家时
 	void SawThePlayer(); // 发现玩家时
+	
 
 	FORCEINLINE bool IsAttacking() { return bIsAttacking; };
 

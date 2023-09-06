@@ -329,11 +329,11 @@ void ASWATCharacter::AimOffset(float DeltaTime) {
 
 }
 
-void ASWATCharacter::FootstepJudgment(FVector ToeLoc) {
+void ASWATCharacter::FootstepHandle(FVector ToeLoc) {
 	FVector End = ToeLoc;
 	End.Z -= 50.f; // 向下偏移
 
-	FHitResult OutHit;	
+	FHitResult OutHit;
 
 	if (UKismetSystemLibrary::LineTraceSingle(GetWorld(), ToeLoc, End, ETraceTypeQuery::TraceTypeQuery1, false, ActorsToIgnoreInFootstep, EDrawDebugTrace::None, OutHit, true)) { // 自定义的 Hit 通道
 		UPhysicalMaterial* mat = OutHit.PhysMaterial.Get();
@@ -363,16 +363,15 @@ void ASWATCharacter::FootstepJudgment(FVector ToeLoc) {
 				break;
 		}
 	}
-
 }
 
 void ASWATCharacter::PlayLeftFootStep() {
 	FVector LeftToeBaseLoc = GetMesh()->GetSocketLocation(TEXT("LeftToeBase"));
-	FootstepJudgment(LeftToeBaseLoc);
+	FootstepHandle(LeftToeBaseLoc);
 }
 
 void ASWATCharacter::PlayRighttFootStep() {
 	FVector LeftToeBaseLoc = GetMesh()->GetSocketLocation(TEXT("RightToeBase"));
-	FootstepJudgment(LeftToeBaseLoc);
+	FootstepHandle(LeftToeBaseLoc);
 }
 
