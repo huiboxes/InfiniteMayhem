@@ -8,6 +8,8 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Kismet/GameplayStatics.h"
 
+
+
 AZombieCharacter::AZombieCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -37,6 +39,7 @@ void AZombieCharacter::Tick(float DeltaTime)
 			} else {
 				bIsAttacking = false;
 			}
+			ChangeRotationMode(bIsAttacking ? ERotationMode::ERM_Yaw : ERotationMode::ERM_Orient);
 		}
 	}
 
@@ -46,6 +49,21 @@ void AZombieCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+
+void AZombieCharacter::ChangeRotationMode(ERotationMode Mode) {
+	switch (Mode) {
+	case ERotationMode::ERM_Yaw:
+		GetCharacterMovement()->bUseControllerDesiredRotation = 1; // 1 为用， 0 为不用
+		break;
+	case ERotationMode::ERM_Orient:
+		GetCharacterMovement()->bOrientRotationToMovement = true;
+		break;
+	default:
+		break;
+	}
+	CurrentRotationMode = Mode;
 }
 
 void AZombieCharacter::RandomWalk() {
@@ -72,5 +90,3 @@ void AZombieCharacter::SawThePlayer() {
 		UGameplayStatics::SpawnSoundAttached(ChaseSound, GetMesh(), TEXT("head")); // 播放丧尸追逐声音
 	}, Time, false);
 }
-
-

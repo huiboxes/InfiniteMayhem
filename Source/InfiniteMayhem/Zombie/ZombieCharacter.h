@@ -6,6 +6,15 @@
 #include "GameFramework/Character.h"
 #include "ZombieCharacter.generated.h"
 
+
+UENUM(BlueprintType)
+enum class ERotationMode :uint8 {
+	ERM_Yaw UMETA(DisplayName = "Yaw"),
+	ERM_Orient UMETA(DisplayName = "Orient"),
+
+	ERM_MAX
+};
+
 UCLASS()
 class INFINITEMAYHEM_API AZombieCharacter : public ACharacter
 {
@@ -35,6 +44,9 @@ protected:
 
 	bool RandomWalkHasExecuted = false; // RandomWalkTimerHandle 中的 DoOnce
 
+	ERotationMode CurrentRotationMode = ERotationMode::ERM_Orient;
+	void ChangeRotationMode(ERotationMode Mode);
+
 	TArray<AActor*> ActorsToIgnore; // 忽略的不可受攻击者
 
 	UPROPERTY(EditAnywhere, Category = "Zombie Properties|Anim")
@@ -46,7 +58,6 @@ protected:
 public:
 
 	void RandomWalk(); // 没发现玩家时
-	
 	void SawThePlayer(); // 发现玩家时
 
 	FORCEINLINE bool IsAttacking() { return bIsAttacking; };
