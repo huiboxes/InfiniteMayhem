@@ -115,16 +115,16 @@ void UCombatComponent::UpdateFireCrosshairOffset(float DeltaTime) {
 	float Offset = 0;
 
 
-	if (Speed < 150) {
+	if (Speed < 100) {
 		Offset = 15;
 		// FireCrosshairOffset = 5;
-	} else if (Speed < 300) {
+	} else if (Speed < 150) {
 		Offset = 25;
 		// FireCrosshairOffset = 15;
-	} else if (Speed < 500) {
+	} else if (Speed < 400) {
 		Offset = 35;
 		// FireCrosshairOffset = 25;
-	} else if(Speed < 800) { 
+	} else if(Speed < 600) { 
 		Offset = 50;
 		//FireCrosshairOffset = 35;
 	} else { // 实在太快了，不显示准星
