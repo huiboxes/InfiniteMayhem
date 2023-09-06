@@ -8,7 +8,8 @@ void UZombieAnimInstance::NativeUpdateAnimation(float DeltaTime) {
 	Super::NativeUpdateAnimation(DeltaTime);
 	if (!Zombie) return;
 	Speed = Zombie->GetVelocity().Size2D();
-
+	
+	bAttack = Zombie->IsAttacking();
 }
 
 void UZombieAnimInstance::NativeBeginPlay() {

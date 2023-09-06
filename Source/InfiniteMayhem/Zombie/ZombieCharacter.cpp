@@ -1,7 +1,11 @@
 
 #include "ZombieCharacter.h"
+#include "ZombieAIController.h"
+#include "../Player/SWATCharacter.h"
+
 #include "Perception/AIPerceptionComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 AZombieCharacter::AZombieCharacter()
@@ -19,6 +23,22 @@ void AZombieCharacter::BeginPlay()
 void AZombieCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (bIsDead) return;
+	AZombieAIController* ZombieAC = Cast<AZombieAIController>(GetController());
+	if (ZombieAC) {
+		bool bPlayerInSight = ZombieAC->GetBBComponent()->GetValueAsBool(TEXT("bPlayerInSight"));
+		if (bPlayerInSight) {
+			FHitResult Outhit;
+			FVector Start = GetActorLocation();
+			FVector End = GetActorForwardVector() * 110 + Start;
+			if (UKismetSystemLibrary::SphereTraceSingle(GetWorld(), Start, End, 100.f, UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_GameTraceChannel5), false, ActorsToIgnore, EDrawDebugTrace::None, Outhit, true)) {
+				ASWATCharacter* Player = Cast<ASWATCharacter>(Outhit.Actor);
+				bIsAttacking = (Player && !Player->IsDead());
+			} else {
+				bIsAttacking = false;
+			}
+		}
+	}
 
 }
 

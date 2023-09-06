@@ -30,9 +30,12 @@ protected:
 	bool bAllowScream = true; // 是否可以尖叫
 	bool bIsScreaming = false; // 是否可以尖叫
 	bool bIsDead = false; // 是否已经死亡
+	bool bIsAttacking = false; // 是否正在攻击
 	bool bHasPlayedScreamAnimation;
 
 	bool RandomWalkHasExecuted = false; // RandomWalkTimerHandle 中的 DoOnce
+
+	TArray<AActor*> ActorsToIgnore; // 忽略的不可受攻击者
 
 	UPROPERTY(EditAnywhere, Category = "Zombie Properties|Anim")
 	class UAnimMontage* ScreamMontage; // 尖叫声音
@@ -46,6 +49,6 @@ public:
 	
 	void SawThePlayer(); // 发现玩家时
 
-
+	FORCEINLINE bool IsAttacking() { return bIsAttacking; };
 
 };

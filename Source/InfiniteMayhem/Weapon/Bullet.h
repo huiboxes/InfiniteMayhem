@@ -33,6 +33,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Hit Properties")
 	float ImpulseCoeff = 2; // 打中物体冲击力系数
 
+	TArray<AActor*> ActorsToIgnore; // 不击中的物体
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Hit Properties|Default")
 	class UParticleSystem* HitDefaultFX; // 默认击中物体后的特效
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Hit Properties|Default")

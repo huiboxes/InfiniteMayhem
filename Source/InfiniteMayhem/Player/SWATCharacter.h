@@ -76,6 +76,8 @@ public:
 	FORCEINLINE bool IsEquiping() { return bIsEquiping; };
 	FORCEINLINE bool IsPicking() { return bPicking; };
 	FORCEINLINE void CancelPicking() { bPicking = false; };
+	FORCEINLINE bool IsDead() { return bIsDead; };
+	FORCEINLINE void SetDead(bool _Dead) { bIsDead = _Dead; };
 	FORCEINLINE ESWATState GetCurrentState() { return CurrentState; };
 	FORCEINLINE class UCombatComponent* GetCombatComp() { return CombatComp; };
 	FORCEINLINE float GetAO_Yaw() const { return AO_Yaw; };
@@ -134,6 +136,7 @@ protected:
 	bool bAiming = false;
 	bool bIsEquiping = false;
 	bool bPicking = false;
+	bool bIsDead = false;
 
 	FTimerHandle PickupTimerHandle;
 	float Standing = 1.f;

@@ -55,7 +55,6 @@ void ABullet::OnSphereHitEvent(UPrimitiveComponent* HitComponent, AActor* OtherA
 
 void ABullet::HitObjectHandle(const FHitResult& Hit) {
 	FHitResult Outhit;
-	TArray<AActor*> ActorsToIgnore; // 如果有要忽略的 Actor，可以添加到这个数组
 	// TraceTypeQuery1 是自定义的 Hit Channel
 	if (UKismetSystemLibrary::SphereTraceSingle(GetWorld(), Hit.Location, Hit.Location, 10.f, ETraceTypeQuery::TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::None, Outhit, true)) {
 		UPhysicalMaterial* mat = Outhit.PhysMaterial.Get();
