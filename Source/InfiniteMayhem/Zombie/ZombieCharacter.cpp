@@ -6,7 +6,7 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
-//#include "Components/PoseableMeshComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -14,7 +14,6 @@
 AZombieCharacter::AZombieCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
 	GetCharacterMovement()->MaxWalkSpeed = 40;
 	/*PoseableMesh = CreateDefaultSubobject<UPoseableMeshComponent>(TEXT("CharacterPoseableMesh"));
 	PoseableMesh->SetupAttachment(RootComponent);*/
@@ -30,7 +29,7 @@ void AZombieCharacter::BeginPlay()
 void AZombieCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (bIsDead) return;
+	if (IsDead()) return;
 	AZombieAIController* ZombieAC = Cast<AZombieAIController>(GetController());
 	if (ZombieAC) {
 		bool bPlayerInSight = ZombieAC->GetBBComponent()->GetValueAsBool(TEXT("bPlayerInSight"));
@@ -40,11 +39,11 @@ void AZombieCharacter::Tick(float DeltaTime)
 			FVector End = GetActorForwardVector() * 110 + Start;
 			if (UKismetSystemLibrary::SphereTraceSingle(GetWorld(), Start, End, 100.f, UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_GameTraceChannel5), false, ActorsToIgnore, EDrawDebugTrace::None, Outhit, true)) {
 				ASWATCharacter* Player = Cast<ASWATCharacter>(Outhit.Actor);
-				bIsAttacking = (Player && !Player->IsDead());
+				SetAttackingState(Player && !Player->IsDead());
 			} else {
-				bIsAttacking = false;
+				SetAttackingState(false);
 			}
-			ChangeRotationMode(bIsAttacking ? ERotationMode::ERM_Yaw : ERotationMode::ERM_Orient);
+			ChangeRotationMode(GetAttackingState() ? ERotationMode::ERM_Yaw : ERotationMode::ERM_Orient);
 		}
 	}
 
@@ -54,6 +53,23 @@ void AZombieCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+float AZombieCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) {
+	if (IsDead()) return 0;
+
+	
+	Health -= DamageAmount;
+	if (IsDead()) {
+		Die();
+	} else if (!GetAttackingState()) {
+		bBeAttacked = true;
+		GetWorld()->GetTimerManager().SetTimer(SawThePlayerTimerHandle, [=]() {
+			bBeAttacked = false;
+		}, .1f, false);
+	}
+
+	return 1;
 }
 
 
@@ -72,13 +88,13 @@ void AZombieCharacter::ChangeRotationMode(ERotationMode Mode) {
 }
 
 void AZombieCharacter::RandomWalk() {
-	if (bIsDead) return;
+	if (IsDead()) return;
 	GetCharacterMovement()->MaxWalkSpeed = 40;
 
 }
 
 void AZombieCharacter::SawThePlayer() {
-	if (bIsDead) return;
+	if (IsDead()) return;
 	if ((!bAllowScream && bIsScreaming)) return;
 	bAllowScream = false;
 
@@ -94,6 +110,17 @@ void AZombieCharacter::SawThePlayer() {
 		GetCharacterMovement()->MaxWalkSpeed = FMath::RandRange(400.f, 500.f);
 		UGameplayStatics::SpawnSoundAttached(ChaseSound, GetMesh(), TEXT("head")); // 播放丧尸追逐声音
 	}, Time, false);
+}
+
+void AZombieCharacter::Die() {
+	GetMesh()->SetSimulatePhysics(true);
+	GetCharacterMovement()->MaxWalkSpeed = 0;
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	SetAttackingState(false);
+
+	GetWorld()->GetTimerManager().SetTimer(SawThePlayerTimerHandle, [=]() {
+		Destroy();
+	}, 15.f, false);
 }
 
 void AZombieCharacter::InitZombie() {

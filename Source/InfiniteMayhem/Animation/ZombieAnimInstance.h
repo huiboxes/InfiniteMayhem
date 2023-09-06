@@ -26,7 +26,9 @@ protected:
 	float Speed;
 	
 	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
-	bool bAttack;
+	bool bAttack = false; // 是否在攻击别人
 
+	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
+	bool bBeAttacked = false ; // 是否被击中
 
 };

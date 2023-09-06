@@ -9,7 +9,8 @@ void UZombieAnimInstance::NativeUpdateAnimation(float DeltaTime) {
 	if (!Zombie) return;
 	Speed = Zombie->GetVelocity().Size2D();
 	
-	bAttack = Zombie->IsAttacking();
+	bAttack = Zombie->IsAttacking(); // 是否正在攻击
+	bBeAttacked = Zombie->GetBeAttacked(); // 是否被攻击
 }
 
 void UZombieAnimInstance::NativeBeginPlay() {

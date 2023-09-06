@@ -30,10 +30,21 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Hit Properties")
 	class UMaterialInterface* HitDecal; // 击中物体后的贴花
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Hit Properties")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Hit Properties|Numerical")
+	float Damage = 50; // 基础伤害
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Hit Properties|Numerical")
+	float CriticalImpactCoeff = 1.5; // 暴击系数
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Hit Properties|Numerical")
 	float ImpulseCoeff = 2; // 打中物体冲击力系数
 
 	TArray<AActor*> ActorsToIgnore; // 不击中的物体
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Hit Properties|Zombie")
+	class UNiagaraSystem* HitZombieFX; // 击中丧尸播放的特效
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Hit Properties|Zombie")
+	class USoundBase* HitZombieSound; // 击中丧尸的音效
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Hit Properties|Default")
 	class UParticleSystem* HitDefaultFX; // 默认击中物体后的特效

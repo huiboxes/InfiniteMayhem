@@ -2,9 +2,13 @@
 
 
 #include "Bullet.h"
+#include "../Zombie/ZombieCharacter.h"
+
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 #include <Kismet/GameplayStatics.h>
 
 
@@ -36,20 +40,23 @@ void ABullet::OnSphereHitEvent(UPrimitiveComponent* HitComponent, AActor* OtherA
 
 	FVector HitLoc = Hit.Location;
 
-	if (HitDecal) { // 在击中的地方生成贴花
-		UGameplayStatics::SpawnDecalAtLocation(GetWorld(), HitDecal, FVector(7.f, 7.f, 7.f), HitLoc, Hit.Normal.Rotation(), 20.f);
+	AZombieCharacter* Zombie = Cast<AZombieCharacter>(OtherActor);
+	if (Zombie) { // 如果击中僵尸
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitZombieFX, HitLoc, Hit.Normal.Rotation());
+		float DamageToApply = Hit.BoneName == TEXT("head") ? Damage : Damage * CriticalImpactCoeff; // 如果打中头部就暴击
+		UGameplayStatics::ApplyDamage(Zombie, DamageToApply, nullptr, nullptr, nullptr);
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitZombieSound, Hit.Location);
+	} else {
+		if (HitDecal) { // 在击中的地方生成贴花
+			UGameplayStatics::SpawnDecalAtLocation(GetWorld(), HitDecal, FVector(7.f, 7.f, 7.f), HitLoc, Hit.Normal.Rotation(), 20.f);
+		}
+		HitObjectHandle(Hit);
 	}
-
-	/*if (OtherComp) { // 单位死亡
-		OtherComp->SetSimulatePhysics(true);
-	}*/
 
 	if (OtherComp && OtherComp->IsSimulatingPhysics()) { // 如果被击中的单位开启了物理模拟，就施加冲击力
 		OtherComp->AddImpulse(GetVelocity() * ImpulseCoeff);
 	}
-
-
-	HitObjectHandle(Hit);
+	
 	Destroy();
 }
 

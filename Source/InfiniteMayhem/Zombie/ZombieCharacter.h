@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+
 #include "ZombieCharacter.generated.h"
 
 
@@ -31,15 +32,20 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
+	class AController* EventInstigator, AActor* DamageCauser) override;
 
 protected:
+	UPROPERTY(EditAnywhere, Category = "Zombie Properties|State")
+	float Health = 100; // 生命值
+
 	FTimerHandle SawThePlayerTimerHandle;
 	FTimerHandle RandomWalkTimerHandle;
 
 	bool bAllowScream = true; // 是否可以尖叫
 	bool bIsScreaming = false; // 是否可以尖叫
-	bool bIsDead = false; // 是否已经死亡
 	bool bIsAttacking = false; // 是否正在攻击
+	bool bBeAttacked = false; // 是否正被攻击
 	bool bHasPlayedScreamAnimation;
 
 	bool RandomWalkHasExecuted = false; // RandomWalkTimerHandle 中的 DoOnce
@@ -71,4 +77,9 @@ public:
 
 	FORCEINLINE bool IsAttacking() { return bIsAttacking; };
 
+	void Die();
+	FORCEINLINE bool IsDead() { return Health <= 0; };
+	FORCEINLINE bool GetBeAttacked() { return bBeAttacked; };
+	FORCEINLINE void SetAttackingState(bool _Attacking) { bIsAttacking = _Attacking; };
+	FORCEINLINE bool GetAttackingState() { return bIsAttacking; };
 };
