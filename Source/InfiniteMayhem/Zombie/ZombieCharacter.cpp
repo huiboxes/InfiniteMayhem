@@ -8,6 +8,8 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 
 
 
@@ -15,8 +17,9 @@ AZombieCharacter::AZombieCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	GetCharacterMovement()->MaxWalkSpeed = 40;
-	/*PoseableMesh = CreateDefaultSubobject<UPoseableMeshComponent>(TEXT("CharacterPoseableMesh"));
-	PoseableMesh->SetupAttachment(RootComponent);*/
+
+	/*GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	GetMesh()->SetCollisionObjectType(ECollisionChannel::ECC_PhysicsBody);*/
 }
 
 void AZombieCharacter::BeginPlay()
@@ -58,7 +61,6 @@ void AZombieCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 float AZombieCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) {
 	if (IsDead()) return 0;
 
-	
 	Health -= DamageAmount;
 	if (IsDead()) {
 		Die();
@@ -69,6 +71,7 @@ float AZombieCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Damag
 		}, .1f, false);
 	}
 
+	ClearAttackedPlayer();
 	return 1;
 }
 
@@ -112,9 +115,27 @@ void AZombieCharacter::SawThePlayer() {
 	}, Time, false);
 }
 
+void AZombieCharacter::AttackDetection(FName StartBoneName, FName EndBoneName) {
+
+	FHitResult Outhit;
+	FVector Start = GetMesh()->GetSocketLocation(StartBoneName);
+	FVector End = GetMesh()->GetSocketLocation(EndBoneName);
+	
+	if (UKismetSystemLibrary::SphereTraceSingle(GetWorld(), Start, End, 25.f, UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_GameTraceChannel5), false, ActorsToIgnore, EDrawDebugTrace::None, Outhit, true)) {
+		if (Outhit.Actor != LastAttackedPlayer) { // 避免造成多次伤害
+			ASWATCharacter* Player = Cast<ASWATCharacter>(Outhit.Actor);
+			LastAttackedPlayer = Player;
+			if (Player) {
+				UGameplayStatics::ApplyDamage(Player, 10, nullptr, nullptr, nullptr);
+				UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitPlayerFX, Outhit.Location, Outhit.Normal.Rotation());
+			}
+		}
+	}
+}
+
 void AZombieCharacter::Die() {
 	GetMesh()->SetSimulatePhysics(true);
-	GetCharacterMovement()->MaxWalkSpeed = 0;
+	GetCharacterMovement()->DisableMovement();
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	SetAttackingState(false);
 
@@ -126,6 +147,5 @@ void AZombieCharacter::Die() {
 void AZombieCharacter::InitZombie() {
 	int32 Index = FMath::RandRange(0, 11);
 	GetMesh()->SetSkeletalMesh(ZombieMeshArray[Index]); // 随机外观
-
 	SetActorRotation(FRotator(0, FMath::RandRange(-180, 180), 0)); // 随机朝向
 }

@@ -10,9 +10,13 @@ UENUM(BlueprintType)
 enum class ESWATState :uint8 {
 	ESS_Normal UMETA(DisplayName = "Normal"),
 	ESS_Rilfe UMETA(DisplayName = "Rilfe"),
+	ESS_Dead UMETA(DisplayName = "Rilfe"),
 
 	ESS_MAX
 };
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDeadDelegate);
+
 
 UCLASS()
 class INFINITEMAYHEM_API ASWATCharacter : public ACharacter {
@@ -44,14 +48,18 @@ protected:
 	void ReloadWeaponButtonPressed();
 	bool PickRangeDetection(FHitResult& Hit);
 	bool OutlineDisplayDetection();
+	void Die();
 
 	void UpdateCameraTargetPos(float DeltaTime);
 	void AimOffset(float DeltaTime);
+	void UpdateHealth(float DeltaTime);
 
 public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
 	bool IsAcceleration();
 	bool IsHoldWeapon();
@@ -76,8 +84,6 @@ public:
 	FORCEINLINE bool IsEquiping() { return bIsEquiping; };
 	FORCEINLINE bool IsPicking() { return bPicking; };
 	FORCEINLINE void CancelPicking() { bPicking = false; };
-	FORCEINLINE bool IsDead() { return bIsDead; };
-	FORCEINLINE void SetDead(bool _Dead) { bIsDead = _Dead; };
 	FORCEINLINE ESWATState GetCurrentState() { return CurrentState; };
 	FORCEINLINE class UCombatComponent* GetCombatComp() { return CombatComp; };
 	FORCEINLINE float GetAO_Yaw() const { return AO_Yaw; };
@@ -85,11 +91,19 @@ public:
 	FORCEINLINE float GetSpeed() const { return Speed; };
 	FORCEINLINE float GetStanding() { return Standing; };
 	FORCEINLINE void SetStanding(float _Standing) { Standing = _Standing; };
+	FORCEINLINE bool IsDead() { return TargetHelth <= 0; };
 
 
 protected:
+	UPROPERTY(EditAnywhere, Category = "Character|State")
+	float Health = 100; // 生命值
 
-	UPROPERTY(VisibleAnywhere, Category = "Character Properties|AI")
+	float TargetHelth = 100; // 目标血量
+
+	UPROPERTY(BlueprintAssignable, Category = "Character Properties")
+	FDeadDelegate OnPlayerDead;
+
+	UPROPERTY(VisibleAnywhere, Category = "Character|AI")
 	class UPawnNoiseEmitterComponent* PawnNoiseEmitterComponent;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Character Properties")
@@ -136,7 +150,6 @@ protected:
 	bool bAiming = false;
 	bool bIsEquiping = false;
 	bool bPicking = false;
-	bool bIsDead = false;
 
 	FTimerHandle PickupTimerHandle;
 	float Standing = 1.f;

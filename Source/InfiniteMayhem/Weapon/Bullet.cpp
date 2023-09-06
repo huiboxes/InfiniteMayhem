@@ -41,6 +41,7 @@ void ABullet::OnSphereHitEvent(UPrimitiveComponent* HitComponent, AActor* OtherA
 	FVector HitLoc = Hit.Location;
 
 	AZombieCharacter* Zombie = Cast<AZombieCharacter>(OtherActor);
+
 	if (Zombie) { // 如果击中僵尸
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitZombieFX, HitLoc, Hit.Normal.Rotation());
 		float DamageToApply = Hit.BoneName == TEXT("head") ? Damage : Damage * CriticalImpactCoeff; // 如果打中头部就暴击
@@ -63,6 +64,7 @@ void ABullet::OnSphereHitEvent(UPrimitiveComponent* HitComponent, AActor* OtherA
 void ABullet::HitObjectHandle(const FHitResult& Hit) {
 	FHitResult Outhit;
 	// TraceTypeQuery1 是自定义的 Hit Channel
+	
 	if (UKismetSystemLibrary::SphereTraceSingle(GetWorld(), Hit.Location, Hit.Location, 10.f, ETraceTypeQuery::TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::None, Outhit, true)) {
 		UPhysicalMaterial* mat = Outhit.PhysMaterial.Get();
 

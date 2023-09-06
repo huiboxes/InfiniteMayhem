@@ -19,6 +19,10 @@ public:
 	virtual void NativeBeginPlay() override;
 
 protected:
+	FTimerHandle AttackTimerHandle;
+
+	void AttackDetection();
+
 	UPROPERTY()
 	class AZombieCharacter* Zombie;
 
@@ -31,4 +35,10 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
 	bool bBeAttacked = false ; // 是否被击中
 
+
+	UFUNCTION()
+	void AnimNotify_AttactStart();
+	
+	UFUNCTION()
+	void AnimNotify_AttactEnd();
 };

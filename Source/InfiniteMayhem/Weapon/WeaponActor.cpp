@@ -19,7 +19,12 @@ AWeaponActor::AWeaponActor()
 
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
 	SetRootComponent(WeaponMesh);
+
+	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	WeaponMesh->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
 	
+	WeaponMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECollisionResponse::ECR_Ignore);
+
 	// 枪栓位置箭头，用于确定抛壳特效位置
 	GunBoltArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("GunBoltArrow"));
 	GunBoltArrow->SetVisibility(false);

@@ -25,25 +25,28 @@ ASWATCharacter::ASWATCharacter(const FObjectInitializer& Initializer): Super(Ini
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
+	
 
 	CameraBoom->TargetOffset.Z = 50;
 	CameraBoom->bDoCollisionTest = false;
 
 	MainCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("MainCamera"));
 	MainCamera->SetupAttachment(CameraBoom);
-
+	
 	CombatComp = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComp"));
 	// 设置胶囊体忽略摄像机的碰撞
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	// 设置网格体忽略摄像机的碰撞
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	GetMesh()->SetCollisionObjectType(ECollisionChannel::ECC_PhysicsBody);
 
 	PawnNoiseEmitterComponent = CreateDefaultSubobject<UPawnNoiseEmitterComponent>("PawnNoiseEmitterComponent");
+
 }
 
 void ASWATCharacter::BeginPlay() {
 	Super::BeginPlay();
-
 	if (Controller) {
 		ActorsToIgnoreInFootstep.Add(Controller->GetPawn());
 		ActorsToIgnoreInPickRange.Add(Controller->GetPawn());
@@ -85,6 +88,8 @@ void ASWATCharacter::ChangeState(ESWATState State) {
 		CameraXOffset = 50;
 
 		break;
+	case ESWATState::ESS_Dead:
+		Die();
 	default:
 		break;
 	}
@@ -230,11 +235,16 @@ void ASWATCharacter::UpdateCameraTargetPos(float DeltaTime) { // 更新相机偏
 	MainCamera->SetRelativeLocation(FVector(CameraX, 0, 0));
 }
 
+void ASWATCharacter::UpdateHealth(float DeltaTime) {
+	Health = FMath::FInterpTo(Health, TargetHelth, DeltaTime, 10);
+}
+
 void ASWATCharacter::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 	AimOffset(DeltaTime);
-	UpdateCameraTargetPos(DeltaTime);
 	OutlineDisplayDetection();
+	UpdateHealth(DeltaTime);
+	UpdateCameraTargetPos(DeltaTime);
 }
 
 // Called to bind functionality to input
@@ -258,6 +268,40 @@ void ASWATCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction(TEXT("Fire"), IE_Released, this, &ASWATCharacter::StopFire);
 	PlayerInputComponent->BindAction(TEXT("ReloadWeapon"), IE_Pressed, this, &ASWATCharacter::ReloadWeaponButtonPressed);
 
+}
+
+
+float ASWATCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) {
+	if (IsDead()) return 0;
+
+	TargetHelth = Health - DamageAmount;
+	
+	if (TargetHelth < 0) TargetHelth = 0;
+	if (IsDead()) {
+		ChangeState(ESWATState::ESS_Dead);
+	} 
+	/*else if (!GetAttackingState()) {
+		GetWorld()->GetTimerManager().SetTimer(SawThePlayerTimerHandle, [=]() {
+			bBeAttacked = false;
+		}, .1f, false);
+	}*/
+
+	return 1;
+}
+
+void ASWATCharacter::Die() {
+	InputComponent->SetActive(false);
+	GetMesh()->SetSimulatePhysics(true);
+	MainCamera->SetActive(false);
+	GetCharacterMovement()->DisableMovement();
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	if (CombatComp) CombatComp->EnableWeaponSimulatePhysics();
+	
+	OnPlayerDead.Broadcast();
+
+	/*GetWorld()->GetTimerManager().SetTimer(SawThePlayerTimerHandle, [=]() {
+		Destroy();
+	}, 15.f, false);*/
 }
 
 bool ASWATCharacter::IsAcceleration() {
@@ -324,8 +368,8 @@ void ASWATCharacter::AimOffset(float DeltaTime) {
 	AO_Yaw = Rot.Yaw;
 
 	FQuat Qua = ActorToWorld().InverseTransformRotation(GetControlRotation().Quaternion());
-	AO_Pitch = Qua.Rotator().Pitch;
-	AO_Yaw = Qua.Rotator().Yaw;
+	AO_Pitch = FMath::Clamp(Qua.Rotator().Pitch, -75.f, 75.f);
+	AO_Yaw = FMath::Clamp(Qua.Rotator().Yaw, -75.f, 75.f);
 
 }
 

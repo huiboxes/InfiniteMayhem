@@ -33,6 +33,7 @@ public:
 	float GetFireCrosshairOffset() { return FireCrosshairOffset; };
 
 	void ChangeEquippedWeapon();
+	void EnableWeaponSimulatePhysics();
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Anim Properties")

@@ -115,16 +115,16 @@ void UCombatComponent::UpdateFireCrosshairOffset(float DeltaTime) {
 	float Offset = 0;
 
 
-	if (Speed < 100) {
+	if (Speed < 150) {
 		Offset = 15;
 		// FireCrosshairOffset = 5;
-	} else if (Speed < 150) {
+	} else if (Speed < 300) {
 		Offset = 25;
 		// FireCrosshairOffset = 15;
-	} else if (Speed < 400) {
+	} else if (Speed < 500) {
 		Offset = 35;
 		// FireCrosshairOffset = 25;
-	} else if(Speed < 600) { 
+	} else if(Speed < 660) { 
 		Offset = 50;
 		//FireCrosshairOffset = 35;
 	} else { // 实在太快了，不显示准星
@@ -135,3 +135,13 @@ void UCombatComponent::UpdateFireCrosshairOffset(float DeltaTime) {
 	FireCrosshairOffset = FMath::FInterpTo(FireCrosshairOffset, Offset + RecoilOffset, DeltaTime, 3);
 }
 
+void UCombatComponent::EnableWeaponSimulatePhysics() {
+	if (EquippedWeapon) {
+		EquippedWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+		EquippedWeapon->GetMesh()->SetSimulatePhysics(true);
+	}
+	if (StandByWeapon) {
+		StandByWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+		StandByWeapon->GetMesh()->SetSimulatePhysics(true);
+	}
+}
