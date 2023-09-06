@@ -97,7 +97,6 @@ void AZombieAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus S
 	if (Player) {
 		BBComponent->SetValueAsBool(TEXT("bPlayerInSight"), true);
 		BBComponent->SetValueAsVector(TEXT("Target"), Player->GetActorLocation());
-		//UE_LOG(LogTemp, Warning, TEXT("eeeeee"));
 		Zombie->SawThePlayer();
 
 	} else {
