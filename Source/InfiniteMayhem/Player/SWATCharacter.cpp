@@ -12,6 +12,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/ArrowComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/PawnNoiseEmitterComponent.h"
 #include <Kismet/KismetMathLibrary.h>
 #include <Kismet/GameplayStatics.h>
@@ -26,11 +27,16 @@ ASWATCharacter::ASWATCharacter(const FObjectInitializer& Initializer): Super(Ini
 	CameraBoom->SetupAttachment(RootComponent);
 
 	CameraBoom->TargetOffset.Z = 50;
+	CameraBoom->bDoCollisionTest = false;
 
 	MainCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("MainCamera"));
 	MainCamera->SetupAttachment(CameraBoom);
 
 	CombatComp = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComp"));
+	// 设置胶囊体忽略摄像机的碰撞
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
+	// 设置网格体忽略摄像机的碰撞
+	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 
 	PawnNoiseEmitterComponent = CreateDefaultSubobject<UPawnNoiseEmitterComponent>("PawnNoiseEmitterComponent");
 }
