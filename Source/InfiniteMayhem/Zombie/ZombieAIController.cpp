@@ -36,6 +36,7 @@ AZombieAIController::AZombieAIController() {
 	AIPerceptionComp->ConfigureSense(*AISenseConfigSight);
 	AIPerceptionComp->ConfigureSense(*AISenseConfigHearing);
 	AIPerceptionComp->SetDominantSense(UAISenseConfig_Sight::StaticClass());
+	SetPerceptionComponent(*AIPerceptionComp);
 	AZombieAIController::SetGenericTeamId(FGenericTeamId(1));
 
 	BBComponent = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BBComponent"));
@@ -76,29 +77,16 @@ ETeamAttitude::Type AZombieAIController::GetTeamAttitudeTowards(const AActor& Ot
 
 void AZombieAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus) {
 
-	//if (Stimulus.IsValid()) {
-	//	FAISenseID Sightid = AISenseConfigSight->GetSenseID();
-	//	FAISenseID Hearid = AISenseConfigHearing->GetSenseID();
-
-	//	/*if (Stimulus.Type == Sightid) {
-	//		UE_LOG(LogTemp, Warning, TEXT("I See You Name By AISenseConfig_Sight::::%s"), *Actor->GetName());
-	//	} else if (Stimulus.Type == Hearid) {
-	//		UE_LOG(LogTemp, Warning, TEXT("I Hear You Name By AISenseConfig_Hearing::::%s"), *Actor->GetName());
-	//	}*/
-
-	//	//bPlayerInSight
-
-	//}
-
-	ASWATCharacter* Player = Cast<ASWATCharacter>(Actor);
-	
-	
 	AZombieCharacter* Zombie = Cast<AZombieCharacter>(GetPawn());
-	if (Player) {
-		BBComponent->SetValueAsBool(TEXT("bPlayerInSight"), true);
-		BBComponent->SetValueAsVector(TEXT("Target"), Player->GetActorLocation());
-		Zombie->SawThePlayer();
+	if (!Zombie) return;
 
+	if (Stimulus.IsValid()) {
+		ASWATCharacter* Player = Cast<ASWATCharacter>(Actor);
+		if (Player) {
+			BBComponent->SetValueAsBool(TEXT("bPlayerInSight"), true);
+			BBComponent->SetValueAsVector(TEXT("Target"), Player->GetActorLocation());
+			Zombie->SawThePlayer();
+		}
 	} else {
 		BBComponent->SetValueAsBool(TEXT("bPlayerInSight"), false);
 		Zombie->RandomWalk();
