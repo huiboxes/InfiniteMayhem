@@ -95,13 +95,20 @@ public:
 
 
 protected:
-	UPROPERTY(EditAnywhere, Category = "Character|State")
-	float Health = 100; // 生命值
+	float Health = 100; // 显示生命值
 
+	UPROPERTY(EditAnywhere, Category = "Character|State")
 	float TargetHelth = 100; // 目标血量
+
+	UPROPERTY(EditAnywhere, Category = "Character|Sound")
+	class USoundBase* HitSound; // 被攻击的声音
 
 	UPROPERTY(BlueprintAssignable, Category = "Character Properties")
 	FDeadDelegate OnPlayerDead;
+
+	UPROPERTY(EditAnywhere, Category = "Character|Anim")
+	TArray<class UAnimMontage*> HitMontageArray;
+
 
 	UPROPERTY(VisibleAnywhere, Category = "Character|AI")
 	class UPawnNoiseEmitterComponent* PawnNoiseEmitterComponent;
@@ -118,10 +125,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Character Properties")
 	class UCombatComponent* CombatComp;
 
-	UPROPERTY(EditAnywhere, Category = "Character|Sound")
+	UPROPERTY(EditAnywhere, Category = "Character|Sound|Ammon")
 	class USoundBase* RaiseArmSound; // 子弹在地上反复弹跳的声音
 	
-	UPROPERTY(EditAnywhere, Category = "Character|Sound")
+	UPROPERTY(EditAnywhere, Category = "Character|Sound|Ammon")
 	class USoundBase* HolsterSound; // 子弹在地上反复弹跳的声音
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character|Sound|Step Sound|Default")

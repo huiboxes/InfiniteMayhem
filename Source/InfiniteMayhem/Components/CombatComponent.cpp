@@ -139,9 +139,11 @@ void UCombatComponent::EnableWeaponSimulatePhysics() {
 	if (EquippedWeapon) {
 		EquippedWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 		EquippedWeapon->GetMesh()->SetSimulatePhysics(true);
+		EquippedWeapon = nullptr;
 	}
 	if (StandByWeapon) {
 		StandByWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 		StandByWeapon->GetMesh()->SetSimulatePhysics(true);
+		StandByWeapon = nullptr;
 	}
 }

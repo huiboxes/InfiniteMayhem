@@ -18,6 +18,8 @@
 #include <Kismet/GameplayStatics.h>
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "EngineUtils.h"
+#include "../CameraShake/HitMatineeCameraShake.h"
+#include "MatineeCameraShake.h"
 
 ASWATCharacter::ASWATCharacter(const FObjectInitializer& Initializer): Super(Initializer.SetDefaultSubobjectClass<UFPSCharacterMovementComponent>(ACharacter::CharacterMovementComponentName)) {
 
@@ -28,7 +30,6 @@ ASWATCharacter::ASWATCharacter(const FObjectInitializer& Initializer): Super(Ini
 	
 
 	CameraBoom->TargetOffset.Z = 50;
-	CameraBoom->bDoCollisionTest = false;
 
 	MainCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("MainCamera"));
 	MainCamera->SetupAttachment(CameraBoom);
@@ -42,7 +43,6 @@ ASWATCharacter::ASWATCharacter(const FObjectInitializer& Initializer): Super(Ini
 	GetMesh()->SetCollisionObjectType(ECollisionChannel::ECC_PhysicsBody);
 
 	PawnNoiseEmitterComponent = CreateDefaultSubobject<UPawnNoiseEmitterComponent>("PawnNoiseEmitterComponent");
-
 }
 
 void ASWATCharacter::BeginPlay() {
@@ -280,17 +280,19 @@ float ASWATCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 	if (IsDead()) {
 		ChangeState(ESWATState::ESS_Dead);
 	} 
-	/*else if (!GetAttackingState()) {
-		GetWorld()->GetTimerManager().SetTimer(SawThePlayerTimerHandle, [=]() {
-			bBeAttacked = false;
-		}, .1f, false);
-	}*/
 
+	UGameplayStatics::PlaySound2D(GetWorld(), HitSound);
+	APlayerCameraManager* PCM = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
+	if (PCM) {
+		UMatineeCameraShake::StartMatineeCameraShake(PCM, UHitMatineeCameraShake::StaticClass());
+	}
+
+	int32 Index = FMath::RandRange(0, HitMontageArray.Num() - 1);
+	PlayAnimMontage(HitMontageArray[Index]);
 	return 1;
 }
 
 void ASWATCharacter::Die() {
-	InputComponent->SetActive(false);
 	GetMesh()->SetSimulatePhysics(true);
 	MainCamera->SetActive(false);
 	GetCharacterMovement()->DisableMovement();

@@ -145,7 +145,7 @@ void AZombieCharacter::Die() {
 }
 
 void AZombieCharacter::InitZombie() {
-	int32 Index = FMath::RandRange(0, 11);
+	int32 Index = FMath::RandRange(0, ZombieMeshArray.Num() - 1);
 	GetMesh()->SetSkeletalMesh(ZombieMeshArray[Index]); // 随机外观
 	SetActorRotation(FRotator(0, FMath::RandRange(-180, 180), 0)); // 随机朝向
 }
