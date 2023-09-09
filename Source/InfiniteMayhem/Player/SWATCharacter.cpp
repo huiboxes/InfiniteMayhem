@@ -7,6 +7,7 @@
 #include "../Components/FPSCharacterMovementComponent.h"
 #include "../Components/CombatComponent.h"
 #include "../Interface/IPickableInterface.h"
+#include "../Pickables/PickableActor.h"
 
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -138,6 +139,8 @@ void ASWATCharacter::PickupButtonPressed() { // 只对实现了 IIPickableInterf
 		GetWorldTimerManager().SetTimer(PickupTimerHandle, this, &ASWATCharacter::CancelPicking, 0.6f, false);
 		
 		IIPickableInterface::Execute_Pickup(OutHit.GetActor(), this);
+		APickableActor* HitItem = Cast<APickableActor>(OutHit.GetActor());
+		if (HitItem) HitItem->ShowPickupWidget(false);
 	}
 
 }
@@ -203,6 +206,14 @@ void ASWATCharacter::ReloadWeaponButtonPressed() {
 				 // UE_LOG(LogTemp, Warning, TEXT("Hit Location: %s"), *CurrentPickableItem->GetActorLocation().ToString());
 				 IIPickableInterface::Execute_DisableOutlineDisplay(DetectedPickableItem);
 				 IIPickableInterface::Execute_EnableOutlineDisplay(CurrentPickableItem);
+				 //IIPickableInterface::
+				 APickableActor* OldItem = Cast<APickableActor>(DetectedPickableItem);
+				 APickableActor* CurrentItem = Cast<APickableActor>(CurrentPickableItem);
+				 if (OldItem && CurrentItem) {
+					 OldItem->ShowPickupWidget(false);
+					 CurrentItem->ShowPickupWidget(true);
+				 }
+
 			 }
 			 DetectedPickableItem = CurrentPickableItem; // 重新设置
 		 }
@@ -215,6 +226,11 @@ void ASWATCharacter::ReloadWeaponButtonPressed() {
 				 if (CurrentActor->GetClass()->ImplementsInterface(UIPickableInterface::StaticClass())) {
 					 IIPickableInterface::Execute_DisableOutlineDisplay(CurrentActor);
 					 DetectedPickableItem = nullptr;
+
+					 APickableActor* OldItem = Cast<APickableActor>(DetectedPickableItem);
+					 APickableActor* CurrentItem = Cast<APickableActor>(CurrentActor);
+					 if (OldItem) OldItem->ShowPickupWidget(false);
+					 if (CurrentItem) CurrentItem->ShowPickupWidget(false);
 				 }
 			 }
 

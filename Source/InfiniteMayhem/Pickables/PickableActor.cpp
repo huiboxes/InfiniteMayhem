@@ -5,6 +5,8 @@
 #include "../Player/SWATCharacter.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/SphereComponent.h"
+#include "Components/WidgetComponent.h"
+#include "Components/TextBlock.h"
 
 APickableActor::APickableActor()
 {
@@ -22,8 +24,14 @@ APickableActor::APickableActor()
 	SphereCollision->SetCollisionProfileName(TEXT("Custom"));
 
 	SphereCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
-	SphereCollision->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnSphereBeginOverlap);
-	SphereCollision->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnSphereEndOverlap);
+
+
+	// 拾取提示 UI
+	PickupWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("PickupWidget"));
+	PickupWidget->SetupAttachment(RootComponent);
+	PickupWidget->SetVisibility(false);
+	/*SphereCollision->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnSphereBeginOverlap);
+	SphereCollision->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnSphereEndOverlap);*/
 }
 
 void APickableActor::BeginPlay()
@@ -38,21 +46,6 @@ void APickableActor::Tick(float DeltaTime)
 
 }
 
-void APickableActor::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OterComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
-	ASWATCharacter* Player = Cast<ASWATCharacter>(OtherActor);
-	if (Player) {
-		//Player->SetOverlappingWeapon(this);
-	}
-}
-
-void APickableActor::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
-	ASWATCharacter* Player = Cast<ASWATCharacter>(OtherActor);
-	if (Player) {
-		Player->SetOverlappingWeapon(nullptr);
-	}
-}
-
-
 void APickableActor::EnableOutlineDisplay_Implementation() {
 	ItemMesh->SetRenderCustomDepth(true);
 }
@@ -64,6 +57,23 @@ void APickableActor::DisableOutlineDisplay_Implementation() {
 
 void APickableActor::Pickup_Implementation(AActor* _Owner) { // 默认情况捡到了就销毁 Actor
 	GetWorldTimerManager().SetTimer(PickupTimerHandle, this, &APickableActor::DestroySelf, 0.2f, false);
+}
+
+void APickableActor::ShowPickupWidget(bool bShowWidget) {
+	if (PickupWidget) {
+		PickupWidget->SetVisibility(bShowWidget);
+		UUserWidget* UserWidget = PickupWidget->GetUserWidgetObject();
+		if (UserWidget != nullptr) {
+			UTextBlock* TextBlock = Cast<UTextBlock>(UserWidget->GetWidgetFromName(TEXT("Pickup")));
+			if (TextBlock != nullptr) {
+				//FString YourText = FString::Printf(TEXT("F 拾取 %s"), GetItemName());
+				/*FText FinalText = FText::FromString(YourText);
+				TextBlock->SetText(FinalText);*/
+				//FString YourText = FString::Printf(TEXT("F 拾取 %s"), GetItemName())
+				TextBlock->SetText(FText::FromString(FString::Printf(TEXT("F 拾取 %s"), *GetItemName().ToString())));
+			}
+		}
+	}
 }
 
 void APickableActor::DestroySelf() {
