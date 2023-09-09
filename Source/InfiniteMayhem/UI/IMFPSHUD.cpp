@@ -11,7 +11,7 @@
 void AIMFPSHUD::DrawHUD() {
 	Super::DrawHUD();
 
-	DrawWeaponAmmon();
+	//DrawWeaponAmmon();
 	DrawCrosshair();
 
 }

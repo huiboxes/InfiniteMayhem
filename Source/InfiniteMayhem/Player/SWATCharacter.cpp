@@ -421,3 +421,19 @@ void ASWATCharacter::PlayRighttFootStep() {
 	FootstepHandle(LeftToeBaseLoc);
 }
 
+float ASWATCharacter::GetAmmonCurrent() {
+	AWeaponActor* Weapon = GetEquippedWeapon();
+	if (Weapon) {
+		return Weapon->GetAmmonCurrent();
+	}
+	return 0;
+}
+
+float ASWATCharacter::GetMagNum() {
+	AWeaponActor* Weapon = GetEquippedWeapon();
+	if (Weapon) {
+		return Weapon->GetMagNum();
+	}
+	return 0;
+}
+

@@ -93,6 +93,13 @@ public:
 	FORCEINLINE void SetStanding(float _Standing) { Standing = _Standing; };
 	FORCEINLINE bool IsDead() { return TargetHelth <= 0; };
 
+	UFUNCTION(BlueprintCallable)
+	float GetHealth() { return Health; };
+	UFUNCTION(BlueprintCallable)
+	float GetAmmonCurrent();
+	UFUNCTION(BlueprintCallable)
+	float GetMagNum();
+
 
 protected:
 	float Health = 100; // 显示生命值
