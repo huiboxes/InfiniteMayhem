@@ -66,10 +66,6 @@ void APickableActor::ShowPickupWidget(bool bShowWidget) {
 		if (UserWidget != nullptr) {
 			UTextBlock* TextBlock = Cast<UTextBlock>(UserWidget->GetWidgetFromName(TEXT("Pickup")));
 			if (TextBlock != nullptr) {
-				//FString YourText = FString::Printf(TEXT("F 拾取 %s"), GetItemName());
-				/*FText FinalText = FText::FromString(YourText);
-				TextBlock->SetText(FinalText);*/
-				//FString YourText = FString::Printf(TEXT("F 拾取 %s"), GetItemName())
 				TextBlock->SetText(FText::FromString(FString::Printf(TEXT("F 拾取 %s"), *GetItemName().ToString())));
 			}
 		}

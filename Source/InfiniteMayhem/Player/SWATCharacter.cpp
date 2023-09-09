@@ -397,7 +397,7 @@ void ASWATCharacter::FootstepHandle(FVector ToeLoc) {
 
 	FHitResult OutHit;
 
-	if (UKismetSystemLibrary::LineTraceSingle(GetWorld(), ToeLoc, End, ETraceTypeQuery::TraceTypeQuery1, false, ActorsToIgnoreInFootstep, EDrawDebugTrace::None, OutHit, true)) { // 自定义的 Hit 通道
+	if (UKismetSystemLibrary::LineTraceSingle(GetWorld(), ToeLoc, End, UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_GameTraceChannel2), false, ActorsToIgnoreInFootstep, EDrawDebugTrace::None, OutHit, true)) { // 自定义的 Hit 通道
 		UPhysicalMaterial* mat = OutHit.PhysMaterial.Get();
 		FVector HitLoc = OutHit.Location;
 		

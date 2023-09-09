@@ -64,14 +64,12 @@ void ABullet::OnSphereHitEvent(UPrimitiveComponent* HitComponent, AActor* OtherA
 
 void ABullet::HitObjectHandle(const FHitResult& Hit) {
 	FHitResult Outhit;
-	// TraceTypeQuery1 是自定义的 Hit Channel
-	
-	if (UKismetSystemLibrary::SphereTraceSingle(GetWorld(), Hit.Location, Hit.Location, 10.f, ETraceTypeQuery::TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::None, Outhit, true)) {
+	// GameTraceChannel2 是自定义的 Hit Channel
+	if (UKismetSystemLibrary::SphereTraceSingle(GetWorld(), Hit.Location, Hit.Location, 10.f, UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_GameTraceChannel2), false, ActorsToIgnore, EDrawDebugTrace::None, Outhit, true)) {
 		UPhysicalMaterial* mat = Outhit.PhysMaterial.Get();
 
 		FVector HitLoc = Outhit.Location;
 		FVector FxScale = FVector(.4f, .4f, .4f);
-
 		switch (mat->SurfaceType) {
 			case EPhysicalSurface::SurfaceType1: // 打中了 Metal
 				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitMetalFX, FTransform(Outhit.Normal.Rotation(), HitLoc, FxScale));
