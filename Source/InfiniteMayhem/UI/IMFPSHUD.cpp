@@ -30,6 +30,7 @@ void AIMFPSHUD::DrawCrosshair() {
 		float FireCrosshairOffset = CombatComp->GetFireCrosshairOffset();
 		if (FireCrosshairOffset >= 80) return; // 如果偏移过大，直接不绘制准星
 		if (Player->IsAiming()) FireCrosshairOffset -= 10; // 瞄准状态降低准星偏移
+		if (Player->IsFiring()) FireCrosshairOffset += 5;
 		float LineLength = 10.f;
 		
 		float Offset = 5.f + FireCrosshairOffset; 
