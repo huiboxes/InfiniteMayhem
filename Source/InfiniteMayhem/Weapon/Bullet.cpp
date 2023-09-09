@@ -47,6 +47,7 @@ void ABullet::OnSphereHitEvent(UPrimitiveComponent* HitComponent, AActor* OtherA
 		float DamageToApply = Hit.BoneName == TEXT("head") ? Damage : Damage * CriticalImpactCoeff; // 如果打中头部就暴击
 		UGameplayStatics::ApplyDamage(Zombie, DamageToApply, nullptr, nullptr, nullptr);
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitZombieSound, Hit.Location);
+		OnHitZombie.Broadcast();
 	} else {
 		if (HitDecal) { // 在击中的地方生成贴花
 			UGameplayStatics::SpawnDecalAtLocation(GetWorld(), HitDecal, FVector(7.f, 7.f, 7.f), HitLoc, Hit.Normal.Rotation(), 20.f);

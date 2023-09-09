@@ -4,6 +4,8 @@
 #include "GameFramework/Actor.h"
 #include "Bullet.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FHitDelegate);
+
 UCLASS()
 class INFINITEMAYHEM_API ABullet : public AActor
 {
@@ -19,6 +21,9 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 protected:
+
+	UPROPERTY(BlueprintAssignable, Category = "Hit Properties")
+	FHitDelegate OnHitZombie;
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	class USphereComponent* SphereCollision;
