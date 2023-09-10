@@ -5,7 +5,7 @@
 #include "Engine/Canvas.h"
 #include <Kismet/GameplayStatics.h>
 #include "../Player/SWATCharacter.h"
-#include "../Weapon/WeaponActor.h"
+#include "../Weapon/Weapon.h"
 #include "../Components/CombatComponent.h"
 
 void AIMFPSHUD::DrawHUD() {
@@ -55,7 +55,7 @@ void AIMFPSHUD::DrawWeaponAmmon() {
 	float PaintX = Canvas->ClipX - 40;
 	float PaintY = Canvas->ClipY - 50;
 
-	AWeaponActor*  EquippedWeapon = Player->GetEquippedWeapon();
+	AWeapon*  EquippedWeapon = Player->GetEquippedWeapon();
 	if (!Player || !Player->IsHoldWeapon() || !EquippedWeapon) {
 		DrawText(TEXT("--/--"),FLinearColor::Yellow, PaintX, PaintY);
 		return;

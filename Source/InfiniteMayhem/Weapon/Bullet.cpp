@@ -39,6 +39,9 @@ void ABullet::Tick(float DeltaTime) {
 void ABullet::OnSphereHitEvent(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
 
 	FVector HitLoc = Hit.Location;
+	/*UE_LOG(LogTemp, Warning, TEXT("Hit Actor: %s"), *Hit.GetActor()->GetName());
+	UE_LOG(LogTemp, Warning, TEXT("Hit Location: %s"), *Hit.Location.ToString());
+	UE_LOG(LogTemp, Warning, TEXT("Hit Normal: %s"), *Hit.Normal.ToString());*/
 
 	AZombieCharacter* Zombie = Cast<AZombieCharacter>(OtherActor);
 

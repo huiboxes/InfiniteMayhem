@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/TimelineComponent.h"
-#include "WeaponActor.generated.h"
+#include "Weapon.generated.h"
 
 UENUM(BlueprintType)
 enum class EWeaponState : uint8 {
@@ -30,12 +30,12 @@ enum class EWeaponFireState :uint8 {
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FHandleFireDelegate);
 
 UCLASS()
-class INFINITEMAYHEM_API AWeaponActor : public AActor
+class INFINITEMAYHEM_API AWeapon : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
-	AWeaponActor();
+	AWeapon();
 
 protected:
 	virtual void BeginPlay() override;
@@ -75,8 +75,8 @@ protected:
 private:
 
 
-	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
-	class UWidgetComponent* PickupWidget;
+	/*UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
+	class UWidgetComponent* PickupWidget;*/
 
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
 	class UAnimMontage* ReloadMontage;
@@ -119,8 +119,11 @@ private:
 
 	int32 AmmonCurrent = 0; // 当前弹匣剩余子弹
 
-	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties|Ammon")
 	float MaxShootDistance = 50000;
+
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+	class UTexture2D* WeaponIcon; 
 
 	void HandleFire();
 
@@ -137,7 +140,7 @@ private:
 public:
 	void ChangeWeaponState(EWeaponState State);
 	void ChangeWeaponFireState(EWeaponFireState State);
-	void ShowPickupWidget(bool bShowWidget);
+	//void ShowPickupWidget(bool bShowWidget);
 	void StartFire();
 	void StopFire();
 	void ReloadWeapon();
@@ -158,4 +161,7 @@ public:
 	FORCEINLINE void SwitchFireMode() { bIsFullyAutomatic = !bIsFullyAutomatic; };
 
 	class USkeletalMeshComponent* GetMesh();
+
+	UFUNCTION(BlueprintCallable)
+	class UTexture2D* GetWeaponIcon() { return WeaponIcon; };
 };

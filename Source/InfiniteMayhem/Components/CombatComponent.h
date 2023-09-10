@@ -24,7 +24,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	friend class ASWATCharacter;
 
-	void EquipWeapon(class AWeaponActor* WeaponToEquip);
+	void EquipWeapon(class AWeapon* WeaponToEquip);
 
 	void SwitchWeapon();
 
@@ -40,8 +40,8 @@ private:
 	class UAnimMontage* EquipMontage;
 
 	class ASWATCharacter* Player;
-	class AWeaponActor* EquippedWeapon;
-	class AWeaponActor* StandByWeapon;
+	class AWeapon* EquippedWeapon;
+	class AWeapon* StandByWeapon;
 
 	FTimerHandle DestroyWeaponTimerHandle;
 

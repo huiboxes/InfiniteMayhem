@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "WeaponActor.h"
+#include "Weapon.h"
 #include "../Player/SWATCharacter.h"
 #include "Bullet.h"
 #include "Magazine.h"
@@ -13,7 +13,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Kismet/GameplayStatics.h"
 
-AWeaponActor::AWeaponActor()
+AWeapon::AWeapon()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
@@ -31,13 +31,13 @@ AWeaponActor::AWeaponActor()
 	GunBoltArrow->SetupAttachment(RootComponent);
 	
 	// 拾取提示 UI
-	PickupWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("PickupWidget"));
+	/*PickupWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("PickupWidget"));
 	PickupWidget->SetupAttachment(RootComponent);
-	PickupWidget->SetVisibility(false);
+	PickupWidget->SetVisibility(false);*/
 
 }
 
-void AWeaponActor::BeginPlay()
+void AWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -52,13 +52,13 @@ void AWeaponActor::BeginPlay()
 	}
 }
 
-void AWeaponActor::Tick(float DeltaTime)
+void AWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
 }
 
-void AWeaponActor::ChangeWeaponState(EWeaponState State) {
+void AWeapon::ChangeWeaponState(EWeaponState State) {
 	switch (State) {
 	case EWeaponState::EWS_Initial:
 		break;
@@ -80,11 +80,11 @@ void AWeaponActor::ChangeWeaponState(EWeaponState State) {
 	CurrentState = State;
 }
 
-void AWeaponActor::ChangeWeaponFireState(EWeaponFireState State) {
+void AWeapon::ChangeWeaponFireState(EWeaponFireState State) {
 	CurrentFireState = State;
 }
 
-void AWeaponActor::FireTheAmmon() {
+void AWeapon::FireTheAmmon() {
 	APlayerController* Pc = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	if (!Pc) return;
 	int32 Width = 0;
@@ -104,7 +104,7 @@ void AWeaponActor::FireTheAmmon() {
 }
 
 
-void AWeaponActor::Projectile(FVector TargetPos) {
+void AWeapon::Projectile(FVector TargetPos) {
 	FVector MuzzlePos = MuzzleTransform.GetLocation();
 
 	// 获得枪口到目标位置的方向，用于纠正射击位置
@@ -116,13 +116,13 @@ void AWeaponActor::Projectile(FVector TargetPos) {
 
 }
 
-void AWeaponActor::ShowPickupWidget(bool bShowWidget) {
-	if (PickupWidget) {
-		PickupWidget->SetVisibility(bShowWidget);
-	}
-}
+//void AWeapon::ShowPickupWidget(bool bShowWidget) {
+//	if (PickupWidget) {
+//		PickupWidget->SetVisibility(bShowWidget);
+//	}
+//}
 
-void AWeaponActor::HandleFire() {
+void AWeapon::HandleFire() {
 	
 	if (AmmonCurrent <= 0) { // 播放没子弹时的枪声并结束开枪
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), EmptySound, GetActorLocation());
@@ -158,12 +158,12 @@ void AWeaponActor::HandleFire() {
 	AmmonCurrent--;
 }
 
-void AWeaponActor::OnEmptyShellCollide(FName EventName, float EmitterTime, int32 ParticleTime, FVector Location, FVector Velocity, FVector Direction, FVector Normal, FName BoneName, UPhysicalMaterial* PhysMat){
+void AWeapon::OnEmptyShellCollide(FName EventName, float EmitterTime, int32 ParticleTime, FVector Location, FVector Velocity, FVector Direction, FVector Normal, FName BoneName, UPhysicalMaterial* PhysMat){
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), ShellBounceSound, Location);
 }
 
 
-void AWeaponActor::StartFire() {
+void AWeapon::StartFire() {
 	if (!CanFire()) return;
 	ChangeWeaponFireState(EWeaponFireState::EWS_Firing);
 	if (bIsFullyAutomatic) {
@@ -175,13 +175,13 @@ void AWeaponActor::StartFire() {
 	
 }
 
-void AWeaponActor::StopFire() {
+void AWeapon::StopFire() {
 	GetWorldTimerManager().ClearTimer(FireTimerHandle);
 	ChangeWeaponFireState(EWeaponFireState::EWS_Idle);
 }
 
 
-void AWeaponActor::ReloadWeapon() {
+void AWeapon::ReloadWeapon() {
 
 	ASWATCharacter* Player = Cast<ASWATCharacter>(GetOwner());
 	if (CurrentFireState == EWeaponFireState::EWS_Reload || !Player || Player->IsEquiping() || AmmonCurrent >= AmmonMaxCounter || MagNum <= 0) return;
@@ -197,7 +197,7 @@ void AWeaponActor::ReloadWeapon() {
 }
 
 
-void AWeaponActor::ReloadAmmonOver() {
+void AWeapon::ReloadAmmonOver() {
 	bReloading = false;
 	MagComp->AttachToComponent(WeaponMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("Gun_magazinesocket"));
 	AmmonCurrent = AmmonMaxCounter;
@@ -206,7 +206,7 @@ void AWeaponActor::ReloadAmmonOver() {
 	
 }
 
-void AWeaponActor::RemoveMag() {
+void AWeapon::RemoveMag() {
 	ASWATCharacter* Player = Cast<ASWATCharacter>(GetOwner());
 	if (!Player) return;
 
@@ -215,7 +215,7 @@ void AWeaponActor::RemoveMag() {
 }
 
 
-void AWeaponActor::GenerateMag() {
+void AWeapon::GenerateMag() {
 	ASWATCharacter* Player = Cast<ASWATCharacter>(GetOwner());
 	if (!Player) return;
 
@@ -225,18 +225,18 @@ void AWeaponActor::GenerateMag() {
 	MagNum--;
 }
 
-bool AWeaponActor::CanFire() {
+bool AWeapon::CanFire() {
 	ASWATCharacter* Player = Cast<ASWATCharacter>(GetOwner());
 	if (!Player) return false;
 
 	return bCanFire && !Player->IsEquiping() && !bReloading;
 }
 
-void AWeaponActor::WeaponDestroy() {
+void AWeapon::WeaponDestroy() {
 	MagComp->Destroy();
 	Destroy();
 }
 
-USkeletalMeshComponent* AWeaponActor::GetMesh() {
+USkeletalMeshComponent* AWeapon::GetMesh() {
 	return WeaponMesh;
 }

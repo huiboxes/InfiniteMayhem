@@ -4,7 +4,7 @@
 #include "PickableWeapon.h"
 #include "../Player/SWATCharacter.h"
 #include "../Components/CombatComponent.h"
-#include "../Weapon/WeaponActor.h"
+#include "../Weapon/Weapon.h"
 #include "../Weapon/Magazine.h"
 
 
@@ -22,9 +22,14 @@ void APickableWeapon::Pickup_Implementation(AActor* _Owner) {
 // 生成武器类并附加到手部插槽
 void APickableWeapon::AttachWeponToPlayer(ASWATCharacter* Player) {
 	if (Player && WeaponClass) {
-		AWeaponActor* Weapon = GetWorld()->SpawnActor<AWeaponActor>(WeaponClass);
-		Player->GetCombatComp()->EquipWeapon(Weapon);
-		Player->ChangeState(ESWATState::ESS_Rilfe);
+		AWeapon* Weapon = GetWorld()->SpawnActor<AWeapon>(WeaponClass);
+		if (Weapon) {
+			Player->GetCombatComp()->EquipWeapon(Weapon);
+			Player->ChangeState(ESWATState::ESS_Rilfe);
+		} else {
+			UE_LOG(LogTemp, Warning, TEXT("AttachWeponToPlayer 异常"));
+		}
+		
 	}
 
 }

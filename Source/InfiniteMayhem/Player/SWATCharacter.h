@@ -16,6 +16,7 @@ enum class ESWATState :uint8 {
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDeadDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPickupDelegate);
 
 
 UCLASS()
@@ -72,8 +73,10 @@ public:
 
 
 	class USpringArmComponent* GetCameraBoom();
-	void SetOverlappingWeapon(class AWeaponActor* Weapon);
-	class AWeaponActor* GetEquippedWeapon();
+	void SetOverlappingWeapon(class AWeapon* Weapon);
+
+	UFUNCTION(BlueprintCallable)
+	class AWeapon* GetEquippedWeapon();
 
 	void FootstepHandle(FVector ToeLoc); // 传入的脚趾位置，判断踩到的什么材质
 	void PlayLeftFootStep(); // 播放左脚脚步
@@ -109,6 +112,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Character|Sound")
 	class USoundBase* HitSound; // 被攻击的声音
+	UPROPERTY(BlueprintAssignable, Category = "Character Properties")
+	FPickupDelegate OnPickup;
 
 	UPROPERTY(BlueprintAssignable, Category = "Character Properties")
 	FDeadDelegate OnPlayerDead;
@@ -127,7 +132,7 @@ protected:
 	class UCameraComponent* MainCamera;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Character Properties")
-	class AWeaponActor* OverlappingWeapon;
+	class AWeapon* OverlappingWeapon;
 
 	UPROPERTY(VisibleAnywhere, Category = "Character Properties")
 	class UCombatComponent* CombatComp;

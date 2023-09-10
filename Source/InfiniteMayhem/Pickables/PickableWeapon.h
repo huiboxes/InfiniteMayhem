@@ -25,7 +25,7 @@ protected:
 	FTimerHandle PickupTimerHandle;
 
 	UPROPERTY(EditAnywhere, Category = "PickableItem Properties")
-	TSubclassOf<class AWeaponActor> WeaponClass; // 生成的武器类
+	TSubclassOf<class AWeapon> WeaponClass; // 生成的武器类
 
 	UFUNCTION()
 	void AttachWeponToPlayer(class ASWATCharacter* Player);

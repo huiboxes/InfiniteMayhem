@@ -2,7 +2,7 @@
 
 
 #include "IMFPSAnimInstance.h"
-#include "../Weapon/WeaponActor.h"
+#include "../Weapon/Weapon.h"
 #include "../Components/CombatComponent.h"
 
 void UIMFPSAnimInstance::NativeUpdateAnimation(float DeltaTime) {

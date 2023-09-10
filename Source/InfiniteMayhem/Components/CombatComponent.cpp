@@ -1,6 +1,6 @@
 #include "CombatComponent.h"
 #include "../Player/SWATCharacter.h"
-#include "../Weapon/WeaponActor.h"
+#include "../Weapon/Weapon.h"
 #include "Engine/SkeletalMeshSocket.h"
 
 
@@ -26,7 +26,7 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 }
 
 // 偷个懒，暂时只能拾取 EWS_Initial 的武器
-void UCombatComponent::EquipWeapon(AWeaponActor* WeaponToEquip) { 
+void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip) { 
 	if (!Player || !WeaponToEquip || (WeaponToEquip->GetCurrentState() != EWeaponState::EWS_Initial)) return;
 
 	if (!EquippedWeapon || ((EquippedWeapon && StandByWeapon))) { // 手上未持有武器，或者手上和背包都有武器，则将武器放到手上插槽
@@ -52,7 +52,7 @@ void UCombatComponent::EquipWeapon(AWeaponActor* WeaponToEquip) {
 		}
 
 		EquippedWeapon->SetOwner(Player);
-		EquippedWeapon->ShowPickupWidget(false);
+		//EquippedWeapon->ShowPickupWidget(false);
 	} else if(EquippedWeapon && !StandByWeapon) { // 如果手上有武器，备用武器槽没有武器则放到备用插槽
 		StandByWeapon = WeaponToEquip;
 		StandByWeapon->ChangeWeaponState(EWeaponState::EWS_Equipped);
@@ -65,7 +65,7 @@ void UCombatComponent::EquipWeapon(AWeaponActor* WeaponToEquip) {
 		}
 
 		StandByWeapon->SetOwner(Player);
-		StandByWeapon->ShowPickupWidget(false);
+		//StandByWeapon->ShowPickupWidget(false);
 	}
 	
 }
@@ -95,14 +95,14 @@ void UCombatComponent::ChangeEquippedWeapon() {
 	StandByWeapon->ChangeWeaponState(EWeaponState::EWS_Equipped);
 
 	// 更新EquippedWeapon和StandByWeapon的指针引用
-	AWeaponActor* Temp = EquippedWeapon;
+	AWeapon* Temp = EquippedWeapon;
 	EquippedWeapon = StandByWeapon;
 	StandByWeapon = Temp;
 
 	StandByWeapon->SetOwner(Player);
-	StandByWeapon->ShowPickupWidget(false);
+	//StandByWeapon->ShowPickupWidget(false);
 	EquippedWeapon->SetOwner(Player);
-	EquippedWeapon->ShowPickupWidget(false);
+	//EquippedWeapon->ShowPickupWidget(false);
 }
 
 bool UCombatComponent::IsFiring() {

@@ -3,7 +3,7 @@
 
 #include "SWATCharacter.h"
 #include "../IMFPSPlayerController.h"
-#include "../Weapon/WeaponActor.h"
+#include "../Weapon/Weapon.h"
 #include "../Components/FPSCharacterMovementComponent.h"
 #include "../Components/CombatComponent.h"
 #include "../Interface/IPickableInterface.h"
@@ -141,6 +141,7 @@ void ASWATCharacter::PickupButtonPressed() { // 只对实现了 IIPickableInterf
 		IIPickableInterface::Execute_Pickup(OutHit.GetActor(), this);
 		APickableActor* HitItem = Cast<APickableActor>(OutHit.GetActor());
 		if (HitItem) HitItem->ShowPickupWidget(false);
+		OnPickup.Broadcast();
 	}
 
 }
@@ -348,21 +349,21 @@ USpringArmComponent* ASWATCharacter::GetCameraBoom() {
 	return CameraBoom;
 }
 
-AWeaponActor* ASWATCharacter::GetEquippedWeapon() {
+AWeapon* ASWATCharacter::GetEquippedWeapon() {
 	if (!CombatComp || !CombatComp->EquippedWeapon) return nullptr;
 	return CombatComp->EquippedWeapon;
 }
 
 
-void ASWATCharacter::SetOverlappingWeapon(AWeaponActor* Weapon) {
-	if (OverlappingWeapon) { // 检查上一次的是否还存在
-		OverlappingWeapon->ShowPickupWidget(false);
-	}
-	
-	OverlappingWeapon = Weapon;
-	if (OverlappingWeapon) {
-		OverlappingWeapon->ShowPickupWidget(true);
-	}
+void ASWATCharacter::SetOverlappingWeapon(AWeapon* Weapon) {
+	//if (OverlappingWeapon) { // 检查上一次的是否还存在
+	//	OverlappingWeapon->ShowPickupWidget(false);
+	//}
+	//
+	//OverlappingWeapon = Weapon;
+	//if (OverlappingWeapon) {
+	//	OverlappingWeapon->ShowPickupWidget(true);
+	//}
 
 }
 
@@ -438,7 +439,7 @@ void ASWATCharacter::PlayRighttFootStep() {
 }
 
 float ASWATCharacter::GetAmmonCurrent() {
-	AWeaponActor* Weapon = GetEquippedWeapon();
+	AWeapon* Weapon = GetEquippedWeapon();
 	if (Weapon) {
 		return Weapon->GetAmmonCurrent();
 	}
@@ -446,7 +447,7 @@ float ASWATCharacter::GetAmmonCurrent() {
 }
 
 float ASWATCharacter::GetMagNum() {
-	AWeaponActor* Weapon = GetEquippedWeapon();
+	AWeapon* Weapon = GetEquippedWeapon();
 	if (Weapon) {
 		return Weapon->GetMagNum();
 	}
